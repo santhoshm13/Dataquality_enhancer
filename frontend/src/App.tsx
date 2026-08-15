@@ -5,6 +5,7 @@ import { ProductTable } from './components/ProductTable';
 import { UploadModal } from './components/UploadModal';
 import { ProductDetailModal } from './components/ProductDetailModal';
 import { EvaluationPanel } from './components/EvaluationPanel';
+import { Chatbot } from './components/Chatbot';
 
 const API_BASE = "http://127.0.0.1:8000/api";
 
@@ -27,6 +28,9 @@ export const App: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
+  const [datasets, setDatasets] = useState<any[]>([]);
+  const [selectedDatasetId, setSelectedDatasetId] = useState<number | null>(null);
+
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
   const [isUploadOpen, setIsUploadOpen] = useState<boolean>(false);
   const [isEnriching, setIsEnriching] = useState<boolean>(false);
@@ -45,13 +49,30 @@ export const App: React.FC = () => {
 
   const fetchStats = async () => {
     try {
-      const res = await fetch(`${API_BASE}/dashboard/stats`);
+      const url = new URL(`${API_BASE}/dashboard/stats`);
+      if (selectedDatasetId) url.searchParams.append("dataset_id", selectedDatasetId.toString());
+      const res = await fetch(url.toString());
       if (res.ok) {
         const data = await res.json();
         setStats(data);
       }
     } catch (e) {
       console.error("Failed to fetch stats", e);
+    }
+  };
+
+  const fetchDatasets = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/datasets`);
+      if (res.ok) {
+        const data = await res.json();
+        setDatasets(data);
+        if (data.length > 0 && !selectedDatasetId) {
+          setSelectedDatasetId(data[data.length - 1].id);
+        }
+      }
+    } catch (e) {
+      console.error("Failed to fetch datasets", e);
     }
   };
 
@@ -74,12 +95,13 @@ export const App: React.FC = () => {
       url.searchParams.append("limit", limit.toString());
       if (statusFilter !== "ALL") url.searchParams.append("status", statusFilter);
       if (searchQuery) url.searchParams.append("search", searchQuery);
+      if (selectedDatasetId) url.searchParams.append("dataset_id", selectedDatasetId.toString());
 
       const res = await fetch(url.toString());
       if (res.ok) {
         const data = await res.json();
-        setProducts(data.items);
-        setTotalProducts(data.total);
+        setProducts(data.items || []);
+        setTotalProducts(data.total || 0);
       }
     } catch (e) {
       console.error("Failed to fetch products", e);
@@ -87,11 +109,15 @@ export const App: React.FC = () => {
   };
 
   useEffect(() => {
+    fetchDatasets();
+  }, []);
+
+  useEffect(() => {
     checkHealth();
     fetchStats();
     fetchProducts();
     fetchEvaluation();
-  }, [page, statusFilter, searchQuery]);
+  }, [page, statusFilter, searchQuery, selectedDatasetId]);
 
   const handleSelectProduct = async (id: number) => {
     try {
@@ -131,14 +157,21 @@ export const App: React.FC = () => {
   };
 
   const handleExport = (format: 'csv' | 'excel') => {
-    window.open(`${API_BASE}/export?format=${format}`, '_blank');
+    let url = `${API_BASE}/export?format=${format}`;
+    if (selectedDatasetId) {
+        url += `&dataset_id=${selectedDatasetId}`;
+    }
+    window.open(url, '_blank');
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-transparent text-slate-100 flex flex-col font-sans relative">
       
       {/* Header Navigation */}
       <Navbar
+        datasets={datasets}
+        selectedDatasetId={selectedDatasetId}
+        onSelectDataset={setSelectedDatasetId}
         onOpenUpload={() => setIsUploadOpen(true)}
         onExport={handleExport}
         onRunBatchEnrichment={handleRunBatchEnrichment}
@@ -147,7 +180,7 @@ export const App: React.FC = () => {
       />
 
       {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-6">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8 relative z-10 animate-slide-in">
         
         {/* KPI Stats Header */}
         <StatsOverview stats={stats} />
@@ -177,6 +210,7 @@ export const App: React.FC = () => {
         isOpen={isUploadOpen}
         onClose={() => setIsUploadOpen(false)}
         onUploadSuccess={() => {
+          fetchDatasets();
           fetchProducts();
           fetchStats();
           fetchEvaluation();
@@ -192,10 +226,23 @@ export const App: React.FC = () => {
         />
       )}
 
+      {/* Interactive Chatbot */}
+      <Chatbot />
+
       {/* Footer */}
-      <footer className="py-4 text-center text-xs text-slate-600 border-t border-slate-900 mt-10">
-        AI Product Enrichment Platform — Multi-Format Ingestion (CSV, XLSX, XLS) & 252-Column Export
+      <footer className="py-8 text-center text-xs text-slate-500 border-t border-white/5 mt-10 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto flex flex-col items-center justify-center gap-2">
+          <div className="flex items-center gap-2 opacity-50">
+            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+            AI Product Enrichment Platform
+            <span className="w-1.5 h-1.5 rounded-full bg-pink-500"></span>
+          </div>
+          <p>Multi-Format Ingestion (CSV, XLSX, XLS) & 252-Column Delivery Export</p>
+        </div>
       </footer>
+
+      {/* Chatbot Widget */}
+      <Chatbot />
 
     </div>
   );

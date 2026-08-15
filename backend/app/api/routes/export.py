@@ -8,8 +8,11 @@ router = APIRouter()
 
 @router.post("/export")
 @router.get("/export")
-async def export_delivery_file(format: Optional[str] = Query("csv")):
-    products = repository.get_all_products()
+async def export_delivery_file(
+    format: Optional[str] = Query("csv"),
+    dataset_id: Optional[int] = Query(None, description="Dataset ID to export")
+):
+    products = repository.get_all_products(dataset_id=dataset_id)
     fmt = (format or "csv").lower().strip()
 
     if fmt == "csv":

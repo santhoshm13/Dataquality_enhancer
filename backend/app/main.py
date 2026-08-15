@@ -5,7 +5,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config.settings import settings
-from app.api.routes import health, upload, products, dashboard, export, evaluation
+from app.api.routes import health, upload, products, dashboard, export, evaluation, chat
+from app.database.master_data_loader import load_master_data
 
 # Configure structured logging
 logging.basicConfig(
@@ -17,6 +18,7 @@ logger = logging.getLogger("app.main")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info(f"Starting {settings.PROJECT_NAME} backend in {settings.ENV} mode...")
+    load_master_data()
     yield
     logger.info("Shutting down backend...")
 
@@ -43,6 +45,7 @@ app.include_router(products.router, prefix="/api", tags=["Products"])
 app.include_router(dashboard.router, prefix="/api", tags=["Dashboard"])
 app.include_router(export.router, prefix="/api", tags=["Export"])
 app.include_router(evaluation.router, prefix="/api", tags=["Evaluation"])
+app.include_router(chat.router, prefix="/api/chat", tags=["Chat"])
 
 if __name__ == "__main__":
     import uvicorn

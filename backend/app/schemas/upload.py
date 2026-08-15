@@ -11,6 +11,7 @@ class CSVUploadPreviewRow(BaseModel):
 
 class CSVUploadResponse(BaseModel):
     message: str
+    dataset_id: int
     filename: str
     total_rows: int
     imported_count: int

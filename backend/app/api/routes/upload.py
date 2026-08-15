@@ -32,8 +32,12 @@ async def upload_file(file: UploadFile = File(...)):
         # Convert DataFrame to list of dict records for normalized DB import
         records = df.to_dict(orient="records")
 
+        # Create dataset
+        dataset = repository.add_dataset(name=filename, file_type=ext, total_rows=len(records))
+        dataset_id = dataset["id"]
+
         # Import into PostgreSQL repository
-        imported = repository.bulk_add_products(records)
+        imported = repository.bulk_add_products(records, dataset_id=dataset_id)
 
         preview = []
         for r in records[:5]:
@@ -48,6 +52,7 @@ async def upload_file(file: UploadFile = File(...)):
 
         return CSVUploadResponse(
             message=f"File successfully parsed using Pandas and ingested into PostgreSQL repository.",
+            dataset_id=dataset_id,
             filename=filename,
             total_rows=len(records),
             imported_count=len(imported),

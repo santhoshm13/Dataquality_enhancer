@@ -15,53 +15,57 @@ interface StatsProps {
 
 export const StatsOverview: React.FC<StatsProps> = ({ stats }) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
       
       {/* Total Products */}
-      <div className="glass-card p-5 rounded-2xl flex items-center justify-between">
-        <div>
-          <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">Total Ingested Products</p>
-          <h3 className="text-2xl font-bold text-white mt-1">{stats.total_products.toLocaleString()}</h3>
-          <p className="text-xs text-slate-500 mt-1">Ingested via CSV/Excel upload</p>
+      <div className="glass-card p-6 rounded-2xl flex items-center justify-between group relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div className="relative z-10">
+          <p className="text-[10px] font-bold text-indigo-200/70 uppercase tracking-widest mb-1">Total Ingested</p>
+          <h3 className="text-3xl font-black text-white tracking-tight">{stats.total_products.toLocaleString()}</h3>
+          <p className="text-[11px] text-slate-400 mt-1 font-medium">Via CSV/Excel upload</p>
         </div>
-        <div className="w-12 h-12 rounded-xl bg-indigo-950/80 border border-indigo-800/50 flex items-center justify-center text-indigo-400">
-          <Layers className="w-6 h-6" />
+        <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shadow-[0_0_15px_rgba(99,102,241,0.2)] group-hover:scale-110 transition-transform duration-300">
+          <Layers className="w-7 h-7" />
         </div>
       </div>
 
       {/* Processed & High Confidence */}
-      <div className="glass-card p-5 rounded-2xl flex items-center justify-between">
-        <div>
-          <p className="text-xs font-medium text-emerald-400 uppercase tracking-wider">Enriched (High Conf.)</p>
-          <h3 className="text-2xl font-bold text-emerald-300 mt-1">{stats.high_confidence.toLocaleString()}</h3>
-          <p className="text-xs text-emerald-500/80 mt-1">≥ 85% Confidence score</p>
+      <div className="glass-card p-6 rounded-2xl flex items-center justify-between group relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div className="relative z-10">
+          <p className="text-[10px] font-bold text-emerald-200/70 uppercase tracking-widest mb-1">High Conf.</p>
+          <h3 className="text-3xl font-black text-emerald-400 tracking-tight">{stats.high_confidence.toLocaleString()}</h3>
+          <p className="text-[11px] text-emerald-500/70 mt-1 font-medium">≥ 85% Confidence</p>
         </div>
-        <div className="w-12 h-12 rounded-xl bg-emerald-950/80 border border-emerald-800/50 flex items-center justify-center text-emerald-400">
-          <CheckCircle2 className="w-6 h-6" />
+        <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shadow-[0_0_15px_rgba(52,211,153,0.2)] group-hover:scale-110 transition-transform duration-300">
+          <CheckCircle2 className="w-7 h-7" />
         </div>
       </div>
 
       {/* Needs Review */}
-      <div className="glass-card p-5 rounded-2xl flex items-center justify-between">
-        <div>
-          <p className="text-xs font-medium text-amber-400 uppercase tracking-wider">Needs Human Review</p>
-          <h3 className="text-2xl font-bold text-amber-300 mt-1">{stats.needs_review.toLocaleString()}</h3>
-          <p className="text-xs text-amber-500/80 mt-1">LOV / Fuzzy match alerts</p>
+      <div className="glass-card p-6 rounded-2xl flex items-center justify-between group relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div className="relative z-10">
+          <p className="text-[10px] font-bold text-amber-200/70 uppercase tracking-widest mb-1">Needs Review</p>
+          <h3 className="text-3xl font-black text-amber-400 tracking-tight">{stats.needs_review.toLocaleString()}</h3>
+          <p className="text-[11px] text-amber-500/70 mt-1 font-medium">LOV / Fuzzy alerts</p>
         </div>
-        <div className="w-12 h-12 rounded-xl bg-amber-950/80 border border-amber-800/50 flex items-center justify-center text-amber-400">
-          <AlertTriangle className="w-6 h-6" />
+        <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.2)] group-hover:scale-110 transition-transform duration-300">
+          <AlertTriangle className="w-7 h-7" />
         </div>
       </div>
 
       {/* LOV Pass Rate */}
-      <div className="glass-card p-5 rounded-2xl flex items-center justify-between">
-        <div>
-          <p className="text-xs font-medium text-purple-400 uppercase tracking-wider">LOV Validation Pass Rate</p>
-          <h3 className="text-2xl font-bold text-purple-300 mt-1">{stats.lov_pass_rate || 0}%</h3>
-          <p className="text-xs text-purple-500/80 mt-1">Calculated over {stats.total_attributes_extracted || 0} attrs</p>
+      <div className="glass-card p-6 rounded-2xl flex items-center justify-between group relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div className="relative z-10">
+          <p className="text-[10px] font-bold text-purple-200/70 uppercase tracking-widest mb-1">LOV Pass Rate</p>
+          <h3 className="text-3xl font-black text-purple-400 tracking-tight">{stats.lov_pass_rate || 0}%</h3>
+          <p className="text-[11px] text-purple-500/70 mt-1 font-medium">Over {stats.total_attributes_extracted || 0} attrs</p>
         </div>
-        <div className="w-12 h-12 rounded-xl bg-purple-950/80 border border-purple-800/50 flex items-center justify-center text-purple-400">
-          <ShieldCheck className="w-6 h-6" />
+        <div className="w-14 h-14 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.2)] group-hover:scale-110 transition-transform duration-300">
+          <ShieldCheck className="w-7 h-7" />
         </div>
       </div>
 

@@ -11,9 +11,10 @@ async def get_products(
     page: int = Query(1, ge=1),
     limit: int = Query(20, ge=1, le=100),
     status: Optional[str] = None,
-    search: Optional[str] = None
+    search: Optional[str] = None,
+    dataset_id: Optional[int] = None
 ):
-    all_products = repository.get_all_products(status_filter=status, search_query=search)
+    all_products = repository.get_all_products(status_filter=status, search_query=search, dataset_id=dataset_id)
     total = len(all_products)
     
     start_idx = (page - 1) * limit
@@ -107,3 +108,7 @@ async def get_product_attributes(product_id: int):
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     return {"product_id": product_id, "attributes": product.get("attributes", [])}
+
+@router.get("/datasets")
+async def get_datasets():
+    return repository.get_all_datasets()
