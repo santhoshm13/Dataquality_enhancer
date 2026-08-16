@@ -26,7 +26,12 @@ class FractionService:
                 self._fractions_map[round(r.decimal_value, 4)] = r.fraction_string
                 self._fractions_list.append((r.decimal_value, r.fraction_string))
             
-            # Sort by decimal value
+            for i in range(1, 64):
+                val = i / 64.0
+                round_val = round(val, 4)
+                if round_val not in self._fractions_map:
+                    self._fractions_list.append((val, f"{i}/64"))
+
             self._fractions_list.sort(key=lambda x: x[0])
             session.close()
             self._loaded = True
