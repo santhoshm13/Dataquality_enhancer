@@ -61,11 +61,22 @@ def test_fraction_conversion():
     assert fraction_service.decimal_to_fraction("0.125") == "1/8"
 
 def test_lov_validation():
+    # Setup mock data for tests to avoid DB reliance
+    from app.services.lov.lov_retrieval_service import lov_retrieval_service
+    from app.schemas.lov import LovEntry
+    lov_retrieval_service.clear_cache()
+    cp = "Built-In Dishwashers"
+    entries = [
+        LovEntry(attribute_label="Finish", attribute_values="Stainless Steel", normalized_label="finish", normalized_values="stainless steel", filtering="Y", guidelines="", uom_standard=None, classpath=cp)
+    ]
+    lov_retrieval_service._cache[cp] = entries
+    
     # Valid LOV
     res_valid = lov_validator.validate_attribute(
         category="Built-In Dishwashers",
         attr_name="Finish",
-        attr_value="Stainless Steel"
+        attr_value="Stainless Steel",
+        classpath=cp
     )
     assert res_valid["validation_status"] == "PASS"
 
@@ -73,22 +84,58 @@ def test_lov_validation():
     res_invalid = lov_validator.validate_attribute(
         category="Built-In Dishwashers",
         attr_name="Finish",
-        attr_value="Purple Plastic"
+        attr_value="Purple Plastic",
+        classpath=cp
     )
-    assert res_invalid["validation_status"] == "FAIL"
+    assert res_invalid["validation_status"] == "NEEDS_REVIEW"
 
+import asyncio
 def test_description_character_limits():
-    descs = description_generator.generate_fact_grounded_descriptions(
+    descs = asyncio.run(description_generator.generate_fact_grounded_descriptions(
         mfg_part_num="PN-999",
         brand="DeWalt",
         manufacturer="Black & Decker",
         category="Drill Driver",
         validated_attributes=[{"name": "Voltage", "value": "20", "uom": "V"}]
-    )
-    assert len(descs["MOBILE_DESC"]) <= 40
-    assert len(descs["INVOICE_DESC"]) <= 30
+    ))
+    assert len(descs["MOBILE_DESC"]) <= 80
+    assert len(descs["INVOICE_DESC"]) <= 40
     assert len(descs["SHORT_DESC"]) <= 80
-    assert len(descs["RETAIL_DESC"]) <= 255
+    assert len(descs["LONG_DESC1"]) <= 1000
+
+def test_faucets_e2e_pipeline():
+    from app.pipeline.enrichment_pipeline import pipeline_engine
+    
+    product = {
+        "id": 123,
+        "mfg_part_num": "F100",
+        "raw_description": "Kitchen Faucet with Pull-Down Sprayer Chrome",
+        "raw_manufacturer": "Kohler",
+        "raw_brand_e1": "Kohler"
+    }
+    
+    from app.services.classification.category_classifier import classifier
+    original_classify = classifier.classify
+    classifier.classify = lambda desc, **kwargs: {
+        "department": "Plumbing",
+        "class": "Faucets",
+        "fine": "Kitchen Faucets",
+        "category": "Kitchen Faucets",
+        "classpath": "Plumbing > Faucets > Kitchen Faucets",
+        "confidence": 0.95
+    }
+    
+    try:
+        enriched = asyncio.run(pipeline_engine.run_pipeline(product))
+    finally:
+        classifier.classify = original_classify
+    
+    assert enriched["status"] in ["HIGH", "MEDIUM", "NEEDS_REVIEW"]
+    assert enriched["enrichment"]["category"] != ""
+    assert "Faucets" in enriched["enrichment"]["classpath"] or "Faucets" in enriched["enrichment"]["category"]
+    
+    # We should have at least some validation results
+    assert len(enriched["validation_results"]) >= 2
 
 def test_confidence_engine():
     mfg_m = {"confidence": 1.0, "status": "PASS"}

@@ -38,7 +38,10 @@ class ProductEnrichmentPipeline:
         extracted_data = await self.llm_service.extract_attributes(
             product_desc=raw_desc,
             category=class_res["category"],
-            part_num=part_num
+            part_num=part_num,
+            classpath=class_res.get("classpath", ""),
+            manufacturer=mfg_match["matched_value"],
+            brand=brand_match["matched_value"]
         )
 
         # Stage 4: LOV & UOM & Fraction Validation
@@ -59,7 +62,8 @@ class ProductEnrichmentPipeline:
                 category=class_res["category"],
                 attr_name=attr_name,
                 attr_value=norm_val,
-                attr_uom=attr_uom
+                attr_uom=attr_uom,
+                classpath=class_res.get("classpath", "")
             )
             validated_attributes.append(val_res)
 
@@ -72,7 +76,7 @@ class ProductEnrichmentPipeline:
         )
 
         # Stage 6: Fact-Grounded Description Generation
-        descriptions = description_generator.generate_fact_grounded_descriptions(
+        descriptions = await description_generator.generate_fact_grounded_descriptions(
             mfg_part_num=part_num,
             brand=brand_match["matched_value"],
             manufacturer=mfg_match["matched_value"],

@@ -1,48 +1,14 @@
 import logging
 from typing import Dict, Any, List, Tuple
+from rapidfuzz import fuzz
 
 logger = logging.getLogger("app.validators")
 
-# Standard LOV dictionary per category and attribute name
-STANDARD_LOV_RULES = {
-    "Built-In Dishwashers": {
-        "Finish": ["Stainless Steel", "Matte Black", "White", "Chrome", "Black Stainless"],
-        "Voltage Rating": ["120", "240"],
-        "Amperage Rating": ["10", "15", "20"],
-        "Mounting Type": ["Leg", "Built-in", "Under Counter"],
-        "Number of Wash Cycles": ["3", "4", "5", "6"]
-    },
-    "Sanding Belts": {
-        "Grit": ["P80", "P120", "P150", "P180", "P220", "P320"],
-        "Abrasive Material": ["Aluminum Oxide", "Zirconia Alumina", "Ceramic"],
-        "Backing Weight": ["X-Weight", "J-Weight", "Y-Weight"]
-    }
-}
-
-# Standard UOM Normalization Map
-UOM_NORMALIZATION_MAP = {
-    "VOLTS": "V",
-    "VOLT": "V",
-    "V": "V",
-    "AMPS": "A",
-    "AMP": "A",
-    "A": "A",
-    "INCHES": "in",
-    "INCH": "in",
-    "IN": "in",
-    "\"": "in",
-    "DBA": "dBA",
-    "DB": "dBA",
-    "PIECES": "pc",
-    "PCS": "pc",
-    "PC": "pc"
-}
-
-from app.database.master_data_repository import master_repository
 from app.services.master_data.uom_service import uom_service
+from app.services.lov.lov_retrieval_service import get_lov_for_classpath
 
 class LOVValidator:
-    def validate_attribute(self, category: str, attr_name: str, attr_value: str, attr_uom: str = None) -> Dict[str, Any]:
+    def validate_attribute(self, category: str, attr_name: str, attr_value: str, attr_uom: str = None, classpath: str = "", fuzzy_threshold: int = 85) -> Dict[str, Any]:
         norm_value = str(attr_value).strip() if attr_value else ""
         norm_uom = uom_service.normalize_uom(attr_uom) if attr_uom else ""
 
@@ -66,24 +32,57 @@ class LOVValidator:
             result["confidence"] = 0.60
             result["reason"] = f"Unrecognized Unit of Measure '{attr_uom}'"
             result["validation_reason"] = f"Unrecognized Unit of Measure '{attr_uom}'"
+            
+        if not norm_value:
+            return result
 
-        # 2. Dynamic LOV Lookup from master_repository
-        cat_key = category.strip().lower() if category else ""
-        attr_key = attr_name.strip().lower() if attr_name else ""
+        # 2. Dynamic LOV Lookup from get_lov_for_classpath
+        lov_entries = get_lov_for_classpath(classpath)
+        
+        attr_key = attr_name.strip().lower()
+        allowed_set = set()
+        
+        for entry in lov_entries:
+            if entry.attribute_label.strip().lower() == attr_key:
+                if entry.normalized_values:
+                    # split by comma, assuming comma separated
+                    vals = [v.strip().lower() for v in entry.normalized_values.split(",")]
+                    allowed_set.update(vals)
+                break
 
-        allowed_set = None
-        if cat_key in master_repository.category_lovs and attr_key in master_repository.category_lovs[cat_key]:
-            allowed_set = master_repository.category_lovs[cat_key][attr_key]
-        elif category in STANDARD_LOV_RULES and attr_name in STANDARD_LOV_RULES[category]:
-            allowed_set = {v.lower() for v in STANDARD_LOV_RULES[category][attr_name]}
+        if not allowed_set:
+            # If attribute has no LOV restriction, pass
+            return result
 
-        if allowed_set:
-            if norm_value.lower() not in allowed_set:
-                result["validation_status"] = "FAIL"
-                result["confidence"] = 0.0
-                result["approved_value"] = ""
-                result["reason"] = f"Value '{attr_value}' is not present in approved LOV list."
-                result["validation_reason"] = f"Value '{attr_value}' is not present in approved LOV list."
+        # 3. Exact match
+        if norm_value.lower() in allowed_set:
+            # Get original casing if we want to, but normalized_values are already lowercase.
+            # Let's keep it as they typed if exact match.
+            return result
+            
+        # 4. Fuzzy match
+        best_match = None
+        best_score = 0.0
+        
+        for allowed_val in allowed_set:
+            score = fuzz.token_set_ratio(norm_value.lower(), allowed_val)
+            if score > best_score:
+                best_score = score
+                best_match = allowed_val
+                
+        if best_match and best_score >= fuzzy_threshold:
+            result["validation_status"] = "PASS"
+            result["confidence"] = round(best_score / 100.0, 2)
+            result["approved_value"] = best_match # Might be lowercase, but it's matched
+            result["value"] = best_match
+            result["reason"] = f"Fuzzy matched to '{best_match}' (score: {best_score})"
+            result["validation_reason"] = f"Fuzzy matched to '{best_match}' (score: {best_score})"
+        else:
+            result["validation_status"] = "NEEDS_REVIEW"
+            result["confidence"] = round(best_score / 100.0, 2) if best_match else 0.0
+            result["approved_value"] = ""
+            result["reason"] = f"Value '{attr_value}' not in approved LOV. Closest: '{best_match}' ({best_score})"
+            result["validation_reason"] = f"Value '{attr_value}' not in approved LOV. Closest: '{best_match}' ({best_score})"
 
         return result
 
@@ -94,4 +93,3 @@ class LOVValidator:
         return uom_service.normalize_uom(uom)
 
 lov_validator = LOVValidator()
-

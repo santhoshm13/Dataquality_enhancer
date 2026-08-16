@@ -15,6 +15,7 @@ interface StatsProps {
 
 export const StatsOverview: React.FC<StatsProps> = ({ stats }) => {
   return (
+    <>
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
       
       {/* Total Products */}
@@ -72,5 +73,56 @@ export const StatsOverview: React.FC<StatsProps> = ({ stats }) => {
       </div>
 
     </div>
+
+      {/* Confidence Chart */}
+      <div className="glass-card p-6 rounded-2xl relative overflow-hidden mb-8">
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-50 pointer-events-none"></div>
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex-1">
+            <h3 className="text-sm font-bold text-white tracking-tight mb-2 flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-indigo-400" />
+              Pipeline Confidence Distribution
+            </h3>
+            <p className="text-[11px] text-slate-400 mb-4">
+              Distribution of products across confidence tiers (High: &gt;85%, Medium: 70-85%, Needs Review: &lt;70% or Validation Failed).
+            </p>
+            
+            {/* Horizontal Stacked Bar */}
+            <div className="w-full h-4 bg-slate-800/80 rounded-full overflow-hidden flex shadow-inner">
+              <div 
+                className="bg-emerald-500 h-full transition-all duration-1000 ease-out"
+                style={{ width: `${stats.total_products > 0 ? (stats.high_confidence / stats.total_products) * 100 : 0}%` }}
+                title={`High Confidence: ${stats.high_confidence}`}
+              ></div>
+              <div 
+                className="bg-amber-400 h-full transition-all duration-1000 ease-out"
+                style={{ width: `${stats.total_products > 0 ? (stats.medium_confidence / stats.total_products) * 100 : 0}%` }}
+                title={`Medium Confidence: ${stats.medium_confidence}`}
+              ></div>
+              <div 
+                className="bg-rose-500 h-full transition-all duration-1000 ease-out"
+                style={{ width: `${stats.total_products > 0 ? (stats.needs_review / stats.total_products) * 100 : 0}%` }}
+                title={`Needs Review: ${stats.needs_review}`}
+              ></div>
+            </div>
+            
+            <div className="flex items-center gap-6 mt-4 text-[11px] font-medium">
+              <div className="flex items-center gap-1.5 text-emerald-400">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
+                High ({stats.high_confidence})
+              </div>
+              <div className="flex items-center gap-1.5 text-amber-400">
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.5)]"></span>
+                Medium ({stats.medium_confidence})
+              </div>
+              <div className="flex items-center gap-1.5 text-rose-400">
+                <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]"></span>
+                Review ({stats.needs_review})
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };

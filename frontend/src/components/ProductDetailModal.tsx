@@ -199,18 +199,21 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               </div>
 
               <div className="space-y-2">
-                {validations.map((v: any, idx: number) => (
-                  <div key={idx} className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center justify-between">
-                    <div>
-                      <span className="font-semibold text-slate-200">{v.field_name}: </span>
-                      <span className="text-indigo-300">{v.value}</span>
-                      <p className="text-[11px] text-slate-400 mt-0.5">{v.reason}</p>
+                {validations.map((v: any, idx: number) => {
+                  const isFail = v.status === "FAIL" || v.status === "NEEDS_REVIEW";
+                  return (
+                    <div key={idx} className={`p-3 rounded-xl border flex items-center justify-between ${isFail ? 'bg-rose-950/20 border-rose-800/50' : 'bg-slate-900/60 border-slate-800'}`}>
+                      <div>
+                        <span className="font-semibold text-slate-200">{v.field_name}: </span>
+                        <span className={isFail ? 'text-rose-400 font-bold' : 'text-indigo-300'}>{v.value}</span>
+                        <p className={`text-[11px] mt-0.5 ${isFail ? 'text-rose-300/80' : 'text-slate-400'}`}>{v.reason}</p>
+                      </div>
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${isFail ? 'bg-rose-950 text-rose-300 border-rose-800' : 'bg-emerald-950 text-emerald-300 border-emerald-800'}`}>
+                        {v.status}
+                      </span>
                     </div>
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950 text-emerald-300 border border-emerald-800">
-                      {v.status}
-                    </span>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}

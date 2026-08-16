@@ -1,0 +1,2626 @@
+{
+  "status": "success",
+  "gt_source_path": "D:\\Dataquality_enhancer-main\\Dataquality_enhancer-main\\data\\expected\\Unilog-Sample_200_Items-Input-vs-Output.xlsx",
+  "total_ground_truth_rows": 200,
+  "evaluated_rows": 200,
+  "overall_field_exact_match_pct": 54.3,
+  "non_empty_gt_field_match_pct": 54.3,
+  "prediction_completeness": 8.4,
+  "ground_truth_completeness": 11.0,
+  "row_completeness": 54.3,
+  "manufacturer_accuracy": 3.5,
+  "brand_accuracy": 3.5,
+  "department_accuracy": 100.0,
+  "class_accuracy": 100.0,
+  "fine_category_accuracy": 100.0,
+  "attribute_accuracy": 0.0,
+  "lov_compliance": null,
+  "uom_compliance": null,
+  "desc_character_compliance": 100.0,
+  "category_breakdown": {
+    "identification": {
+      "populated_gt_cells": 2000,
+      "matched_cells": 1614,
+      "mismatched_cells": 386,
+      "accuracy_pct": 80.7
+    },
+    "classification": {
+      "populated_gt_cells": 1000,
+      "matched_cells": 1000,
+      "mismatched_cells": 0,
+      "accuracy_pct": 100.0
+    },
+    "attributes": {
+      "populated_gt_cells": 950,
+      "matched_cells": 0,
+      "mismatched_cells": 950,
+      "accuracy_pct": 0.0
+    },
+    "descriptions": {
+      "populated_gt_cells": 1400,
+      "matched_cells": 200,
+      "mismatched_cells": 1200,
+      "accuracy_pct": 14.3
+    },
+    "digital_assets": {
+      "populated_gt_cells": 200,
+      "matched_cells": 200,
+      "mismatched_cells": 0,
+      "accuracy_pct": 100.0
+    }
+  },
+  "schema_252_field_breakdown": [
+    {
+      "field_name": "MFR URL",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Ref URL 1",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Ref URL 2",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Ref URL 3",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Ref URL 4",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Ref URL 5",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "PART_NUMBER",
+      "category": "identification",
+      "populated_gt_rows": 200,
+      "matches": 200,
+      "mismatches": 0,
+      "accuracy_pct": 100.0
+    },
+    {
+      "field_name": "Dept",
+      "category": "classification",
+      "populated_gt_rows": 200,
+      "matches": 200,
+      "mismatches": 0,
+      "accuracy_pct": 100.0
+    },
+    {
+      "field_name": "Class",
+      "category": "classification",
+      "populated_gt_rows": 200,
+      "matches": 200,
+      "mismatches": 0,
+      "accuracy_pct": 100.0
+    },
+    {
+      "field_name": "Fine",
+      "category": "classification",
+      "populated_gt_rows": 200,
+      "matches": 200,
+      "mismatches": 0,
+      "accuracy_pct": 100.0
+    },
+    {
+      "field_name": "SKU - MY_PART_NUMBER",
+      "category": "identification",
+      "populated_gt_rows": 200,
+      "matches": 200,
+      "mismatches": 0,
+      "accuracy_pct": 100.0
+    },
+    {
+      "field_name": "Mfg_Part_Num",
+      "category": "identification",
+      "populated_gt_rows": 200,
+      "matches": 200,
+      "mismatches": 0,
+      "accuracy_pct": 100.0
+    },
+    {
+      "field_name": "Part_Desc",
+      "category": "descriptions",
+      "populated_gt_rows": 200,
+      "matches": 200,
+      "mismatches": 0,
+      "accuracy_pct": 100.0
+    },
+    {
+      "field_name": "E1_Brand",
+      "category": "identification",
+      "populated_gt_rows": 200,
+      "matches": 200,
+      "mismatches": 0,
+      "accuracy_pct": 100.0
+    },
+    {
+      "field_name": "Unilog_Brand",
+      "category": "identification",
+      "populated_gt_rows": 200,
+      "matches": 200,
+      "mismatches": 0,
+      "accuracy_pct": 100.0
+    },
+    {
+      "field_name": "DIB_Brand",
+      "category": "identification",
+      "populated_gt_rows": 200,
+      "matches": 200,
+      "mismatches": 0,
+      "accuracy_pct": 100.0
+    },
+    {
+      "field_name": "Part_Manuf",
+      "category": "identification",
+      "populated_gt_rows": 200,
+      "matches": 200,
+      "mismatches": 0,
+      "accuracy_pct": 100.0
+    },
+    {
+      "field_name": "MANUFACTURER_NAME",
+      "category": "identification",
+      "populated_gt_rows": 200,
+      "matches": 7,
+      "mismatches": 193,
+      "accuracy_pct": 3.5
+    },
+    {
+      "field_name": "BRAND_NAME",
+      "category": "identification",
+      "populated_gt_rows": 200,
+      "matches": 7,
+      "mismatches": 193,
+      "accuracy_pct": 3.5
+    },
+    {
+      "field_name": "TRADE_NAME",
+      "category": "identification",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "MANUFACTURER_PART_NUMBER",
+      "category": "identification",
+      "populated_gt_rows": 200,
+      "matches": 200,
+      "mismatches": 0,
+      "accuracy_pct": 100.0
+    },
+    {
+      "field_name": "ALTERNATE_PART_NUMBER",
+      "category": "identification",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Classpath",
+      "category": "classification",
+      "populated_gt_rows": 200,
+      "matches": 200,
+      "mismatches": 0,
+      "accuracy_pct": 100.0
+    },
+    {
+      "field_name": "MOBILE_DESC",
+      "category": "descriptions",
+      "populated_gt_rows": 200,
+      "matches": 0,
+      "mismatches": 200,
+      "accuracy_pct": 0.0
+    },
+    {
+      "field_name": "INVOICE_DESC",
+      "category": "descriptions",
+      "populated_gt_rows": 200,
+      "matches": 0,
+      "mismatches": 200,
+      "accuracy_pct": 0.0
+    },
+    {
+      "field_name": "SHORT_DESC",
+      "category": "descriptions",
+      "populated_gt_rows": 200,
+      "matches": 0,
+      "mismatches": 200,
+      "accuracy_pct": 0.0
+    },
+    {
+      "field_name": "LONG_DESC1",
+      "category": "descriptions",
+      "populated_gt_rows": 200,
+      "matches": 0,
+      "mismatches": 200,
+      "accuracy_pct": 0.0
+    },
+    {
+      "field_name": "RETAIL_DESC",
+      "category": "descriptions",
+      "populated_gt_rows": 200,
+      "matches": 0,
+      "mismatches": 200,
+      "accuracy_pct": 0.0
+    },
+    {
+      "field_name": "MARKETING_DESCRIPTION",
+      "category": "descriptions",
+      "populated_gt_rows": 200,
+      "matches": 0,
+      "mismatches": 200,
+      "accuracy_pct": 0.0
+    },
+    {
+      "field_name": "ITEM_FEATURES_1",
+      "category": "descriptions",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ITEM_FEATURES_2",
+      "category": "descriptions",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ITEM_FEATURES_3",
+      "category": "descriptions",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ITEM_FEATURES_4",
+      "category": "descriptions",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ITEM_FEATURES_5",
+      "category": "descriptions",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ITEM_FEATURES_6",
+      "category": "descriptions",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ITEM_FEATURES_7",
+      "category": "descriptions",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ITEM_FEATURES_8",
+      "category": "descriptions",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ITEM_FEATURES_9",
+      "category": "descriptions",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ITEM_FEATURES_10",
+      "category": "descriptions",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ITEM_FEATURES_11",
+      "category": "descriptions",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ITEM_FEATURES_12",
+      "category": "descriptions",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ITEM_FEATURES_13",
+      "category": "descriptions",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ITEM_FEATURES_14",
+      "category": "descriptions",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ITEM_FEATURES_15",
+      "category": "descriptions",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ITEM_FEATURES_16",
+      "category": "descriptions",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ITEM_FEATURES_17",
+      "category": "descriptions",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ITEM_FEATURES_18",
+      "category": "descriptions",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ITEM_FEATURES_19",
+      "category": "descriptions",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ITEM_FEATURES_20",
+      "category": "descriptions",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "With",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Standard/Approvals",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Prop 65",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Application",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Includes",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Product Name",
+      "category": "classification",
+      "populated_gt_rows": 200,
+      "matches": 200,
+      "mismatches": 0,
+      "accuracy_pct": 100.0
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 1",
+      "category": "attributes",
+      "populated_gt_rows": 200,
+      "matches": 0,
+      "mismatches": 200,
+      "accuracy_pct": 0.0
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 1",
+      "category": "attributes",
+      "populated_gt_rows": 200,
+      "matches": 0,
+      "mismatches": 200,
+      "accuracy_pct": 0.0
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 1",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 2",
+      "category": "attributes",
+      "populated_gt_rows": 200,
+      "matches": 0,
+      "mismatches": 200,
+      "accuracy_pct": 0.0
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 2",
+      "category": "attributes",
+      "populated_gt_rows": 200,
+      "matches": 0,
+      "mismatches": 200,
+      "accuracy_pct": 0.0
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 2",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 3",
+      "category": "attributes",
+      "populated_gt_rows": 14,
+      "matches": 0,
+      "mismatches": 14,
+      "accuracy_pct": 0.0
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 3",
+      "category": "attributes",
+      "populated_gt_rows": 14,
+      "matches": 0,
+      "mismatches": 14,
+      "accuracy_pct": 0.0
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 3",
+      "category": "attributes",
+      "populated_gt_rows": 10,
+      "matches": 0,
+      "mismatches": 10,
+      "accuracy_pct": 0.0
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 4",
+      "category": "attributes",
+      "populated_gt_rows": 14,
+      "matches": 0,
+      "mismatches": 14,
+      "accuracy_pct": 0.0
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 4",
+      "category": "attributes",
+      "populated_gt_rows": 14,
+      "matches": 0,
+      "mismatches": 14,
+      "accuracy_pct": 0.0
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 4",
+      "category": "attributes",
+      "populated_gt_rows": 14,
+      "matches": 0,
+      "mismatches": 14,
+      "accuracy_pct": 0.0
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 5",
+      "category": "attributes",
+      "populated_gt_rows": 10,
+      "matches": 0,
+      "mismatches": 10,
+      "accuracy_pct": 0.0
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 5",
+      "category": "attributes",
+      "populated_gt_rows": 10,
+      "matches": 0,
+      "mismatches": 10,
+      "accuracy_pct": 0.0
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 5",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 6",
+      "category": "attributes",
+      "populated_gt_rows": 10,
+      "matches": 0,
+      "mismatches": 10,
+      "accuracy_pct": 0.0
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 6",
+      "category": "attributes",
+      "populated_gt_rows": 10,
+      "matches": 0,
+      "mismatches": 10,
+      "accuracy_pct": 0.0
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 6",
+      "category": "attributes",
+      "populated_gt_rows": 10,
+      "matches": 0,
+      "mismatches": 10,
+      "accuracy_pct": 0.0
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 7",
+      "category": "attributes",
+      "populated_gt_rows": 10,
+      "matches": 0,
+      "mismatches": 10,
+      "accuracy_pct": 0.0
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 7",
+      "category": "attributes",
+      "populated_gt_rows": 10,
+      "matches": 0,
+      "mismatches": 10,
+      "accuracy_pct": 0.0
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 7",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 8",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 8",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 8",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 9",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 9",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 9",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 10",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 10",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 10",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 11",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 11",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 11",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 12",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 12",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 12",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 13",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 13",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 13",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 14",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 14",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 14",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 15",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 15",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 15",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 16",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 16",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 16",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 17",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 17",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 17",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 18",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 18",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 18",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 19",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 19",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 19",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 20",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 20",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 20",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 21",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 21",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 21",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 22",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 22",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 22",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 23",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 23",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 23",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 24",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 24",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 24",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 25",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 25",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 25",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 26",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 26",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 26",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 27",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 27",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 27",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 28",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 28",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 28",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 29",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 29",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 29",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 30",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 30",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 30",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 31",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 31",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 31",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 32",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 32",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 32",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 33",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 33",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 33",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 34",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 34",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 34",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 35",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 35",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 35",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 36",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 36",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 36",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 37",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 37",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 37",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 38",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 38",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 38",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 39",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 39",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 39",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 40",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 40",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 40",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 41",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 41",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 41",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 42",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 42",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 42",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 43",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 43",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 43",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 44",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 44",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 44",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 45",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 45",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 45",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 46",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 46",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 46",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 47",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 47",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 47",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 48",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 48",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 48",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 49",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 49",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 49",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_LABEL 50",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_VALUE 50",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "ATTRIBUTE_UOM 50",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "UPC",
+      "category": "identification",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "EAN",
+      "category": "identification",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "GTIN",
+      "category": "identification",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "UNSPSC",
+      "category": "identification",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Warranty",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "List Price",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Selling Qty",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Selling UOM",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Standard Packaging Information",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "LENGTH",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "LENGTH_UOM",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "HEIGHT",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "HEIGHT_UOM",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "WIDTH",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "WIDTH_UOM",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "WEIGHT",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "WEIGHT_UOM",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "VOLUME",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "VOLUME_UOM",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Product Image",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Alternate Image 1",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Alternate Image 2",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Alternate Image 3",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Alternate Image 4",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "SDS",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "SDS_1",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Warranty Information",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Catalog",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Specification Sheet",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Instruction/Installation Manual",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Service Manual",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Owners/User Manual",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Line Drawing",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "MTR",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "RoHS",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Full Engineering Drawing",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Energy Star Guide",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Technical Bulletin",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Submittal",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Compatibility Chart",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Size Chart",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Product Label/Insert",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Video Link",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Video Link 1",
+      "category": "digital_assets",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Country Of Origin",
+      "category": "identification",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Discontinued",
+      "category": "attributes",
+      "populated_gt_rows": 0,
+      "matches": 0,
+      "mismatches": 0,
+      "accuracy_pct": null
+    },
+    {
+      "field_name": "Actual Image (Yes/No)",
+      "category": "digital_assets",
+      "populated_gt_rows": 200,
+      "matches": 200,
+      "mismatches": 0,
+      "accuracy_pct": 100.0
+    }
+  ],
+  "manufacturer_metrics": {
+    "exact_canonical_match_pct": 3.5,
+    "normalized_match_pct": 3.5,
+    "fuzzy_match_pct": 3.5,
+    "master_list_validity_pct": 3.5
+  },
+  "brand_metrics": {
+    "exact_canonical_match_pct": 3.5,
+    "normalized_match_pct": 3.5,
+    "fuzzy_match_pct": 3.5,
+    "master_list_validity_pct": 3.5
+  },
+  "taxonomy_metrics": {
+    "department_accuracy_pct": 100.0,
+    "class_accuracy_pct": 100.0,
+    "fine_category_accuracy_pct": 100.0,
+    "classpath_accuracy_pct": 100.0
+  },
+  "attribute_metrics": {
+    "name_match_pct": 0.0,
+    "value_exact_match_pct": 0.0,
+    "uom_match_pct": 0.0,
+    "complete_attribute_match_pct": 0.0,
+    "total_gt_attributes": 458,
+    "matched_attributes": 0,
+    "missing_attributes": 458,
+    "extra_attributes": 0,
+    "per_attribute_breakdown": {
+      "Grit": {
+        "matches": 0,
+        "mismatches": 0,
+        "missing": 4
+      },
+      "Abrasive Material": {
+        "matches": 0,
+        "mismatches": 0,
+        "missing": 4
+      },
+      "Backing Weight": {
+        "matches": 0,
+        "mismatches": 0,
+        "missing": 4
+      },
+      "Pack Quantity": {
+        "matches": 0,
+        "mismatches": 0,
+        "missing": 4
+      },
+      "Color": {
+        "matches": 0,
+        "mismatches": 0,
+        "missing": 186
+      },
+      "Material": {
+        "matches": 0,
+        "mismatches": 0,
+        "missing": 186
+      },
+      "Series": {
+        "matches": 0,
+        "mismatches": 0,
+        "missing": 10
+      },
+      "Number of Wash Cycles": {
+        "matches": 0,
+        "mismatches": 0,
+        "missing": 10
+      },
+      "Voltage Rating": {
+        "matches": 0,
+        "mismatches": 0,
+        "missing": 10
+      },
+      "Amperage Rating": {
+        "matches": 0,
+        "mismatches": 0,
+        "missing": 10
+      },
+      "Mounting Type": {
+        "matches": 0,
+        "mismatches": 0,
+        "missing": 10
+      },
+      "Sound Level": {
+        "matches": 0,
+        "mismatches": 0,
+        "missing": 10
+      },
+      "Finish": {
+        "matches": 0,
+        "mismatches": 0,
+        "missing": 10
+      }
+    },
+    "per_product_attribute_accuracy": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "description_metrics": {
+    "character_compliance_pct": 100.0,
+    "exact_gt_match_pct": 0.0,
+    "average_fuzzy_similarity": 74.5
+  },
+  "details": {
+    "total_comparisons": 50400,
+    "total_non_empty_gt_fields": 5550,
+    "non_empty_gt_matches": 3014,
+    "exact_matches": 3014,
+    "normalized_matches": 0,
+    "mismatches": 2536,
+    "missing_predictions": 0,
+    "missing_ground_truth": 0
+  },
+  "top_20_accurate_fields": [
+    {
+      "field": "PART_NUMBER",
+      "accuracy": 100.0,
+      "matches": 200,
+      "mismatches": 0
+    },
+    {
+      "field": "Dept",
+      "accuracy": 100.0,
+      "matches": 200,
+      "mismatches": 0
+    },
+    {
+      "field": "Class",
+      "accuracy": 100.0,
+      "matches": 200,
+      "mismatches": 0
+    },
+    {
+      "field": "Fine",
+      "accuracy": 100.0,
+      "matches": 200,
+      "mismatches": 0
+    },
+    {
+      "field": "SKU - MY_PART_NUMBER",
+      "accuracy": 100.0,
+      "matches": 200,
+      "mismatches": 0
+    },
+    {
+      "field": "Mfg_Part_Num",
+      "accuracy": 100.0,
+      "matches": 200,
+      "mismatches": 0
+    },
+    {
+      "field": "Part_Desc",
+      "accuracy": 100.0,
+      "matches": 200,
+      "mismatches": 0
+    },
+    {
+      "field": "E1_Brand",
+      "accuracy": 100.0,
+      "matches": 200,
+      "mismatches": 0
+    },
+    {
+      "field": "Unilog_Brand",
+      "accuracy": 100.0,
+      "matches": 200,
+      "mismatches": 0
+    },
+    {
+      "field": "DIB_Brand",
+      "accuracy": 100.0,
+      "matches": 200,
+      "mismatches": 0
+    },
+    {
+      "field": "Part_Manuf",
+      "accuracy": 100.0,
+      "matches": 200,
+      "mismatches": 0
+    },
+    {
+      "field": "MANUFACTURER_PART_NUMBER",
+      "accuracy": 100.0,
+      "matches": 200,
+      "mismatches": 0
+    },
+    {
+      "field": "Classpath",
+      "accuracy": 100.0,
+      "matches": 200,
+      "mismatches": 0
+    },
+    {
+      "field": "Product Name",
+      "accuracy": 100.0,
+      "matches": 200,
+      "mismatches": 0
+    },
+    {
+      "field": "Actual Image (Yes/No)",
+      "accuracy": 100.0,
+      "matches": 200,
+      "mismatches": 0
+    },
+    {
+      "field": "MANUFACTURER_NAME",
+      "accuracy": 3.5,
+      "matches": 7,
+      "mismatches": 193
+    },
+    {
+      "field": "BRAND_NAME",
+      "accuracy": 3.5,
+      "matches": 7,
+      "mismatches": 193
+    },
+    {
+      "field": "MFR URL",
+      "accuracy": 0.0,
+      "matches": 0,
+      "mismatches": 0
+    },
+    {
+      "field": "Ref URL 1",
+      "accuracy": 0.0,
+      "matches": 0,
+      "mismatches": 0
+    },
+    {
+      "field": "Ref URL 2",
+      "accuracy": 0.0,
+      "matches": 0,
+      "mismatches": 0
+    }
+  ],
+  "top_20_inaccurate_fields": [
+    {
+      "field": "MFR URL",
+      "accuracy": 0.0,
+      "matches": 0,
+      "mismatches": 0
+    },
+    {
+      "field": "Ref URL 1",
+      "accuracy": 0.0,
+      "matches": 0,
+      "mismatches": 0
+    },
+    {
+      "field": "Ref URL 2",
+      "accuracy": 0.0,
+      "matches": 0,
+      "mismatches": 0
+    },
+    {
+      "field": "Ref URL 3",
+      "accuracy": 0.0,
+      "matches": 0,
+      "mismatches": 0
+    },
+    {
+      "field": "Ref URL 4",
+      "accuracy": 0.0,
+      "matches": 0,
+      "mismatches": 0
+    },
+    {
+      "field": "Ref URL 5",
+      "accuracy": 0.0,
+      "matches": 0,
+      "mismatches": 0
+    },
+    {
+      "field": "TRADE_NAME",
+      "accuracy": 0.0,
+      "matches": 0,
+      "mismatches": 0
+    },
+    {
+      "field": "ALTERNATE_PART_NUMBER",
+      "accuracy": 0.0,
+      "matches": 0,
+      "mismatches": 0
+    },
+    {
+      "field": "ITEM_FEATURES_1",
+      "accuracy": 0.0,
+      "matches": 0,
+      "mismatches": 0
+    },
+    {
+      "field": "ITEM_FEATURES_2",
+      "accuracy": 0.0,
+      "matches": 0,
+      "mismatches": 0
+    },
+    {
+      "field": "ITEM_FEATURES_3",
+      "accuracy": 0.0,
+      "matches": 0,
+      "mismatches": 0
+    },
+    {
+      "field": "ITEM_FEATURES_4",
+      "accuracy": 0.0,
+      "matches": 0,
+      "mismatches": 0
+    },
+    {
+      "field": "ITEM_FEATURES_5",
+      "accuracy": 0.0,
+      "matches": 0,
+      "mismatches": 0
+    },
+    {
+      "field": "ITEM_FEATURES_6",
+      "accuracy": 0.0,
+      "matches": 0,
+      "mismatches": 0
+    },
+    {
+      "field": "ITEM_FEATURES_7",
+      "accuracy": 0.0,
+      "matches": 0,
+      "mismatches": 0
+    },
+    {
+      "field": "ITEM_FEATURES_8",
+      "accuracy": 0.0,
+      "matches": 0,
+      "mismatches": 0
+    },
+    {
+      "field": "ITEM_FEATURES_9",
+      "accuracy": 0.0,
+      "matches": 0,
+      "mismatches": 0
+    },
+    {
+      "field": "ITEM_FEATURES_10",
+      "accuracy": 0.0,
+      "matches": 0,
+      "mismatches": 0
+    },
+    {
+      "field": "ITEM_FEATURES_11",
+      "accuracy": 0.0,
+      "matches": 0,
+      "mismatches": 0
+    },
+    {
+      "field": "ITEM_FEATURES_12",
+      "accuracy": 0.0,
+      "matches": 0,
+      "mismatches": 0
+    }
+  ]
+}
