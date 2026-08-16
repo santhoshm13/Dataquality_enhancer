@@ -110,7 +110,7 @@ class ProductRepository:
                 "medium_confidence": 0,
                 "needs_review": 0,
                 "total_attributes_extracted": 0,
-                "lov_pass_rate": 0.0
+                "lov_pass_rate": None
             }
             
         processed = sum(1 for p in products if p.get("status") in ["PROCESSED", "ENRICHED"])
@@ -126,7 +126,7 @@ class ProductRepository:
                 if a.get("validation_status") == "PASS":
                     passed_attrs += 1
 
-        lov_pass_rate = round((passed_attrs / total_attrs * 100.0), 1) if total_attrs > 0 else 0.0
+        lov_pass_rate = round((passed_attrs / total_attrs * 100.0), 1) if total_attrs > 0 else None
         
         return {
             "total_products": total,

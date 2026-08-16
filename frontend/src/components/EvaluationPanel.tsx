@@ -6,17 +6,17 @@ interface EvaluationData {
   message?: string;
   total_ground_truth_rows: number;
   evaluated_rows: number;
-  overall_field_exact_match_pct: number;
-  manufacturer_accuracy: number;
-  brand_accuracy: number;
-  department_accuracy: number;
-  class_accuracy: number;
-  fine_category_accuracy: number;
-  attribute_accuracy: number;
-  lov_compliance: number;
-  uom_compliance: number;
-  desc_character_compliance: number;
-  row_completeness: number;
+  overall_field_exact_match_pct: number | null;
+  manufacturer_accuracy: number | null;
+  brand_accuracy: number | null;
+  department_accuracy: number | null;
+  class_accuracy: number | null;
+  fine_category_accuracy: number | null;
+  attribute_accuracy: number | null;
+  lov_compliance: number | null;
+  uom_compliance: number | null;
+  desc_character_compliance: number | null;
+  row_completeness: number | null;
   details?: {
     total_comparisons: number;
     exact_matches: number;
@@ -36,6 +36,11 @@ export const EvaluationPanel: React.FC<EvaluationPanelProps> = ({ evaluation, on
   if (!evaluation) return null;
 
   const isNoPredictions = evaluation.status === 'no_predictions' || evaluation.evaluated_rows === 0;
+
+  const formatVal = (val: number | null | undefined): string => {
+    if (val === null || val === undefined) return "Not evaluated";
+    return `${val}%`;
+  };
 
   return (
     <div className="glass-panel p-6 rounded-2xl border border-white/5 mb-8 shadow-2xl relative overflow-hidden">
@@ -75,7 +80,7 @@ export const EvaluationPanel: React.FC<EvaluationPanelProps> = ({ evaluation, on
             <AlertCircle className="w-5 h-5 text-amber-400 shrink-0" />
             <span className="font-medium">{evaluation.message || "Upload the 200-item input dataset and run enrichment to evaluate accuracy."}</span>
           </div>
-          <span className="font-mono text-slate-400 font-semibold bg-[#030712] px-2 py-1 rounded-lg">Evaluated: {evaluation.evaluated_rows}/{evaluation.total_ground_truth_rows}</span>
+          <span className="font-mono text-slate-400 font-semibold bg-[#030712] px-2 py-1 rounded-lg">Evaluated: {evaluation.evaluated_rows}/{evaluation.total_ground_truth_rows} (No GT match)</span>
         </div>
       ) : (
         <>
@@ -84,37 +89,37 @@ export const EvaluationPanel: React.FC<EvaluationPanelProps> = ({ evaluation, on
             
             <div className="bg-[#030712]/60 p-4 rounded-xl border border-white/5 hover:border-emerald-500/30 transition-colors group">
               <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1">Field Match</p>
-              <p className="text-2xl font-black text-emerald-400 group-hover:scale-110 origin-left transition-transform">{evaluation.overall_field_exact_match_pct}%</p>
+              <p className={`font-black text-emerald-400 group-hover:scale-110 origin-left transition-transform ${evaluation.overall_field_exact_match_pct != null ? 'text-2xl' : 'text-base font-bold text-slate-400'}`}>{formatVal(evaluation.overall_field_exact_match_pct)}</p>
               <p className="text-[10px] text-slate-500 mt-1 font-medium">Exact match 252 cols</p>
             </div>
 
             <div className="bg-[#030712]/60 p-4 rounded-xl border border-white/5 hover:border-indigo-500/30 transition-colors group">
               <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1">Manufacturer</p>
-              <p className="text-2xl font-black text-indigo-400 group-hover:scale-110 origin-left transition-transform">{evaluation.manufacturer_accuracy}%</p>
+              <p className={`font-black text-indigo-400 group-hover:scale-110 origin-left transition-transform ${evaluation.manufacturer_accuracy != null ? 'text-2xl' : 'text-base font-bold text-slate-400'}`}>{formatVal(evaluation.manufacturer_accuracy)}</p>
               <p className="text-[10px] text-slate-500 mt-1 font-medium">Canonical match</p>
             </div>
 
             <div className="bg-[#030712]/60 p-4 rounded-xl border border-white/5 hover:border-purple-500/30 transition-colors group">
               <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1">Brand</p>
-              <p className="text-2xl font-black text-purple-400 group-hover:scale-110 origin-left transition-transform">{evaluation.brand_accuracy}%</p>
+              <p className={`font-black text-purple-400 group-hover:scale-110 origin-left transition-transform ${evaluation.brand_accuracy != null ? 'text-2xl' : 'text-base font-bold text-slate-400'}`}>{formatVal(evaluation.brand_accuracy)}</p>
               <p className="text-[10px] text-slate-500 mt-1 font-medium">Canonical match</p>
             </div>
 
             <div className="bg-[#030712]/60 p-4 rounded-xl border border-white/5 hover:border-pink-500/30 transition-colors group">
               <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1">Category / Fine</p>
-              <p className="text-2xl font-black text-pink-400 group-hover:scale-110 origin-left transition-transform">{evaluation.fine_category_accuracy}%</p>
+              <p className={`font-black text-pink-400 group-hover:scale-110 origin-left transition-transform ${evaluation.fine_category_accuracy != null ? 'text-2xl' : 'text-base font-bold text-slate-400'}`}>{formatVal(evaluation.fine_category_accuracy)}</p>
               <p className="text-[10px] text-slate-500 mt-1 font-medium">Taxonomy match</p>
             </div>
 
             <div className="bg-[#030712]/60 p-4 rounded-xl border border-white/5 hover:border-teal-500/30 transition-colors group">
               <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1">Attributes</p>
-              <p className="text-2xl font-black text-teal-400 group-hover:scale-110 origin-left transition-transform">{evaluation.attribute_accuracy}%</p>
+              <p className={`font-black text-teal-400 group-hover:scale-110 origin-left transition-transform ${evaluation.attribute_accuracy != null ? 'text-2xl' : 'text-base font-bold text-slate-400'}`}>{formatVal(evaluation.attribute_accuracy)}</p>
               <p className="text-[10px] text-slate-500 mt-1 font-medium">Key-Value match</p>
             </div>
 
             <div className="bg-[#030712]/60 p-4 rounded-xl border border-white/5 hover:border-amber-500/30 transition-colors group">
               <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1">LOV Compliance</p>
-              <p className="text-2xl font-black text-amber-400 group-hover:scale-110 origin-left transition-transform">{evaluation.lov_compliance}%</p>
+              <p className={`font-black text-amber-400 group-hover:scale-110 origin-left transition-transform ${evaluation.lov_compliance != null ? 'text-2xl' : 'text-base font-bold text-slate-400'}`}>{formatVal(evaluation.lov_compliance)}</p>
               <p className="text-[10px] text-slate-500 mt-1 font-medium">Master LOV pass</p>
             </div>
 

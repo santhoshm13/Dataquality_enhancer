@@ -10,15 +10,22 @@ import { Chatbot } from './components/Chatbot';
 const API_BASE = "http://127.0.0.1:8000/api";
 
 export const App: React.FC = () => {
-  const [stats, setStats] = useState({
+  const [stats, setStats] = useState<{
+    total_products: number;
+    processed: number;
+    high_confidence: number;
+    medium_confidence: number;
+    needs_review: number;
+    total_attributes_extracted?: number;
+    lov_pass_rate?: number | null;
+  }>({
     total_products: 0,
     processed: 0,
     high_confidence: 0,
     medium_confidence: 0,
     needs_review: 0,
-    lov_accuracy: 96.5,
-    brand_accuracy: 98.2,
-    manufacturer_accuracy: 97.0
+    total_attributes_extracted: 0,
+    lov_pass_rate: null
   });
 
   const [products, setProducts] = useState<any[]>([]);

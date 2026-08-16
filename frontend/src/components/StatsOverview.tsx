@@ -9,7 +9,7 @@ interface StatsProps {
     medium_confidence: number;
     needs_review: number;
     total_attributes_extracted?: number;
-    lov_pass_rate?: number;
+    lov_pass_rate?: number | null;
   };
 }
 
@@ -61,7 +61,9 @@ export const StatsOverview: React.FC<StatsProps> = ({ stats }) => {
         <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
         <div className="relative z-10">
           <p className="text-[10px] font-bold text-purple-200/70 uppercase tracking-widest mb-1">LOV Pass Rate</p>
-          <h3 className="text-3xl font-black text-purple-400 tracking-tight">{stats.lov_pass_rate || 0}%</h3>
+          <h3 className={`font-black text-purple-400 tracking-tight ${stats.lov_pass_rate != null ? 'text-3xl' : 'text-xl font-bold text-slate-400'}`}>
+            {stats.lov_pass_rate != null ? `${stats.lov_pass_rate}%` : 'Not evaluated'}
+          </h3>
           <p className="text-[11px] text-purple-500/70 mt-1 font-medium">Over {stats.total_attributes_extracted || 0} attrs</p>
         </div>
         <div className="w-14 h-14 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.2)] group-hover:scale-110 transition-transform duration-300">
