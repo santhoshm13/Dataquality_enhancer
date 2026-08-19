@@ -52,10 +52,12 @@ class ProductEnrichmentPipeline:
         grounding_sources = product.get("grounding_sources", [])
         found = product.get("found")
 
+        stage_timings = {}
+        stage_failed = None
         global _gemini_rate_limited
 
         # If not already attached, query manufacturer provenance if supported
-        if not source_url and hasattr(self.llm_service, "enrich_from_manufacturer") and settings.LLM_PROVIDER == "gemini" and not _gemini_rate_limited:
+        if not source_url and hasattr(self.llm_service, "enrich_from_manufacturer") and not _gemini_rate_limited:
             try:
                 mfg_for_search = mfg_match["matched_value"] or raw_mfg
                 if part_num and mfg_for_search:
@@ -66,9 +68,11 @@ class ProductEnrichmentPipeline:
                     if mfg_enrich.get("error") and ("429" in str(mfg_enrich["error"]) or "RESOURCE_EXHAUSTED" in str(mfg_enrich["error"])):
                         _gemini_rate_limited = True
                     found = mfg_enrich.get("found", False)
-                    source_url = mfg_enrich.get("source_url")
+                    source_url = mfg_enrich.get("source_url") or mfg_enrich.get("url")
                     source_type = mfg_enrich.get("source_type", "manufacturer" if found else "none")
                     grounding_sources = mfg_enrich.get("grounding_sources", [])
+                    stage_timings = mfg_enrich.get("stage_timings", {})
+                    stage_failed = mfg_enrich.get("stage_failed")
             except Exception as e:
                 if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
                     _gemini_rate_limited = True
@@ -165,6 +169,8 @@ class ProductEnrichmentPipeline:
             "source_type": source_type or ("manufacturer" if found else "none"),
             "grounding_sources": grounding_sources,
             "found": found,
+            "stage_timings": stage_timings,
+            "stage_failed": stage_failed,
             "enrichment": {
                 "manufacturer": mfg_match["matched_value"],
                 "brand": brand_match["matched_value"],
@@ -178,6 +184,8 @@ class ProductEnrichmentPipeline:
                 "source_type": source_type or ("manufacturer" if found else "none"),
                 "grounding_sources": grounding_sources,
                 "found": found,
+                "stage_timings": stage_timings,
+                "stage_failed": stage_failed,
                 "review_reasons": review_reasons
             },
             "attributes": validated_attributes,

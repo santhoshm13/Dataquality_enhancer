@@ -2,6 +2,7 @@ import asyncio
 import json
 import logging
 import re
+import time
 from abc import ABC, abstractmethod
 from typing import Dict, Any, Optional, List
 
@@ -15,6 +16,7 @@ except ImportError:
 from .retry_wrapper import fetch_with_retry
 from .prompt_builder import build_extraction_prompt, build_description_prompt
 from app.services.lov.lov_retrieval_service import get_lov_for_classpath
+from app.services.scraper.spider import scrape_page, scrape_page_async
 
 logger = logging.getLogger("app.services.llm")
 
@@ -217,6 +219,65 @@ class MockLLMProvider(BaseLLMProvider):
             "MARKETING_DESCRIPTION": f"Upgrade your operations with the trusted quality of {brand} {category}."[:500]
         }
 
+    async def find_manufacturer_url(self, mpn: str, manufacturer: str) -> Dict[str, Any]:
+        mfg_clean = (manufacturer or "").lower()
+        if "frigidaire" in mfg_clean:
+            url = f"https://www.frigidaire.com/en/p/dishwashers/built-in-dishwashers/{mpn}"
+            return {"found": True, "url": url, "source_type": "manufacturer", "grounding_sources": [url]}
+        elif "diablo" in mfg_clean or "freud" in mfg_clean:
+            url = f"https://www.diablotools.com/products/{mpn}"
+            return {"found": True, "url": url, "source_type": "manufacturer", "grounding_sources": [url]}
+        elif "3m" in mfg_clean:
+            url = f"https://www.3m.com/3M/en_US/p/d/{mpn}/"
+            return {"found": True, "url": url, "source_type": "manufacturer", "grounding_sources": [url]}
+        elif "whirlpool" in mfg_clean:
+            url = f"https://www.whirlpool.com/kitchen/dishwashers/{mpn}.html"
+            return {"found": True, "url": url, "source_type": "manufacturer", "grounding_sources": [url]}
+        elif "mirka" in mfg_clean:
+            url = f"https://www.mirka.com/en/products/{mpn}"
+            return {"found": True, "url": url, "source_type": "manufacturer", "grounding_sources": [url]}
+        elif manufacturer and mpn:
+            url = f"https://www.{manufacturer.lower().replace(' ', '')}.com/products/{mpn}"
+            return {"found": True, "url": url, "source_type": "manufacturer", "grounding_sources": [url]}
+        return {"found": False, "url": "", "source_type": "none", "grounding_sources": []}
+
+    async def extract_specs_from_text(self, mpn: str, manufacturer: str, page_text: str, source_url: str, source_type: str = "manufacturer") -> Dict[str, Any]:
+        return {
+            "found": True,
+            "product_title": f"{manufacturer} {mpn} Industrial Product",
+            "raw_specs": [
+                {"label": "Manufacturer Part Number", "value": mpn, "unit": None},
+                {"label": "Brand", "value": manufacturer, "unit": None}
+            ],
+            "raw_description": f"Official product specification page for {manufacturer} {mpn}.",
+            "image_urls": [],
+            "source_url": source_url,
+            "source_type": source_type
+        }
+
+    async def enrich_from_manufacturer(self, mpn: str, manufacturer: str) -> Dict[str, Any]:
+        t0 = time.perf_counter()
+        stage1 = await self.find_manufacturer_url(mpn, manufacturer)
+        d1 = time.perf_counter() - t0
+        stage_timings = {"url_lookup_s": d1}
+
+        if not stage1.get("found") or not stage1.get("url"):
+            return {"found": False, "stage_failed": "url_lookup", "stage_timings": stage_timings}
+
+        t1 = time.perf_counter()
+        page_text = f"Manufacturer: {manufacturer}\nMPN: {mpn}\nProduct Title: {manufacturer} {mpn}\nSpecifications:\nWidth: 24 in\nVoltage: 120 V"
+        d2 = time.perf_counter() - t1
+        stage_timings["scrape_s"] = d2
+
+        t2 = time.perf_counter()
+        stage3 = await self.extract_specs_from_text(mpn, manufacturer, page_text, stage1["url"], stage1.get("source_type", "manufacturer"))
+        d3 = time.perf_counter() - t2
+        stage_timings["spec_extraction_s"] = d3
+
+        stage3["grounding_sources"] = stage1.get("grounding_sources", [stage1["url"]])
+        stage3["stage_timings"] = stage_timings
+        return stage3
+
 
 class OpenAIProvider(BaseLLMProvider):
     def __init__(self, api_key: str):
@@ -405,26 +466,18 @@ class GeminiProvider(BaseLLMProvider):
             logger.warning(f"Gemini description generation failed: {e}. Falling back to MockLLMProvider.")
             return await MockLLMProvider().generate_descriptions(attributes, raw_desc)
 
-    async def enrich_from_manufacturer(self, mpn: str, manufacturer: str) -> Dict[str, Any]:
+    async def find_manufacturer_url(self, mpn: str, manufacturer: str) -> Dict[str, Any]:
         """
-        Enrich industrial product record by finding the product on the manufacturer's official website
-        using gemini-3.7-flash with google_search and url_context tools.
+        STAGE 1: Find the product's official or fallback distributor URL using
+        gemini-3.7-flash with ONLY google_search tool enabled.
         """
         prompt = (
             f"Manufacturer: {manufacturer}\n"
             f"Manufacturer Part Number (MPN): {mpn}\n\n"
-            f"Find this exact product on the manufacturer's official website (not\n"
-            f"distributors, not marketplaces like Amazon/eBay). Extract:\n"
-            f"- Full official product name/title\n"
-            f"- Product category/series as described by the manufacturer\n"
-            f"- Every technical specification listed (name + value + unit as written)\n"
-            f"- Any listed features, description text, and image URLs\n"
-            f"- The exact source URL you found this on\n\n"
-            f"If the manufacturer's own site has no page for this MPN, search reputable\n"
-            f"distributor sites as fallback only, and clearly mark the source as \n"
-            f"'fallback'. If nothing is found, return found=false — do not invent data.\n\n"
-            f"Return strict JSON:\n"
-            f"{{found, source_url, source_type, product_title, raw_specs, raw_description, image_urls}}"
+            f"Find the URL of this exact product's page on the manufacturer's official "
+            f"website. If unavailable, find a reputable distributor's product page "
+            f"instead. Return ONLY strict JSON, nothing else:\n"
+            f'{{"found": true/false, "url": "...", "source_type": "manufacturer"|"fallback"}}'
         )
 
         try:
@@ -436,8 +489,7 @@ class GeminiProvider(BaseLLMProvider):
 
             client = genai.Client(api_key=self.api_key)
             tools = [
-                types.Tool(google_search=types.GoogleSearch()),
-                types.Tool(url_context=types.UrlContext()),
+                types.Tool(google_search=types.GoogleSearch())
             ]
             config = types.GenerateContentConfig(
                 tools=tools,
@@ -458,7 +510,7 @@ class GeminiProvider(BaseLLMProvider):
                         break
                 except Exception as exc:
                     if "RESOURCE_EXHAUSTED" in str(exc) or "429" in str(exc):
-                        logger.warning(f"Gemini quota/rate limit reached during enrichment for {manufacturer} {mpn}: {exc}")
+                        logger.warning(f"Gemini quota/rate limit reached during URL lookup for {manufacturer} {mpn}: {exc}")
                         return {"found": False, "error": str(exc)}
                     if attempt == max_retries - 1:
                         raise exc
@@ -492,13 +544,162 @@ class GeminiProvider(BaseLLMProvider):
                         if uri not in grounding_sources:
                             grounding_sources.append(uri)
 
-            # Attach provenance list
-            parsed["grounding_sources"] = list(dict.fromkeys(grounding_sources))
+            found = bool(parsed.get("found", False))
+            url = str(parsed.get("url") or "").strip()
+            source_type = str(parsed.get("source_type") or ("manufacturer" if found else "none")).strip()
+
+            if not url or url.lower() in ("null", "none", ""):
+                found = False
+
+            return {
+                "found": found,
+                "url": url,
+                "source_type": source_type,
+                "grounding_sources": list(dict.fromkeys(grounding_sources))
+            }
+        except Exception as e:
+            logger.warning(f"Error in find_manufacturer_url for {manufacturer} {mpn}: {e}")
+            return {"found": False, "error": str(e), "grounding_sources": []}
+
+    async def extract_specs_from_text(self, mpn: str, manufacturer: str, page_text: str, source_url: str, source_type: str = "manufacturer") -> Dict[str, Any]:
+        """
+        STAGE 3: Extract technical specs, product title, description, and image URLs
+        from scraped page text using plain gemini-3.7-flash with NO tools for maximum speed.
+        """
+        prompt = (
+            f"Here is the raw text content of a manufacturer/distributor product page "
+            f"for {manufacturer} {mpn}:\n\n"
+            f"---\n"
+            f"{page_text}\n"
+            f"---\n\n"
+            f"Extract: full product title, category/series, every technical specification "
+            f"(label, value, unit as written), feature description, image URLs if present "
+            f"in the text. Do not invent values not present in this text.\n\n"
+            f"Return strict JSON: {{product_title, raw_specs, raw_description, image_urls}}"
+        )
+
+        try:
+            if not self.api_key:
+                return {"found": False, "error": "Gemini API key is not configured"}
+
+            if not genai:
+                return {"found": False, "error": "google-genai SDK is not installed"}
+
+            client = genai.Client(api_key=self.api_key)
+            config = types.GenerateContentConfig(
+                temperature=0.1,
+            )
+
+            max_retries = 2
+            response = None
+
+            for attempt in range(max_retries):
+                try:
+                    response = await client.aio.models.generate_content(
+                        model="gemini-3.7-flash",
+                        contents=prompt,
+                        config=config
+                    )
+                    if response:
+                        break
+                except Exception as exc:
+                    if "RESOURCE_EXHAUSTED" in str(exc) or "429" in str(exc):
+                        logger.warning(f"Gemini quota/rate limit reached during spec extraction for {manufacturer} {mpn}: {exc}")
+                        return {"found": False, "error": str(exc)}
+                    if attempt == max_retries - 1:
+                        raise exc
+                    await asyncio.sleep(0.5 * (2 ** attempt))
+
+            if not response or not getattr(response, "candidates", None):
+                return {"found": False, "error": "No candidates returned from Gemini"}
+
+            candidate = response.candidates[0]
+            raw_text = getattr(response, "text", "") or ""
+            if not raw_text and getattr(candidate, "content", None) and getattr(candidate.content, "parts", None):
+                raw_text = candidate.content.parts[0].text or ""
+
+            cleaned = clean_json_text(raw_text)
+            parsed = json.loads(cleaned)
+
+            parsed["source_url"] = source_url
+            parsed["source_type"] = source_type
+            parsed["found"] = True
             return parsed
 
         except Exception as e:
-            logger.warning(f"Error in enrich_from_manufacturer for {manufacturer} {mpn}: {e}")
-            return {"found": False, "error": str(e)}
+            logger.warning(f"Error in extract_specs_from_text for {manufacturer} {mpn}: {e}")
+            return {"found": False, "error": str(e), "source_url": source_url, "source_type": source_type}
+
+    async def enrich_from_manufacturer(self, mpn: str, manufacturer: str) -> Dict[str, Any]:
+        """
+        ORCHESTRATION: Executes Stage 1 -> Stage 2 -> Stage 3 in sequence.
+        Short-circuits immediately on failure at each stage and records stage timings.
+        """
+        stage_timings: Dict[str, float] = {}
+
+        # STAGE 1: URL Lookup
+        t0 = time.perf_counter()
+        stage1_res = await self.find_manufacturer_url(mpn=mpn, manufacturer=manufacturer)
+        s1_time = time.perf_counter() - t0
+        stage_timings["url_lookup_s"] = s1_time
+        logger.info(f"[Stage 1: URL Lookup] {manufacturer} {mpn} completed in {s1_time:.3f}s (found={stage1_res.get('found')})")
+
+        if not stage1_res.get("found") or not stage1_res.get("url"):
+            return {
+                "found": False,
+                "stage_failed": "url_lookup",
+                "error": stage1_res.get("error"),
+                "stage_timings": stage_timings
+            }
+
+        source_url = stage1_res["url"]
+        source_type = stage1_res.get("source_type", "manufacturer")
+        grounding_sources = stage1_res.get("grounding_sources", [])
+
+        # STAGE 2: Scrape Page
+        t1 = time.perf_counter()
+        page_text = await scrape_page_async(source_url)
+        s2_time = time.perf_counter() - t1
+        stage_timings["scrape_s"] = s2_time
+        logger.info(f"[Stage 2: Scrape] {source_url} completed in {s2_time:.3f}s (text_length={len(page_text) if page_text else 0})")
+
+        if not page_text or not page_text.strip():
+            return {
+                "found": False,
+                "stage_failed": "scrape",
+                "source_url": source_url,
+                "source_type": source_type,
+                "grounding_sources": grounding_sources,
+                "stage_timings": stage_timings
+            }
+
+        # STAGE 3: Extract Specs from Text
+        t2 = time.perf_counter()
+        stage3_res = await self.extract_specs_from_text(
+            mpn=mpn,
+            manufacturer=manufacturer,
+            page_text=page_text,
+            source_url=source_url,
+            source_type=source_type
+        )
+        s3_time = time.perf_counter() - t2
+        stage_timings["spec_extraction_s"] = s3_time
+        logger.info(f"[Stage 3: Spec Extraction] {manufacturer} {mpn} completed in {s3_time:.3f}s")
+
+        if not stage3_res.get("found"):
+            return {
+                "found": False,
+                "stage_failed": "spec_extraction",
+                "source_url": source_url,
+                "source_type": source_type,
+                "grounding_sources": grounding_sources,
+                "error": stage3_res.get("error"),
+                "stage_timings": stage_timings
+            }
+
+        stage3_res["grounding_sources"] = list(dict.fromkeys(grounding_sources + [source_url]))
+        stage3_res["stage_timings"] = stage_timings
+        return stage3_res
 
 
 class LLMService:
@@ -516,6 +717,16 @@ class LLMService:
 
     async def generate_descriptions(self, attributes: Dict[str, Any], raw_desc: str) -> Dict[str, str]:
         return await self.provider.generate_descriptions(attributes, raw_desc)
+
+    async def find_manufacturer_url(self, mpn: str, manufacturer: str) -> Dict[str, Any]:
+        if hasattr(self.provider, "find_manufacturer_url"):
+            return await self.provider.find_manufacturer_url(mpn, manufacturer)
+        return {"found": False, "error": "Current provider does not support find_manufacturer_url"}
+
+    async def extract_specs_from_text(self, mpn: str, manufacturer: str, page_text: str, source_url: str, source_type: str = "manufacturer") -> Dict[str, Any]:
+        if hasattr(self.provider, "extract_specs_from_text"):
+            return await self.provider.extract_specs_from_text(mpn, manufacturer, page_text, source_url, source_type)
+        return {"found": False, "error": "Current provider does not support extract_specs_from_text"}
 
     async def enrich_from_manufacturer(self, mpn: str, manufacturer: str) -> Dict[str, Any]:
         if hasattr(self.provider, "enrich_from_manufacturer"):
