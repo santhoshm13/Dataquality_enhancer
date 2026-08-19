@@ -9,6 +9,12 @@ interface NavbarProps {
   onExport: (format: 'csv' | 'excel') => void;
   onRunBatchEnrichment: () => void;
   isEnriching: boolean;
+  enrichmentProgress?: {
+    status: string;
+    total: number;
+    processed: number;
+    percent: number;
+  } | null;
   healthStatus: boolean;
 }
 
@@ -20,6 +26,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onExport,
   onRunBatchEnrichment,
   isEnriching,
+  enrichmentProgress,
   healthStatus
 }) => {
   const [exportDropdownOpen, setExportDropdownOpen] = useState(false);
@@ -102,19 +109,27 @@ export const Navbar: React.FC<NavbarProps> = ({
               )}
             </div>
 
-            {/* Batch Enrich Button */}
+            {/* Batch Enrich Button with Live Progress */}
             <div className="btn-glow rounded-xl">
               <button
                 onClick={onRunBatchEnrichment}
                 disabled={isEnriching}
-                className="relative flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold text-sm transition-all disabled:opacity-50 cursor-pointer border border-white/10"
+                className="relative flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold text-sm transition-all disabled:opacity-75 cursor-pointer border border-white/10"
               >
                 {isEnriching ? (
-                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <RefreshCw className="w-4 h-4 animate-spin text-white" />
                 ) : (
                   <Activity className="w-4 h-4" />
                 )}
-                {isEnriching ? 'Enriching...' : 'Run Pipeline'}
+                {isEnriching ? (
+                  enrichmentProgress ? (
+                    <span>Enriching {enrichmentProgress.processed}/{enrichmentProgress.total} ({enrichmentProgress.percent}%)</span>
+                  ) : (
+                    <span>Processing All Rows...</span>
+                  )
+                ) : (
+                  'Run Pipeline'
+                )}
               </button>
             </div>
 

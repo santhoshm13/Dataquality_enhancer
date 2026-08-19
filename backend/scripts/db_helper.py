@@ -7,7 +7,13 @@ from app.database.models import Base
 
 logger = logging.getLogger("ingest")
 
+_cached_engine = None
+
 def get_engine():
+    global _cached_engine
+    if _cached_engine is not None:
+        return _cached_engine
+
     db_url = settings.DATABASE_URL
     # Ensure sync driver URL for migration/ingestion scripts
     sync_url = db_url.replace("postgresql+asyncpg://", "postgresql://").replace("sqlite+aiosqlite://", "sqlite://")
@@ -18,15 +24,19 @@ def get_engine():
             eng = create_engine(sync_url, echo=False, connect_args={"connect_timeout": 3})
             with eng.connect() as conn:
                 conn.execute(text("SELECT 1"))
-            return eng
+            _cached_engine = eng
+            return _cached_engine
         except Exception as e:
             logger.warning(f"Could not connect to PostgreSQL ({e}). Using local SQLite fallback for master data tables.")
             fallback_path = os.path.abspath("master_data.db")
             fallback_url = f"sqlite:///{fallback_path}"
-            eng = create_engine(fallback_url, echo=False)
-            return eng
+            eng = create_engine(fallback_url, echo=False, connect_args={"check_same_thread": False})
+            _cached_engine = eng
+            return _cached_engine
     else:
-        return create_engine(sync_url, echo=False)
+        eng = create_engine(sync_url, echo=False, connect_args={"check_same_thread": False} if "sqlite" in sync_url else {})
+        _cached_engine = eng
+        return _cached_engine
 
 def init_db(engine=None):
     if engine is None:

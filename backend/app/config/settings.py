@@ -15,16 +15,21 @@ class Settings(BaseSettings):
     
     # LLM
     LLM_API_KEY: str = ""
-    LLM_PROVIDER: str = "mock"  # 'mock', 'openai', 'gemini'
+    GEMINI_API_KEY: str = ""
+    OPENAI_API_KEY: str = ""
+    LLM_PROVIDER: str = "gemini"  # 'mock', 'openai', 'gemini'
     
     # CORS
     ALLOWED_ORIGINS: str = "http://localhost:5173,http://localhost:3000,https://*.vercel.app"
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=(".env", "backend/.env"),
         env_file_encoding="utf-8",
         extra="ignore"
     )
+
+    def get_api_key(self) -> str:
+        return self.GEMINI_API_KEY or self.LLM_API_KEY or os.environ.get("GEMINI_API_KEY", "") or os.environ.get("GOOGLE_API_KEY", "")
 
     @property
     def origins_list(self) -> List[str]:

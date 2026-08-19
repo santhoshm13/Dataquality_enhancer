@@ -7,6 +7,7 @@ class AttributeSchema(BaseModel):
     uom: Optional[str] = None
     confidence: float = 1.0
     source: str = "ai"
+    source_url: Optional[str] = None
     validation_status: str = "PASS"  # PASS, FAIL, NEEDS_REVIEW
     validation_reason: Optional[str] = None
 
@@ -26,6 +27,10 @@ class ProductEnrichmentSummary(BaseModel):
     category: Optional[str] = None
     confidence_score: float = 0.0
     status: str = "RAW"
+    source_url: Optional[str] = None
+    source_type: Optional[str] = None  # "manufacturer", "fallback", "none"
+    grounding_sources: List[str] = []
+    found: Optional[bool] = None
 
 class ProductDetailResponse(BaseModel):
     id: int
@@ -36,6 +41,10 @@ class ProductDetailResponse(BaseModel):
     raw_brand_dib: Optional[str] = None
     raw_manufacturer: Optional[str] = None
     status: str = "RAW"
+    source_url: Optional[str] = None
+    source_type: Optional[str] = None
+    grounding_sources: List[str] = []
+    found: Optional[bool] = None
     enrichment: ProductEnrichmentSummary
     attributes: List[AttributeSchema] = []
     descriptions: Dict[str, str] = {}
@@ -50,6 +59,10 @@ class ProductListItem(BaseModel):
     category: Optional[str] = None
     confidence_score: float = 0.0
     status: str = "RAW"
+    source_url: Optional[str] = None
+    source_type: Optional[str] = None
+    grounding_sources: List[str] = []
+    found: Optional[bool] = None
 
 class ProductListResponse(BaseModel):
     total: int

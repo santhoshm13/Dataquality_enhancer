@@ -32,7 +32,11 @@ async def get_products(
             manufacturer=enrich.get("manufacturer"),
             category=enrich.get("category"),
             confidence_score=enrich.get("confidence_score", 0.0),
-            status=p.get("status", "RAW")
+            status=p.get("status", "RAW"),
+            source_url=p.get("source_url") or enrich.get("source_url"),
+            source_type=p.get("source_type") or enrich.get("source_type"),
+            grounding_sources=p.get("grounding_sources") or enrich.get("grounding_sources", []),
+            found=p.get("found", enrich.get("found", None))
         ))
 
     return ProductListResponse(
@@ -61,6 +65,10 @@ async def get_product_by_id(product_id: int):
         raw_brand_dib=product.get("raw_brand_dib"),
         raw_manufacturer=product.get("raw_manufacturer"),
         status=product.get("status", "RAW"),
+        source_url=product.get("source_url") or enrich.get("source_url"),
+        source_type=product.get("source_type") or enrich.get("source_type"),
+        grounding_sources=product.get("grounding_sources") or enrich.get("grounding_sources", []),
+        found=product.get("found", enrich.get("found", None)),
         enrichment={
             "manufacturer": enrich.get("manufacturer"),
             "brand": enrich.get("brand"),
@@ -68,7 +76,11 @@ async def get_product_by_id(product_id: int):
             "class": enrich.get("class"),
             "category": enrich.get("category"),
             "confidence_score": enrich.get("confidence_score", 0.0),
-            "status": enrich.get("status", "RAW")
+            "status": enrich.get("status", "RAW"),
+            "source_url": product.get("source_url") or enrich.get("source_url"),
+            "source_type": product.get("source_type") or enrich.get("source_type"),
+            "grounding_sources": product.get("grounding_sources") or enrich.get("grounding_sources", []),
+            "found": product.get("found", enrich.get("found", None))
         },
         attributes=product.get("attributes", []),
         descriptions=product.get("descriptions", {}),

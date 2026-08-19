@@ -48,13 +48,38 @@ class ConfidenceEngine:
         if attr_failures > 0:
             reasons.append(f"{attr_failures} attribute(s) failed LOV/UOM validation")
 
-        # Determine pipeline status
-        if overall_score >= 0.85 and attr_failures == 0 and mfg_match.get("status") == "PASS" and brand_match.get("status") == "PASS":
-            pipeline_status = "HIGH"
-        elif overall_score >= 0.60:
-            pipeline_status = "MEDIUM"
-        else:
+        # Determine pipeline status based on weighted tier aggregation
+        core_fields = {"Brand", "Manufacturer", "Classpath"}
+        tier_counts = {"HIGH": 0, "MEDIUM": 0, "NEEDS_REVIEW": 0}
+        total_weight = 0
+        
+        # Process each validated attribute to compute tier and weight
+        for attr in validated_attributes:
+            attr_name = attr.get("name") or attr.get("attribute_name") or ""
+            status = attr.get("validation_status")
+            confidence = attr.get("confidence", 1.0)
+            
+            # Map status+confidence to tier
+            if status != "PASS":
+                tier = "NEEDS_REVIEW"
+            elif confidence >= 0.95:
+                tier = "HIGH"
+            elif confidence >= 0.85:
+                tier = "MEDIUM"
+            else:
+                tier = "NEEDS_REVIEW"
+            
+            weight = 2 if attr_name in core_fields else 1
+            tier_counts[tier] += weight
+            total_weight += weight
+        
+        # Determine overall pipeline status
+        if tier_counts["NEEDS_REVIEW"] > 0:
             pipeline_status = "NEEDS_REVIEW"
+        elif tier_counts["HIGH"] >= tier_counts["MEDIUM"]:
+            pipeline_status = "HIGH"
+        else:
+            pipeline_status = "MEDIUM"
 
         if not reasons:
             reasons.append("All automated enrichment checks passed with high confidence.")

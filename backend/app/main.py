@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config.settings import settings
-from app.api.routes import health, upload, products, dashboard, export, evaluation, chat
+from app.api.routes import health, upload, products, dashboard, export, evaluation, chat, pipeline
 from app.database.master_data_loader import load_master_data
 
 # Configure structured logging
@@ -42,6 +42,7 @@ app.add_middleware(
 app.include_router(health.router, prefix="/api", tags=["Health"])
 app.include_router(upload.router, prefix="/api", tags=["CSV Upload"])
 app.include_router(products.router, prefix="/api", tags=["Products"])
+app.include_router(pipeline.router, prefix="/api", tags=["Pipeline"])
 app.include_router(dashboard.router, prefix="/api", tags=["Dashboard"])
 app.include_router(export.router, prefix="/api", tags=["Export"])
 app.include_router(evaluation.router, prefix="/api", tags=["Evaluation"])

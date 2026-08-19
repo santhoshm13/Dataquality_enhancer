@@ -41,6 +41,13 @@ export const App: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
   const [isUploadOpen, setIsUploadOpen] = useState<boolean>(false);
   const [isEnriching, setIsEnriching] = useState<boolean>(false);
+  const [enrichmentProgress, setEnrichmentProgress] = useState<{
+    status: string;
+    total: number;
+    processed: number;
+    percent: number;
+  } | null>(null);
+
   const [healthStatus, setHealthStatus] = useState<boolean>(true);
   const [evaluationData, setEvaluationData] = useState<any | null>(null);
 
@@ -155,12 +162,55 @@ export const App: React.FC = () => {
   };
 
   const handleRunBatchEnrichment = async () => {
-    if (products.length === 0) return;
-    setIsEnriching(true);
-    for (const p of products) {
-      await handleEnrichSingle(p.id);
+    try {
+      setIsEnriching(true);
+      const url = new URL(`${API_BASE}/pipeline/run`);
+      if (selectedDatasetId) {
+        url.searchParams.append("dataset_id", selectedDatasetId.toString());
+      }
+      const startRes = await fetch(url.toString(), { method: "POST" });
+      if (!startRes.ok) {
+        throw new Error("Failed to start batch pipeline");
+      }
+      const startData = await startRes.json();
+      const jobId = startData.job_id;
+
+      // Poll pipeline status until completed
+      const pollInterval = setInterval(async () => {
+        try {
+          const statusRes = await fetch(`${API_BASE}/pipeline/status?job_id=${jobId}`);
+          if (statusRes.ok) {
+            const statusData = await statusRes.json();
+            setEnrichmentProgress({
+              status: statusData.status,
+              total: statusData.total_rows,
+              processed: statusData.processed_rows,
+              percent: statusData.percent_complete
+            });
+
+            // Periodically refresh table & stats during batch run
+            fetchStats();
+            fetchProducts();
+
+            if (statusData.status === "COMPLETED" || statusData.status === "FAILED") {
+              clearInterval(pollInterval);
+              setIsEnriching(false);
+              setEnrichmentProgress(null);
+              fetchProducts();
+              fetchStats();
+              fetchEvaluation();
+            }
+          }
+        } catch (pollErr) {
+          console.error("Polling status error:", pollErr);
+        }
+      }, 1000);
+
+    } catch (e) {
+      console.error("Failed to run batch enrichment", e);
+      setIsEnriching(false);
+      setEnrichmentProgress(null);
     }
-    setIsEnriching(false);
   };
 
   const handleExport = (format: 'csv' | 'excel') => {
@@ -183,6 +233,7 @@ export const App: React.FC = () => {
         onExport={handleExport}
         onRunBatchEnrichment={handleRunBatchEnrichment}
         isEnriching={isEnriching}
+        enrichmentProgress={enrichmentProgress}
         healthStatus={healthStatus}
       />
 
@@ -247,9 +298,6 @@ export const App: React.FC = () => {
           <p>Multi-Format Ingestion (CSV, XLSX, XLS) & 252-Column Delivery Export</p>
         </div>
       </footer>
-
-      {/* Chatbot Widget */}
-      <Chatbot />
 
     </div>
   );

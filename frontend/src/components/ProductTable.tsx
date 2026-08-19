@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Filter, ChevronLeft, ChevronRight, Eye, Play } from 'lucide-react';
+import { Search, Filter, ChevronLeft, ChevronRight, Eye, Play, ExternalLink, AlertCircle } from 'lucide-react';
 
 interface Product {
   id: number;
@@ -10,6 +10,10 @@ interface Product {
   category?: string;
   confidence_score: number;
   status: string;
+  source_url?: string;
+  source_type?: string;
+  grounding_sources?: string[];
+  found?: boolean;
 }
 
 interface ProductTableProps {
@@ -72,6 +76,15 @@ export const ProductTable: React.FC<ProductTableProps> = ({
     }
   };
 
+  const formatHostname = (urlStr: string) => {
+    try {
+      const u = new URL(urlStr.startsWith('http') ? urlStr : `https://${urlStr}`);
+      return u.hostname.replace(/^www\./, '');
+    } catch {
+      return urlStr.length > 25 ? urlStr.substring(0, 22) + '...' : urlStr;
+    }
+  };
+
   return (
     <div className="glass-panel rounded-2xl border border-white/5 overflow-hidden shadow-2xl">
       
@@ -123,6 +136,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
               <th className="p-4">Matched Brand</th>
               <th className="p-4">Matched Manufacturer</th>
               <th className="p-4">Category</th>
+              <th className="p-4">Source Provenance</th>
               <th className="p-4 text-center">Status</th>
               <th className="p-4 pr-6 text-right">Actions</th>
             </tr>
@@ -130,7 +144,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
           <tbody className="divide-y divide-white/5">
             {products.length === 0 ? (
               <tr>
-                <td colSpan={7} className="p-12 text-center">
+                <td colSpan={8} className="p-12 text-center">
                   <div className="inline-flex flex-col items-center justify-center text-slate-500">
                     <Search className="w-8 h-8 mb-3 opacity-50" />
                     <p className="text-sm font-medium text-slate-400">No products found</p>
@@ -148,6 +162,39 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                   <td className="p-4 text-slate-300 font-medium">{p.brand || '—'}</td>
                   <td className="p-4 text-slate-300 font-medium">{p.manufacturer || '—'}</td>
                   <td className="p-4 text-slate-400 text-[11px]">{p.category || '—'}</td>
+                  
+                  {/* Source Provenance Column */}
+                  <td className="p-4 max-w-[200px]">
+                    {p.source_url ? (
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
+                          p.source_type === 'fallback' 
+                            ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30' 
+                            : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
+                        }`}>
+                          {p.source_type === 'fallback' ? 'fallback' : 'manufacturer'}
+                        </span>
+                        <a
+                          href={p.source_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-indigo-400 hover:text-indigo-200 underline text-[11px] font-medium truncate max-w-[120px]"
+                          title={`Source: ${p.source_url}`}
+                        >
+                          <span className="truncate">{formatHostname(p.source_url)}</span>
+                          <ExternalLink className="w-3 h-3 shrink-0 opacity-70" />
+                        </a>
+                      </div>
+                    ) : p.found === false ? (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] text-amber-400/90 bg-amber-500/10 border border-amber-500/20 font-medium">
+                        <AlertCircle className="w-3 h-3 text-amber-400 shrink-0" />
+                        No source — needs review
+                      </span>
+                    ) : (
+                      <span className="text-slate-500 text-[10px] italic">Not enriched</span>
+                    )}
+                  </td>
+
                   <td className="p-4 text-center">{getStatusBadge(p.status, p.confidence_score)}</td>
                   <td className="p-4 pr-6 text-right">
                     <div className="flex items-center justify-end gap-2 opacity-70 group-hover:opacity-100 transition-opacity">
@@ -183,7 +230,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
           <button
             onClick={() => onPageChange(page - 1)}
             disabled={page <= 1}
-            className="p-1.5 rounded-lg bg-[#030712] hover:bg-slate-800 border border-white/10 disabled:opacity-40 transition-colors"
+            className="p-1.5 rounded-lg bg-[#030712] hover:bg-slate-800 border border-white/10 disabled:opacity-40 transition-colors cursor-pointer"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
@@ -191,7 +238,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
           <button
             onClick={() => onPageChange(page + 1)}
             disabled={page >= totalPages}
-            className="p-1.5 rounded-lg bg-[#030712] hover:bg-slate-800 border border-white/10 disabled:opacity-40 transition-colors"
+            className="p-1.5 rounded-lg bg-[#030712] hover:bg-slate-800 border border-white/10 disabled:opacity-40 transition-colors cursor-pointer"
           >
             <ChevronRight className="w-4 h-4" />
           </button>

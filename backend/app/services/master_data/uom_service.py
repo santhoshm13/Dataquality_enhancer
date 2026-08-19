@@ -30,6 +30,7 @@ DEFAULT_UOM_MAP = {
 class UOMService:
     def __init__(self):
         self._uom_cache = {}
+        self._category_cache = {}
         self._valid_uoms = set()
         self._loaded = False
 
@@ -47,12 +48,15 @@ class UOMService:
                 code_norm = r.uom_code.strip().lower() if r.uom_code else ""
                 abbrev_norm = r.standard_abbreviation.strip().lower() if r.standard_abbreviation else ""
                 abbrev = r.standard_abbreviation.strip() if r.standard_abbreviation else r.uom_code
+                category = r.category.strip() if r.category else ""
                 
                 if code_norm:
                     self._uom_cache[code_norm] = abbrev
+                    self._category_cache[code_norm] = category
                     self._valid_uoms.add(code_norm)
                 if abbrev_norm:
                     self._uom_cache[abbrev_norm] = abbrev
+                    self._category_cache[abbrev_norm] = category
                     self._valid_uoms.add(abbrev_norm)
                     
             session.close()
@@ -62,6 +66,7 @@ class UOMService:
             # Ensure fallbacks are available if DB fails
             for k, v in DEFAULT_UOM_MAP.items():
                 self._uom_cache[k.lower()] = v["abbrev"]
+                self._category_cache[k.lower()] = v.get("category", "")
                 self._valid_uoms.add(k.lower())
                 self._valid_uoms.add(v["abbrev"].lower())
             self._loaded = True
@@ -98,6 +103,25 @@ class UOMService:
         if clean_uom.lower() in self._valid_uoms:
             return True
         return clean_uom.upper() in DEFAULT_UOM_MAP
+
+    def get_uom_category(self, uom_str: str) -> Optional[str]:
+        if not uom_str:
+            return None
+        clean_uom = str(uom_str).strip().lower()
+        self.load_uoms()
+        if clean_uom in self._category_cache:
+            return self._category_cache[clean_uom]
+        upper_key = str(uom_str).strip().upper()
+        if upper_key in DEFAULT_UOM_MAP:
+            return DEFAULT_UOM_MAP[upper_key].get("category")
+        return None
+
+    def is_dimension_uom(self, uom_str: str) -> bool:
+        cat = self.get_uom_category(uom_str)
+        if cat and cat.lower() == "dimension":
+            return True
+        norm = self.normalize_uom(uom_str).lower()
+        return norm in ("in", "ft", "inch", "inches", "feet", "\"")
 
     def format_value_with_uom(self, value: str, uom_str: str) -> str:
         norm_val = str(value).strip()
