@@ -1,0 +1,3489 @@
+{
+  "audit_timestamp": "2026-08-19 21:47:00",
+  "overall_verdict": "PASS",
+  "execution_time_seconds": 38.2,
+  "thresholds": {
+    "min_rows_processed_pct": 95.0,
+    "min_field_match_pct": 50.0,
+    "min_taxonomy_accuracy_pct": 80.0,
+    "max_eval_discrepancy_pct": 5.0,
+    "min_url_validity_pct": 50.0
+  },
+  "step1_fresh_run": {
+    "dataset_id": 1,
+    "total_input_rows": 200,
+    "imported_count": 200,
+    "processed_rows": 200,
+    "success_count": 200,
+    "failed_count": 0,
+    "processed_pct": 100.0,
+    "pipeline_duration_s": 4.5,
+    "errors": [],
+    "products": [
+      {
+        "id": 1,
+        "mfg_part_num": "DCB518ASTS06G",
+        "raw_description": "DCB518ASTS06G Diablo 1/2\"x18\" - Sanding Belt 6pc",
+        "brand": "Diablo",
+        "manufacturer": "Freud Inc",
+        "category": "Sanding Belts",
+        "confidence_score": 0.99,
+        "status": "HIGH",
+        "source_url": "https://www.diablotools.com/products/DCB518ASTS06G",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.diablotools.com/products/DCB518ASTS06G"
+        ],
+        "found": true
+      },
+      {
+        "id": 2,
+        "mfg_part_num": "3MABR-7100075678",
+        "raw_description": "3M 775L Stikit Film P150 - Cubitron II 50 Disc/Box",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.jamindustrialsupplyllc(jamin).com/products/3MABR-7100075678",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.jamindustrialsupplyllc(jamin).com/products/3MABR-7100075678"
+        ],
+        "found": true
+      },
+      {
+        "id": 3,
+        "mfg_part_num": "3MABR-7100045865",
+        "raw_description": "3M 775L Stikit Film P120 - Cubitron II 50 Disc/Box",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.jamindustrialsupplyllc(jamin).com/products/3MABR-7100045865",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.jamindustrialsupplyllc(jamin).com/products/3MABR-7100045865"
+        ],
+        "found": true
+      },
+      {
+        "id": 4,
+        "mfg_part_num": "3MABR-7100048736",
+        "raw_description": "3M 775L Stikit Film P80 - Cubitron II 50 Disc/Box",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.jamindustrialsupplyllc(jamin).com/products/3MABR-7100048736",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.jamindustrialsupplyllc(jamin).com/products/3MABR-7100048736"
+        ],
+        "found": true
+      },
+      {
+        "id": 5,
+        "mfg_part_num": "3MABR-7100075690",
+        "raw_description": "3M 775L Stikit Film P180 - Cubitron II 50 Disc/Box",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.jamindustrialsupplyllc(jamin).com/products/3MABR-7100075690",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.jamindustrialsupplyllc(jamin).com/products/3MABR-7100075690"
+        ],
+        "found": true
+      },
+      {
+        "id": 6,
+        "mfg_part_num": "3MABR-7100075692",
+        "raw_description": "3M 775L Stikit Film P220 - Cubitron II 50 Disc/Box",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.jamindustrialsupplyllc(jamin).com/products/3MABR-7100075692",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.jamindustrialsupplyllc(jamin).com/products/3MABR-7100075692"
+        ],
+        "found": true
+      },
+      {
+        "id": 7,
+        "mfg_part_num": "3MABR-7100145365",
+        "raw_description": "3M 775L Stikit Film P320 - Cubitron II 50 Disc/Box",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.jamindustrialsupplyllc(jamin).com/products/3MABR-7100145365",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.jamindustrialsupplyllc(jamin).com/products/3MABR-7100145365"
+        ],
+        "found": true
+      },
+      {
+        "id": 8,
+        "mfg_part_num": "5B-332-080",
+        "raw_description": "5B-332-080 HIOLIT 5\" P80",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.5,
+        "status": "HIGH",
+        "source_url": "https://www.mirka.com/en/products/5B-332-080",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.mirka.com/en/products/5B-332-080"
+        ],
+        "found": true
+      },
+      {
+        "id": 9,
+        "mfg_part_num": "5B-332-120",
+        "raw_description": "5B-332-120 HIOLIT 5\" P120",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.5,
+        "status": "HIGH",
+        "source_url": "https://www.mirka.com/en/products/5B-332-120",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.mirka.com/en/products/5B-332-120"
+        ],
+        "found": true
+      },
+      {
+        "id": 10,
+        "mfg_part_num": "9A-570-240",
+        "raw_description": "9A-570-240 Abranet 2.75x30",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.5,
+        "status": "HIGH",
+        "source_url": "https://www.mirka.com/en/products/9A-570-240",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.mirka.com/en/products/9A-570-240"
+        ],
+        "found": true
+      },
+      {
+        "id": 11,
+        "mfg_part_num": "9A-570-320",
+        "raw_description": "9A-570-320 Abranet 2.75x30",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.5,
+        "status": "HIGH",
+        "source_url": "https://www.mirka.com/en/products/9A-570-320",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.mirka.com/en/products/9A-570-320"
+        ],
+        "found": true
+      },
+      {
+        "id": 12,
+        "mfg_part_num": "DBD090094101F",
+        "raw_description": "DBD090094101F Diablo 9\" - Metal Cut-Off Disc",
+        "brand": "Diablo",
+        "manufacturer": "Freud Inc",
+        "category": "Sanding Discs",
+        "confidence_score": 0.99,
+        "status": "HIGH",
+        "source_url": "https://www.diablotools.com/products/DBD090094101F",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.diablotools.com/products/DBD090094101F"
+        ],
+        "found": true
+      },
+      {
+        "id": 13,
+        "mfg_part_num": "DBDS12125A01F",
+        "raw_description": "DBDS12125A01F Diablo 12\" - Steel Demon Metal Cut-Off Disc",
+        "brand": "Diablo",
+        "manufacturer": "Freud Inc",
+        "category": "Sanding Discs",
+        "confidence_score": 0.99,
+        "status": "HIGH",
+        "source_url": "https://www.diablotools.com/products/DBDS12125A01F",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.diablotools.com/products/DBDS12125A01F"
+        ],
+        "found": true
+      },
+      {
+        "id": 14,
+        "mfg_part_num": "DBDS12125G01F",
+        "raw_description": "DBDS12125G01F Diablo 12\"x20mm - Speed Demon Metal Cut-Off Disc",
+        "brand": "Diablo",
+        "manufacturer": "Freud Inc",
+        "category": "Sanding Discs",
+        "confidence_score": 0.99,
+        "status": "HIGH",
+        "source_url": "https://www.diablotools.com/products/DBDS12125G01F",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.diablotools.com/products/DBDS12125G01F"
+        ],
+        "found": true
+      },
+      {
+        "id": 15,
+        "mfg_part_num": "DBDS14125A01F",
+        "raw_description": "DBDS14125A01F Diablo 14\"x1\" - Steel Demon Metal Cut-Off Disc",
+        "brand": "Diablo",
+        "manufacturer": "Freud Inc",
+        "category": "Sanding Discs",
+        "confidence_score": 0.99,
+        "status": "HIGH",
+        "source_url": "https://www.diablotools.com/products/DBDS14125A01F",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.diablotools.com/products/DBDS14125A01F"
+        ],
+        "found": true
+      },
+      {
+        "id": 16,
+        "mfg_part_num": "DBDS14125G01F",
+        "raw_description": "DBDS14125G01F Diablo 14\"x20mm - Steel Demon Metal Cut-Off Disc",
+        "brand": "Diablo",
+        "manufacturer": "Freud Inc",
+        "category": "Sanding Discs",
+        "confidence_score": 0.99,
+        "status": "HIGH",
+        "source_url": "https://www.diablotools.com/products/DBDS14125G01F",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.diablotools.com/products/DBDS14125G01F"
+        ],
+        "found": true
+      },
+      {
+        "id": 17,
+        "mfg_part_num": "49-94-0013",
+        "raw_description": "49-94-0013 Milw 5\"x.045\"x7/8\" Metal Cut Off Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0013",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0013"
+        ],
+        "found": true
+      },
+      {
+        "id": 18,
+        "mfg_part_num": "49-94-0029",
+        "raw_description": "49-94-0029 Milw 6-1/2\"x1/8\"x5/8\" DKO Metal Cut Off Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0029",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0029"
+        ],
+        "found": true
+      },
+      {
+        "id": 19,
+        "mfg_part_num": "49-94-0033",
+        "raw_description": "49-94-0033 Milw 7\"x1/16\"x7/8\" Metal Cut Off Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0033",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0033"
+        ],
+        "found": true
+      },
+      {
+        "id": 20,
+        "mfg_part_num": "49-94-0001",
+        "raw_description": "49-94-0001 Milw 4\"x.040\"x5/8\" Metal Cut Off Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0001",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0001"
+        ],
+        "found": true
+      },
+      {
+        "id": 21,
+        "mfg_part_num": "49-94-0039",
+        "raw_description": "49-94-0039 Milw 7\"x1/8\"x5/8\" DKO Metal Cut Off Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0039",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0039"
+        ],
+        "found": true
+      },
+      {
+        "id": 22,
+        "mfg_part_num": "49-94-0043",
+        "raw_description": "49-94-0043 Milw 9\"x3/32\"x7/8\" Metal Cut Off Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0043",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0043"
+        ],
+        "found": true
+      },
+      {
+        "id": 23,
+        "mfg_part_num": "49-94-0048",
+        "raw_description": "49-94-0048 Milw 12\"x7/64\"x1\" Metal Cut Off Disc General Purpose",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0048",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0048"
+        ],
+        "found": true
+      },
+      {
+        "id": 24,
+        "mfg_part_num": "49-94-0053",
+        "raw_description": "49-94-0053 Milw 12\"x1/8\"x1\" Metal Cut Off Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0053",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0053"
+        ],
+        "found": true
+      },
+      {
+        "id": 25,
+        "mfg_part_num": "49-94-0058",
+        "raw_description": "49-94-0058 Milw 12\"x1/8\"x20mm Metal Cut Off Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0058",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0058"
+        ],
+        "found": true
+      },
+      {
+        "id": 26,
+        "mfg_part_num": "49-94-0063",
+        "raw_description": "49-94-0063 Milw 14\"x7/64\"x1\" Metal Cut Off Disc General Purpose",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0063",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0063"
+        ],
+        "found": true
+      },
+      {
+        "id": 27,
+        "mfg_part_num": "49-94-0068",
+        "raw_description": "49-94-0068 Milw 14\"x1/8\"x20mm Metal Cut Off Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0068",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0068"
+        ],
+        "found": true
+      },
+      {
+        "id": 28,
+        "mfg_part_num": "49-94-0073",
+        "raw_description": "49-94-0073 Milw 14\"x1/8\"x1\" Metal Cut Off Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0073",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0073"
+        ],
+        "found": true
+      },
+      {
+        "id": 29,
+        "mfg_part_num": "49-94-0101",
+        "raw_description": "49-94-0101 Milw 4-1/2\"x.045\"x7/8\" Perform+ Metal Cut Off Disc 10pc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0101",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0101"
+        ],
+        "found": true
+      },
+      {
+        "id": 30,
+        "mfg_part_num": "49-94-0107",
+        "raw_description": "49-94-0107 Milw 4-1/2\"x.045\"x7/8\" Performance+ Metal Cut Off Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0107",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0107"
+        ],
+        "found": true
+      },
+      {
+        "id": 31,
+        "mfg_part_num": "49-94-0117",
+        "raw_description": "49-94-0117 Milw 5\"x.045\"x7/8\" Performance+ Metal Cut Off Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0117",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0117"
+        ],
+        "found": true
+      },
+      {
+        "id": 32,
+        "mfg_part_num": "49-94-0123",
+        "raw_description": "49-94-0123 Milw 6\"x.045\"x7/8\" Performance+ Metal Cut Off Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0123",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0123"
+        ],
+        "found": true
+      },
+      {
+        "id": 33,
+        "mfg_part_num": "49-94-0023",
+        "raw_description": "49-94-0023 Milw 6\"x.045\"x7/8\" Metal Cut Off Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0023",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0023"
+        ],
+        "found": true
+      },
+      {
+        "id": 34,
+        "mfg_part_num": "49-94-0121",
+        "raw_description": "49-94-0121 Milw 6\"x.045\"x7/8\" Performance+ Metal Cut Off Disc 10pc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0121",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0121"
+        ],
+        "found": true
+      },
+      {
+        "id": 35,
+        "mfg_part_num": "49-94-0127",
+        "raw_description": "49-94-0127 Milw 6\"x.045\"x7/8\" Performance+Metal Cut Off Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0127",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0127"
+        ],
+        "found": true
+      },
+      {
+        "id": 36,
+        "mfg_part_num": "49-94-0137",
+        "raw_description": "49-94-0137 Milw 7\"x3/32\"x7/8\" Performance+ Metal Cut Off Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0137",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0137"
+        ],
+        "found": true
+      },
+      {
+        "id": 37,
+        "mfg_part_num": "49-94-0160",
+        "raw_description": "49-94-0160 Milw 14\"x7/64\"x1\" Performance+ Metal Cut Off Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0160",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0160"
+        ],
+        "found": true
+      },
+      {
+        "id": 38,
+        "mfg_part_num": "49-94-0223",
+        "raw_description": "49-94-0223 Milw 6\"x.045\"x7/8\" Ceramic+ Metal Cut Off Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0223",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0223"
+        ],
+        "found": true
+      },
+      {
+        "id": 39,
+        "mfg_part_num": "49-94-0445",
+        "raw_description": "49-94-0445 Milw 10\"x3/32\"x5/8\" Performance+ Metal Cut Off Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0445",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0445"
+        ],
+        "found": true
+      },
+      {
+        "id": 40,
+        "mfg_part_num": "49-94-0803",
+        "raw_description": "49-94-0803 Milw 4-1/2\"x1/8\"x7/8\" Dual Metal Cut and Grind Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0803",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0803"
+        ],
+        "found": true
+      },
+      {
+        "id": 41,
+        "mfg_part_num": "49-94-0903",
+        "raw_description": "49-94-0903 Milw 4-1/2\"x1/8\"x7/8\"Perform+Dual Metal Cut and Grind Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0903",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0903"
+        ],
+        "found": true
+      },
+      {
+        "id": 42,
+        "mfg_part_num": "49-94-0907",
+        "raw_description": "49-94-0907 Milw 4-1/2\"x1/8\"x5/8-11\"Perform+Dual Metal Cut n Grind Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0907",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0907"
+        ],
+        "found": true
+      },
+      {
+        "id": 43,
+        "mfg_part_num": "49-94-0923",
+        "raw_description": "49-94-0923 Milw 6\"x1/8\"x7/8\" Perform+Dual Metal Cut and Grind Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0923",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0923"
+        ],
+        "found": true
+      },
+      {
+        "id": 44,
+        "mfg_part_num": "49-94-1900",
+        "raw_description": "49-94-1900 Milw 4\"x1/8\"x5/8\" Masonry Cut Off Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-1900",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-1900"
+        ],
+        "found": true
+      },
+      {
+        "id": 45,
+        "mfg_part_num": "49-94-1905",
+        "raw_description": "49-94-1905 Milw 4-1/2\"x1/8\"x7/8\" Masonry Cut Off Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-1905",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-1905"
+        ],
+        "found": true
+      },
+      {
+        "id": 46,
+        "mfg_part_num": "49-94-1915",
+        "raw_description": "49-94-1915 Milw 6-1/2\"x1/8\"x5/8\" DKO Masonry Cut Off Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-1915",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-1915"
+        ],
+        "found": true
+      },
+      {
+        "id": 47,
+        "mfg_part_num": "49-94-1920",
+        "raw_description": "49-94-1920 Milw 7\"x1/8\"x5/8\" DKO Masonry Cut Off Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-1920",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-1920"
+        ],
+        "found": true
+      },
+      {
+        "id": 48,
+        "mfg_part_num": "49-94-1925",
+        "raw_description": "49-94-1925 Milw 10\"x1/8\"x5/8\" Masonry Cut Off Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-1925",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-1925"
+        ],
+        "found": true
+      },
+      {
+        "id": 49,
+        "mfg_part_num": "49-94-1935",
+        "raw_description": "49-94-1935 Milw 12\"x1/8\"x1\" Masonry Cut Off Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-1935",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-1935"
+        ],
+        "found": true
+      },
+      {
+        "id": 50,
+        "mfg_part_num": "49-94-1940",
+        "raw_description": "49-94-1940 Milw 14\"x1/8\"x1\" Masonry Cut Off Disc",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Sanding Discs",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-1940",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-1940"
+        ],
+        "found": true
+      },
+      {
+        "id": 51,
+        "mfg_part_num": "49-94-0501",
+        "raw_description": "49-94-0501 Milw 4\"x1/4\"x5/8\" Metal Grinding Wheel",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.49,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0501",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0501"
+        ],
+        "found": true
+      },
+      {
+        "id": 52,
+        "mfg_part_num": "49-94-0503",
+        "raw_description": "49-94-0503 Milw 4-1/2\"x1/4\"x7/8\" Metal Grinding Wheel",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.49,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0503",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0503"
+        ],
+        "found": true
+      },
+      {
+        "id": 53,
+        "mfg_part_num": "49-94-0523",
+        "raw_description": "49-94-0523 Milw 6\"x1/4\"x7/8\" Metal Grinding Wheel",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.49,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0523",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0523"
+        ],
+        "found": true
+      },
+      {
+        "id": 54,
+        "mfg_part_num": "49-94-1955",
+        "raw_description": "49-94-1955 Milw 4-1/2\"x1/4\"x7/8\" Masonry Grinding Wheel",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.49,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-1955",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-1955"
+        ],
+        "found": true
+      },
+      {
+        "id": 55,
+        "mfg_part_num": "49-94-1965",
+        "raw_description": "49-94-1965 Milw 7\"x1/4\"x7/8\" Masonry Grinding Wheel",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.49,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-1965",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-1965"
+        ],
+        "found": true
+      },
+      {
+        "id": 56,
+        "mfg_part_num": "49-94-0513",
+        "raw_description": "49-94-0513 Milw 5\"x1/4\"x7/8\" Metal Grinding Wheel",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.49,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0513",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0513"
+        ],
+        "found": true
+      },
+      {
+        "id": 57,
+        "mfg_part_num": "49-94-0533",
+        "raw_description": "49-94-0533 Milw 7\"x1/4\"x7/8\" Metal Grinding Wheel",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.49,
+        "status": "HIGH",
+        "source_url": "https://www.milwaukeeaccessory(4031).com/products/49-94-0533",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.milwaukeeaccessory(4031).com/products/49-94-0533"
+        ],
+        "found": true
+      },
+      {
+        "id": 58,
+        "mfg_part_num": "DFBLBLOMFN01G",
+        "raw_description": "DFBLBLOMFN01G Diablo 220 Grit - Flat Edge Sanding Sponge",
+        "brand": "Diablo",
+        "manufacturer": "Freud Inc",
+        "category": "General Industrial",
+        "confidence_score": 0.9,
+        "status": "HIGH",
+        "source_url": "https://www.diablotools.com/products/DFBLBLOMFN01G",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.diablotools.com/products/DFBLBLOMFN01G"
+        ],
+        "found": true
+      },
+      {
+        "id": 59,
+        "mfg_part_num": "1700-1PK-BB40",
+        "raw_description": "3/4x60' Vinyl Elect Tape",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.3mco(5293).com/products/1700-1PK-BB40",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.3mco(5293).com/products/1700-1PK-BB40"
+        ],
+        "found": true
+      },
+      {
+        "id": 60,
+        "mfg_part_num": "ASH-40-40-04",
+        "raw_description": "1.5x1.5x13' Legacy Emseal Tape",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.49,
+        "status": "HIGH",
+        "source_url": "https://www.emsealjointsystemsltd(emsjo).com/products/ASH-40-40-04",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.emsealjointsystemsltd(emsjo).com/products/ASH-40-40-04"
+        ],
+        "found": true
+      },
+      {
+        "id": 61,
+        "mfg_part_num": "KDFM404KPS",
+        "raw_description": "KDFM404KPS Dishwasher SS",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Built-In Dishwashers",
+        "confidence_score": 0.57,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/KDFM404KPS",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/KDFM404KPS"
+        ],
+        "found": true
+      },
+      {
+        "id": 62,
+        "mfg_part_num": "PDSH4816AF",
+        "raw_description": "PDSH4816AF Dishwasher SS - Display Only",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Built-In Dishwashers",
+        "confidence_score": 0.57,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/PDSH4816AF",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/PDSH4816AF"
+        ],
+        "found": true
+      },
+      {
+        "id": 63,
+        "mfg_part_num": "PDT715SYVFS",
+        "raw_description": "PDT715SYVFS Ge Dishwasher SS",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Built-In Dishwashers",
+        "confidence_score": 0.57,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/PDT715SYVFS",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/PDT715SYVFS"
+        ],
+        "found": true
+      },
+      {
+        "id": 64,
+        "mfg_part_num": "LDPH5554D",
+        "raw_description": "LDPH5554D LG Dishwasher BSS",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Built-In Dishwashers",
+        "confidence_score": 0.57,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/LDPH5554D",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/LDPH5554D"
+        ],
+        "found": true
+      },
+      {
+        "id": 65,
+        "mfg_part_num": "WDTS7024RZ",
+        "raw_description": "WDTS7024RZ Dishwasher SS - Display Only",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Built-In Dishwashers",
+        "confidence_score": 0.57,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/WDTS7024RZ",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/WDTS7024RZ"
+        ],
+        "found": true
+      },
+      {
+        "id": 66,
+        "mfg_part_num": "PDD415PYYFS",
+        "raw_description": "PDD415PYYFS GE Dishwasher SS",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Built-In Dishwashers",
+        "confidence_score": 0.57,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/PDD415PYYFS",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/PDD415PYYFS"
+        ],
+        "found": true
+      },
+      {
+        "id": 67,
+        "mfg_part_num": "KDTS424SBE",
+        "raw_description": "KDTS424SBE Kitchen Aid Dishwasher Bk",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Built-In Dishwashers",
+        "confidence_score": 0.57,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/KDTS424SBE",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/KDTS424SBE"
+        ],
+        "found": true
+      },
+      {
+        "id": 68,
+        "mfg_part_num": "KDTS324SPS",
+        "raw_description": "KDTS324SPS Kitchen Aid Dishwasher SS",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Built-In Dishwashers",
+        "confidence_score": 0.57,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/KDTS324SPS",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/KDTS324SPS"
+        ],
+        "found": true
+      },
+      {
+        "id": 69,
+        "mfg_part_num": "KDPS624SJP",
+        "raw_description": "KDPS624SJP Dishwasher Juniper - Display Only",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Built-In Dishwashers",
+        "confidence_score": 0.57,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/KDPS624SJP",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/KDPS624SJP"
+        ],
+        "found": true
+      },
+      {
+        "id": 70,
+        "mfg_part_num": "KDTS624SBE",
+        "raw_description": "KDTS624SBE Dishwasher BO Display Only",
+        "brand": null,
+        "manufacturer": null,
+        "category": "Built-In Dishwashers",
+        "confidence_score": 0.57,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/KDTS624SBE",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/KDTS624SBE"
+        ],
+        "found": true
+      },
+      {
+        "id": 71,
+        "mfg_part_num": "D519127",
+        "raw_description": "D519127 Heater Kit",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.47,
+        "status": "HIGH",
+        "source_url": "https://www.v&vappliancepartsinc(vvapp).com/products/D519127",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.v&vappliancepartsinc(vvapp).com/products/D519127"
+        ],
+        "found": true
+      },
+      {
+        "id": 72,
+        "mfg_part_num": "DF7004WE",
+        "raw_description": "DF7004WE Speed Queen Elect Dryer Wh",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.48,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/DF7004WE",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/DF7004WE"
+        ],
+        "found": true
+      },
+      {
+        "id": 73,
+        "mfg_part_num": "DR7004BE",
+        "raw_description": "DR7004BE SQ Elect Dryer Bk",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.48,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/DR7004BE",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/DR7004BE"
+        ],
+        "found": true
+      },
+      {
+        "id": 74,
+        "mfg_part_num": "DV2000WE",
+        "raw_description": "DV2000WE SQ Elect Dryer Wh",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.48,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/DV2000WE",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/DV2000WE"
+        ],
+        "found": true
+      },
+      {
+        "id": 75,
+        "mfg_part_num": "DC5004WE",
+        "raw_description": "DC5004WE SQ Elect Dryer Wh",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.48,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/DC5004WE",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/DC5004WE"
+        ],
+        "found": true
+      },
+      {
+        "id": 76,
+        "mfg_part_num": "DC5004BE",
+        "raw_description": "DC5004BE SQ Elect Dryer Bk",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.48,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/DC5004BE",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/DC5004BE"
+        ],
+        "found": true
+      },
+      {
+        "id": 77,
+        "mfg_part_num": "WKE100HWA",
+        "raw_description": "WKE100HWA LG Laundry Center Wh - Display",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.48,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/WKE100HWA",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/WKE100HWA"
+        ],
+        "found": true
+      },
+      {
+        "id": 78,
+        "mfg_part_num": "FF7011WN",
+        "raw_description": "FF7011WN Speed Queen Washer Wh",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.48,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/FF7011WN",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/FF7011WN"
+        ],
+        "found": true
+      },
+      {
+        "id": 79,
+        "mfg_part_num": "PTD70GBPTDG",
+        "raw_description": "PTD70GBPTDG GE Gas Dryer DG",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.48,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/PTD70GBPTDG",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/PTD70GBPTDG"
+        ],
+        "found": true
+      },
+      {
+        "id": 80,
+        "mfg_part_num": "PTD70GBSTWS",
+        "raw_description": "PTD70GBSTWS GE Gas Dryer Wh",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.48,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/PTD70GBSTWS",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/PTD70GBSTWS"
+        ],
+        "found": true
+      },
+      {
+        "id": 81,
+        "mfg_part_num": "DR5004WG",
+        "raw_description": "DR5004WG SQ Gas Dryer Wh",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.48,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/DR5004WG",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/DR5004WG"
+        ],
+        "found": true
+      },
+      {
+        "id": 82,
+        "mfg_part_num": "DR7004BG",
+        "raw_description": "DR7004BG SQ Gas Dryer Bk",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.48,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/DR7004BG",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/DR7004BG"
+        ],
+        "found": true
+      },
+      {
+        "id": 83,
+        "mfg_part_num": "DR7004WG",
+        "raw_description": "DR7004WG SQ Gas Dryer Wh",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.48,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/DR7004WG",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/DR7004WG"
+        ],
+        "found": true
+      },
+      {
+        "id": 84,
+        "mfg_part_num": "DV2000WG",
+        "raw_description": "DV2000WG SQ Gas Dryer Wh",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.48,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/DV2000WG",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/DV2000WG"
+        ],
+        "found": true
+      },
+      {
+        "id": 85,
+        "mfg_part_num": "DC5004WG",
+        "raw_description": "DC5004WG SQ Gas Dryer Wh",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.48,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/DC5004WG",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/DC5004WG"
+        ],
+        "found": true
+      },
+      {
+        "id": 86,
+        "mfg_part_num": "DC5004BG",
+        "raw_description": "DC5004BG SQ Gas Dryer Bk",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.48,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/DC5004BG",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/DC5004BG"
+        ],
+        "found": true
+      },
+      {
+        "id": 87,
+        "mfg_part_num": "PTW705BSTWS",
+        "raw_description": "PTW705BSTWS GE Washer Wh",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.48,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/PTW705BSTWS",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/PTW705BSTWS"
+        ],
+        "found": true
+      },
+      {
+        "id": 88,
+        "mfg_part_num": "MVWP586GW",
+        "raw_description": "MVWP586GW Washer Wh - Display",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.48,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/MVWP586GW",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/MVWP586GW"
+        ],
+        "found": true
+      },
+      {
+        "id": 89,
+        "mfg_part_num": "TV2000WN",
+        "raw_description": "TV2000WN SQ Elect Washer",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.48,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/TV2000WN",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/TV2000WN"
+        ],
+        "found": true
+      },
+      {
+        "id": 90,
+        "mfg_part_num": "TC5003BN",
+        "raw_description": "TC5003BN SQ Washer Bk",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.48,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/TC5003BN",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/TC5003BN"
+        ],
+        "found": true
+      },
+      {
+        "id": 91,
+        "mfg_part_num": "TR7006WN",
+        "raw_description": "TR7006WN Speed Queen Washer Wh",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.48,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/TR7006WN",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/TR7006WN"
+        ],
+        "found": true
+      },
+      {
+        "id": 92,
+        "mfg_part_num": "TR7006BN",
+        "raw_description": "TR7006BN Speed Queen Washer Bk",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.48,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/TR7006BN",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/TR7006BN"
+        ],
+        "found": true
+      },
+      {
+        "id": 93,
+        "mfg_part_num": "TR5006WN",
+        "raw_description": "TR5006WN Speed Queen Washer Wh",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.48,
+        "status": "HIGH",
+        "source_url": "https://www.appliancedealerscooperative(appde).com/products/TR5006WN",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.appliancedealerscooperative(appde).com/products/TR5006WN"
+        ],
+        "found": true
+      },
+      {
+        "id": 94,
+        "mfg_part_num": "05134545001",
+        "raw_description": "9516 Kneeling Pad& Bttl Opener",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.48,
+        "status": "HIGH",
+        "source_url": "https://www.weratoolsnainc(werto).com/products/05134545001",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.weratoolsnainc(werto).com/products/05134545001"
+        ],
+        "found": true
+      },
+      {
+        "id": 95,
+        "mfg_part_num": "LNL65301",
+        "raw_description": "LNL65301 Digital Tire Pressure - Inflator Gauge",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.4,
+        "status": "HIGH",
+        "source_url": "https://www.-.com/products/LNL65301",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.-.com/products/LNL65301"
+        ],
+        "found": true
+      },
+      {
+        "id": 96,
+        "mfg_part_num": "25-A",
+        "raw_description": "Charcoal Black 25-A Mortar - Type N",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.49,
+        "status": "HIGH",
+        "source_url": "https://www.reescaststonecompany(reeca).com/products/25-A",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.reescaststonecompany(reeca).com/products/25-A"
+        ],
+        "found": true
+      },
+      {
+        "id": 97,
+        "mfg_part_num": "38-E",
+        "raw_description": "Dark Chocolate 38-E Mortar - Type N",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.49,
+        "status": "HIGH",
+        "source_url": "https://www.reescaststonecompany(reeca).com/products/38-E",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.reescaststonecompany(reeca).com/products/38-E"
+        ],
+        "found": true
+      },
+      {
+        "id": 98,
+        "mfg_part_num": "59-J",
+        "raw_description": "Light Buff 59-J Mortar - Type N",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.49,
+        "status": "HIGH",
+        "source_url": "https://www.reescaststonecompany(reeca).com/products/59-J",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.reescaststonecompany(reeca).com/products/59-J"
+        ],
+        "found": true
+      },
+      {
+        "id": 99,
+        "mfg_part_num": "44-A",
+        "raw_description": "Light Chocolate 44-A Mortar - Type N",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.49,
+        "status": "HIGH",
+        "source_url": "https://www.reescaststonecompany(reeca).com/products/44-A",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.reescaststonecompany(reeca).com/products/44-A"
+        ],
+        "found": true
+      },
+      {
+        "id": 100,
+        "mfg_part_num": "543302126",
+        "raw_description": "6' Wh Select T-Rail Kit Horiz - w/Sq Composite Balusters",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.uslumber(3073).com/products/543302126",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.uslumber(3073).com/products/543302126"
+        ],
+        "found": true
+      },
+      {
+        "id": 101,
+        "mfg_part_num": "543302146",
+        "raw_description": "8' Wh Select T-Rail Kit Horiz - w/Sq Composite Balusters",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.uslumber(3073).com/products/543302146",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.uslumber(3073).com/products/543302146"
+        ],
+        "found": true
+      },
+      {
+        "id": 102,
+        "mfg_part_num": "73019603",
+        "raw_description": "Finyline Wh 6' Fl Rail Kit Sq",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.4,
+        "status": "HIGH",
+        "source_url": "https://www.-.com/products/73019603",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.-.com/products/73019603"
+        ],
+        "found": true
+      },
+      {
+        "id": 103,
+        "mfg_part_num": "73019652",
+        "raw_description": "Finyline Wh 8' Fl Rail Kit Sq",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.4,
+        "status": "HIGH",
+        "source_url": "https://www.-.com/products/73019652",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.-.com/products/73019652"
+        ],
+        "found": true
+      },
+      {
+        "id": 104,
+        "mfg_part_num": "73019517",
+        "raw_description": "Finyline Wh 10' Fl Rail Kit Sq",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.4,
+        "status": "HIGH",
+        "source_url": "https://www.-.com/products/73019517",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.-.com/products/73019517"
+        ],
+        "found": true
+      },
+      {
+        "id": 105,
+        "mfg_part_num": "73019602",
+        "raw_description": "Finyline Wh 6' Fl Rail Kit Rd - w/Black Alum Balusters",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.4,
+        "status": "HIGH",
+        "source_url": "https://www.-.com/products/73019602",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.-.com/products/73019602"
+        ],
+        "found": true
+      },
+      {
+        "id": 106,
+        "mfg_part_num": "73019651",
+        "raw_description": "Finyline Wh 8' Fl Rail Kit Rd - w/Black Alum Balusters",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.4,
+        "status": "HIGH",
+        "source_url": "https://www.-.com/products/73019651",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.-.com/products/73019651"
+        ],
+        "found": true
+      },
+      {
+        "id": 107,
+        "mfg_part_num": "73019516",
+        "raw_description": "Finyline Wh 10' Fl Rail Kit Rd - w/Black Alum Balusters",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.4,
+        "status": "HIGH",
+        "source_url": "https://www.-.com/products/73019516",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.-.com/products/73019516"
+        ],
+        "found": true
+      },
+      {
+        "id": 108,
+        "mfg_part_num": "543300256",
+        "raw_description": "6' Black Select Classic Horiz - Rail w/Rnd Black Alum Baluster",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.61,
+        "status": "HIGH",
+        "source_url": "https://www.boisecascadebuildingmaterials(boica).com/products/543300256",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.boisecascadebuildingmaterials(boica).com/products/543300256"
+        ],
+        "found": true
+      },
+      {
+        "id": 109,
+        "mfg_part_num": "543300276",
+        "raw_description": "8' Black Select Classic Horiz - Rail w/Rnd Black Alum Baluster",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.61,
+        "status": "HIGH",
+        "source_url": "https://www.boisecascadebuildingmaterials(boica).com/products/543300276",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.boisecascadebuildingmaterials(boica).com/products/543300276"
+        ],
+        "found": true
+      },
+      {
+        "id": 110,
+        "mfg_part_num": "73045028",
+        "raw_description": "Custom Finyline Wh Gate Sq Bal",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.4,
+        "status": "HIGH",
+        "source_url": "https://www.-.com/products/73045028",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.-.com/products/73045028"
+        ],
+        "found": true
+      },
+      {
+        "id": 111,
+        "mfg_part_num": "73045031",
+        "raw_description": "Custom Finyline Wh Gate Rd - w/Black Alum Balusters",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.4,
+        "status": "HIGH",
+        "source_url": "https://www.-.com/products/73045031",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.-.com/products/73045031"
+        ],
+        "found": true
+      },
+      {
+        "id": 112,
+        "mfg_part_num": "543340126",
+        "raw_description": "6'x36\" Select Alm w/Sq Bal Hor - Assembled Black Rail Panel",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.61,
+        "status": "HIGH",
+        "source_url": "https://www.boisecascadebuildingmaterials(boica).com/products/543340126",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.boisecascadebuildingmaterials(boica).com/products/543340126"
+        ],
+        "found": true
+      },
+      {
+        "id": 113,
+        "mfg_part_num": "543340127",
+        "raw_description": "6'x36\" Select Alm w/Sq Bal Str - Assembled Black Rail Panel",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.61,
+        "status": "HIGH",
+        "source_url": "https://www.boisecascadebuildingmaterials(boica).com/products/543340127",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.boisecascadebuildingmaterials(boica).com/products/543340127"
+        ],
+        "found": true
+      },
+      {
+        "id": 114,
+        "mfg_part_num": "543340146",
+        "raw_description": "8'x36\" Select Alm w/Sq Bal Hor - Assembled Black Rail Panel",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.61,
+        "status": "HIGH",
+        "source_url": "https://www.boisecascadebuildingmaterials(boica).com/products/543340146",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.boisecascadebuildingmaterials(boica).com/products/543340146"
+        ],
+        "found": true
+      },
+      {
+        "id": 115,
+        "mfg_part_num": "543340147",
+        "raw_description": "8'x36\" Select Alm w/Sq Bal Str - Assembled Black Rail Panel",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.61,
+        "status": "HIGH",
+        "source_url": "https://www.boisecascadebuildingmaterials(boica).com/products/543340147",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.boisecascadebuildingmaterials(boica).com/products/543340147"
+        ],
+        "found": true
+      },
+      {
+        "id": 116,
+        "mfg_part_num": "ADB15516CS",
+        "raw_description": "1x6-16' Coastline Sq Edge - Vintage Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/ADB15516CS",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/ADB15516CS"
+        ],
+        "found": true
+      },
+      {
+        "id": 117,
+        "mfg_part_num": "ADB15520CS",
+        "raw_description": "1x6-20' Coastline Sq Edge - Vintage Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/ADB15520CS",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/ADB15520CS"
+        ],
+        "found": true
+      },
+      {
+        "id": 118,
+        "mfg_part_num": "ADB15516EW",
+        "raw_description": "1x6-16' English Walnut Sq Edge - Vintage Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/ADB15516EW",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/ADB15516EW"
+        ],
+        "found": true
+      },
+      {
+        "id": 119,
+        "mfg_part_num": "ADB15520EW",
+        "raw_description": "1x6-20' English Walnut Sq Edge - Vintage Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/ADB15520EW",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/ADB15520EW"
+        ],
+        "found": true
+      },
+      {
+        "id": 120,
+        "mfg_part_num": "ADB15516MH",
+        "raw_description": "1x6-16' Mahogany Sq Edge - Vintage Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/ADB15516MH",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/ADB15516MH"
+        ],
+        "found": true
+      },
+      {
+        "id": 121,
+        "mfg_part_num": "ADB15520MH",
+        "raw_description": "1x6-20' Mahogany Sq Edge - Vintage Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/ADB15520MH",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/ADB15520MH"
+        ],
+        "found": true
+      },
+      {
+        "id": 122,
+        "mfg_part_num": "ADB15516WT",
+        "raw_description": "1x6-16' Weathered Teak Sq Edge - Vintage Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/ADB15516WT",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/ADB15516WT"
+        ],
+        "found": true
+      },
+      {
+        "id": 123,
+        "mfg_part_num": "ADB15520WT",
+        "raw_description": "1x6-20' Weathered Teak Sq Edge - Vintage Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/ADB15520WT",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/ADB15520WT"
+        ],
+        "found": true
+      },
+      {
+        "id": 124,
+        "mfg_part_num": "AGB15512CS",
+        "raw_description": "1x6-12' Coastline Grooved - Vintage Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/AGB15512CS",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/AGB15512CS"
+        ],
+        "found": true
+      },
+      {
+        "id": 125,
+        "mfg_part_num": "AGB15516CS",
+        "raw_description": "1x6-16' Coastline Grooved - Vintage Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/AGB15516CS",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/AGB15516CS"
+        ],
+        "found": true
+      },
+      {
+        "id": 126,
+        "mfg_part_num": "AGB15520CS",
+        "raw_description": "1x6-20' Coastline Grooved - Vintage Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/AGB15520CS",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/AGB15520CS"
+        ],
+        "found": true
+      },
+      {
+        "id": 127,
+        "mfg_part_num": "AGB15512EW",
+        "raw_description": "1x6-12' English Walnut Grooved - Vintage Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/AGB15512EW",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/AGB15512EW"
+        ],
+        "found": true
+      },
+      {
+        "id": 128,
+        "mfg_part_num": "AGB15516EW",
+        "raw_description": "1x6-16' English Walnut Grooved - Vintage Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/AGB15516EW",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/AGB15516EW"
+        ],
+        "found": true
+      },
+      {
+        "id": 129,
+        "mfg_part_num": "AGB15520EW",
+        "raw_description": "1x6-20' English Walnut Grooved - Vintage Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/AGB15520EW",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/AGB15520EW"
+        ],
+        "found": true
+      },
+      {
+        "id": 130,
+        "mfg_part_num": "AGB15512MH",
+        "raw_description": "1x6-12' Mahogany Grooved - Vintage Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/AGB15512MH",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/AGB15512MH"
+        ],
+        "found": true
+      },
+      {
+        "id": 131,
+        "mfg_part_num": "AGB15516MH",
+        "raw_description": "1x6-16' Mahogany Grooved - Vintage Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/AGB15516MH",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/AGB15516MH"
+        ],
+        "found": true
+      },
+      {
+        "id": 132,
+        "mfg_part_num": "AGB15520MH",
+        "raw_description": "1x6-20' Mahogany Grooved - Vintage Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/AGB15520MH",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/AGB15520MH"
+        ],
+        "found": true
+      },
+      {
+        "id": 133,
+        "mfg_part_num": "AGB15512WT",
+        "raw_description": "1x6-12' Weathered Teak Grooved - Vintage Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/AGB15512WT",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/AGB15512WT"
+        ],
+        "found": true
+      },
+      {
+        "id": 134,
+        "mfg_part_num": "AGB15516WT",
+        "raw_description": "1x6-16' Weathered Teak Grooved - Vintage Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/AGB15516WT",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/AGB15516WT"
+        ],
+        "found": true
+      },
+      {
+        "id": 135,
+        "mfg_part_num": "AGB15520WT",
+        "raw_description": "1x6-20' Weathered Teak Grooved - Vintage Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/AGB15520WT",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/AGB15520WT"
+        ],
+        "found": true
+      },
+      {
+        "id": 136,
+        "mfg_part_num": "ADB15516AW",
+        "raw_description": "1x6-16' American Walnut Sq Edg - Landmark Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/ADB15516AW",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/ADB15516AW"
+        ],
+        "found": true
+      },
+      {
+        "id": 137,
+        "mfg_part_num": "ADB15520AW",
+        "raw_description": "1x6-20' American Walnut Sq Edg - Landmark Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/ADB15520AW",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/ADB15520AW"
+        ],
+        "found": true
+      },
+      {
+        "id": 138,
+        "mfg_part_num": "ADB15516CG",
+        "raw_description": "1x6-16' Castle Gate Sq Edge - Landmark Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/ADB15516CG",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/ADB15516CG"
+        ],
+        "found": true
+      },
+      {
+        "id": 139,
+        "mfg_part_num": "ADB15520CG",
+        "raw_description": "1x6-20' Castle Gate Sq Edge - Landmark Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/ADB15520CG",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/ADB15520CG"
+        ],
+        "found": true
+      },
+      {
+        "id": 140,
+        "mfg_part_num": "ADB15516FW",
+        "raw_description": "1x6-16' French White Oak Sq Ed - Landmark Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/ADB15516FW",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/ADB15516FW"
+        ],
+        "found": true
+      },
+      {
+        "id": 141,
+        "mfg_part_num": "ADB15520FW",
+        "raw_description": "1x6-20' French White Oak Sq Ed - Landmark Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/ADB15520FW",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/ADB15520FW"
+        ],
+        "found": true
+      },
+      {
+        "id": 142,
+        "mfg_part_num": "AGB15512AW",
+        "raw_description": "1x6-12' American Walnut Groove - Landmark Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/AGB15512AW",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/AGB15512AW"
+        ],
+        "found": true
+      },
+      {
+        "id": 143,
+        "mfg_part_num": "AGB15516AW",
+        "raw_description": "1x6-16' American Walnut Groove - Landmark Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/AGB15516AW",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/AGB15516AW"
+        ],
+        "found": true
+      },
+      {
+        "id": 144,
+        "mfg_part_num": "AGB15520AW",
+        "raw_description": "1x6-20' American Walnut Groove - Landmark Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/AGB15520AW",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/AGB15520AW"
+        ],
+        "found": true
+      },
+      {
+        "id": 145,
+        "mfg_part_num": "AGB15512CG",
+        "raw_description": "1x6-12' Castle Gate Grooved - Landmark Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/AGB15512CG",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/AGB15512CG"
+        ],
+        "found": true
+      },
+      {
+        "id": 146,
+        "mfg_part_num": "AGB15516CG",
+        "raw_description": "1x6-16' Castle Gate Grooved - Landmark Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/AGB15516CG",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/AGB15516CG"
+        ],
+        "found": true
+      },
+      {
+        "id": 147,
+        "mfg_part_num": "AGB15520CG",
+        "raw_description": "1x6-20' Castle Gate Grooved - Landmark Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/AGB15520CG",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/AGB15520CG"
+        ],
+        "found": true
+      },
+      {
+        "id": 148,
+        "mfg_part_num": "AGB15512FW",
+        "raw_description": "1x6-12' French White Oak Groov - Landmark Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/AGB15512FW",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/AGB15512FW"
+        ],
+        "found": true
+      },
+      {
+        "id": 149,
+        "mfg_part_num": "AGB15516FW",
+        "raw_description": "1x6-16' French White Oak Groov - Landmark Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/AGB15516FW",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/AGB15516FW"
+        ],
+        "found": true
+      },
+      {
+        "id": 150,
+        "mfg_part_num": "AGB15520FW",
+        "raw_description": "1x6-20' French White Oak Groov - Landmark Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/AGB15520FW",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/AGB15520FW"
+        ],
+        "found": true
+      },
+      {
+        "id": 151,
+        "mfg_part_num": "ADCB15516BS",
+        "raw_description": "1x6-16' Brownstone Sq Edge - Harvest Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/ADCB15516BS",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/ADCB15516BS"
+        ],
+        "found": true
+      },
+      {
+        "id": 152,
+        "mfg_part_num": "ADCB15520BS",
+        "raw_description": "1x6-20' Brownstone Sq Edge - Harvest Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/ADCB15520BS",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/ADCB15520BS"
+        ],
+        "found": true
+      },
+      {
+        "id": 153,
+        "mfg_part_num": "ADCB15516SG",
+        "raw_description": "1x6-16' Slate Gray Sq Edge - Harvest Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/ADCB15516SG",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/ADCB15516SG"
+        ],
+        "found": true
+      },
+      {
+        "id": 154,
+        "mfg_part_num": "ADCB15520SG",
+        "raw_description": "1x6-20' Slate Gray Sq Edge - Harvest Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/ADCB15520SG",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/ADCB15520SG"
+        ],
+        "found": true
+      },
+      {
+        "id": 155,
+        "mfg_part_num": "AGB15512BS",
+        "raw_description": "1x6-12' Brownstone Grooved - Harvest Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/AGB15512BS",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/AGB15512BS"
+        ],
+        "found": true
+      },
+      {
+        "id": 156,
+        "mfg_part_num": "AGB15516BS",
+        "raw_description": "1x6-16' Brownstone Grooved - Harvest Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/AGB15516BS",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/AGB15516BS"
+        ],
+        "found": true
+      },
+      {
+        "id": 157,
+        "mfg_part_num": "AGB15520BS",
+        "raw_description": "1x6-20' Brownstone Grooved - Harvest Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/AGB15520BS",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/AGB15520BS"
+        ],
+        "found": true
+      },
+      {
+        "id": 158,
+        "mfg_part_num": "AGB15512SG",
+        "raw_description": "1x6-12' Slate Gray Grooved - Harvest Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/AGB15512SG",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/AGB15512SG"
+        ],
+        "found": true
+      },
+      {
+        "id": 159,
+        "mfg_part_num": "AGB15516SG",
+        "raw_description": "1x6-16' Slate Gray Grooved - Harvest Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/AGB15516SG",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/AGB15516SG"
+        ],
+        "found": true
+      },
+      {
+        "id": 160,
+        "mfg_part_num": "AGB15520SG",
+        "raw_description": "1x6-20' Slate Gray Grooved - Harvest Azek PVC Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.55,
+        "status": "HIGH",
+        "source_url": "https://www.parksite(6151).com/products/AGB15520SG",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.parksite(6151).com/products/AGB15520SG"
+        ],
+        "found": true
+      },
+      {
+        "id": 161,
+        "mfg_part_num": "543140016",
+        "raw_description": "1nx6-16' Biscayne Sq Edge - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.uslumber(3073).com/products/543140016",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.uslumber(3073).com/products/543140016"
+        ],
+        "found": true
+      },
+      {
+        "id": 162,
+        "mfg_part_num": "543140020",
+        "raw_description": "1nx6-20' Biscayne Sq Edge - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.uslumber(3073).com/products/543140020",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.uslumber(3073).com/products/543140020"
+        ],
+        "found": true
+      },
+      {
+        "id": 163,
+        "mfg_part_num": "543142016",
+        "raw_description": "1nx6-16' Carmel Sq Edge - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.uslumber(3073).com/products/543142016",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.uslumber(3073).com/products/543142016"
+        ],
+        "found": true
+      },
+      {
+        "id": 164,
+        "mfg_part_num": "543142020",
+        "raw_description": "1nx6-20' Carmel Sq Edge - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.uslumber(3073).com/products/543142020",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.uslumber(3073).com/products/543142020"
+        ],
+        "found": true
+      },
+      {
+        "id": 165,
+        "mfg_part_num": "543144016",
+        "raw_description": "1nx6-16' Island Mist Sq Edge - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.uslumber(3073).com/products/543144016",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.uslumber(3073).com/products/543144016"
+        ],
+        "found": true
+      },
+      {
+        "id": 166,
+        "mfg_part_num": "543144020",
+        "raw_description": "1nx6-20' Island Mist Sq Edge - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.uslumber(3073).com/products/543144020",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.uslumber(3073).com/products/543144020"
+        ],
+        "found": true
+      },
+      {
+        "id": 167,
+        "mfg_part_num": "543143016",
+        "raw_description": "1nx6-16' Jasper Sq Edge - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.uslumber(3073).com/products/543143016",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.uslumber(3073).com/products/543143016"
+        ],
+        "found": true
+      },
+      {
+        "id": 168,
+        "mfg_part_num": "543143020",
+        "raw_description": "1nx6-20' Jasper Sq Edge - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.uslumber(3073).com/products/543143020",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.uslumber(3073).com/products/543143020"
+        ],
+        "found": true
+      },
+      {
+        "id": 169,
+        "mfg_part_num": "543141016",
+        "raw_description": "1nx6-16' Rainier Sq Edge - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.uslumber(3073).com/products/543141016",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.uslumber(3073).com/products/543141016"
+        ],
+        "found": true
+      },
+      {
+        "id": 170,
+        "mfg_part_num": "543141020",
+        "raw_description": "1nx6-20' Rainier Sq Edge - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.uslumber(3073).com/products/543141020",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.uslumber(3073).com/products/543141020"
+        ],
+        "found": true
+      },
+      {
+        "id": 171,
+        "mfg_part_num": "543140412",
+        "raw_description": "1nx6-12' Biscayne Grooved - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.uslumber(3073).com/products/543140412",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.uslumber(3073).com/products/543140412"
+        ],
+        "found": true
+      },
+      {
+        "id": 172,
+        "mfg_part_num": "543140416",
+        "raw_description": "1nx6-16' Biscayne Grooved - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.uslumber(3073).com/products/543140416",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.uslumber(3073).com/products/543140416"
+        ],
+        "found": true
+      },
+      {
+        "id": 173,
+        "mfg_part_num": "543140420",
+        "raw_description": "1nx6-20' Biscayne Grooved - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.uslumber(3073).com/products/543140420",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.uslumber(3073).com/products/543140420"
+        ],
+        "found": true
+      },
+      {
+        "id": 174,
+        "mfg_part_num": "543142412",
+        "raw_description": "1nx6-12' Carmel Grooved - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.uslumber(3073).com/products/543142412",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.uslumber(3073).com/products/543142412"
+        ],
+        "found": true
+      },
+      {
+        "id": 175,
+        "mfg_part_num": "543142416",
+        "raw_description": "1nx6-16' Carmel Grooved - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.uslumber(3073).com/products/543142416",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.uslumber(3073).com/products/543142416"
+        ],
+        "found": true
+      },
+      {
+        "id": 176,
+        "mfg_part_num": "543142420",
+        "raw_description": "1nx6-20' Carmel Grooved - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.uslumber(3073).com/products/543142420",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.uslumber(3073).com/products/543142420"
+        ],
+        "found": true
+      },
+      {
+        "id": 177,
+        "mfg_part_num": "543144412",
+        "raw_description": "1nx6-12' Island Mist Grooved - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.uslumber(3073).com/products/543144412",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.uslumber(3073).com/products/543144412"
+        ],
+        "found": true
+      },
+      {
+        "id": 178,
+        "mfg_part_num": "543144416",
+        "raw_description": "1nx6-16' Island Mist Grooved - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.uslumber(3073).com/products/543144416",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.uslumber(3073).com/products/543144416"
+        ],
+        "found": true
+      },
+      {
+        "id": 179,
+        "mfg_part_num": "543144420",
+        "raw_description": "1nx6-20' Island Mist Grooved - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.uslumber(3073).com/products/543144420",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.uslumber(3073).com/products/543144420"
+        ],
+        "found": true
+      },
+      {
+        "id": 180,
+        "mfg_part_num": "543143412",
+        "raw_description": "1nx6-12' Jasper Grooved - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.uslumber(3073).com/products/543143412",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.uslumber(3073).com/products/543143412"
+        ],
+        "found": true
+      },
+      {
+        "id": 181,
+        "mfg_part_num": "543143416",
+        "raw_description": "1nx6-16' Jasper Grooved - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.uslumber(3073).com/products/543143416",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.uslumber(3073).com/products/543143416"
+        ],
+        "found": true
+      },
+      {
+        "id": 182,
+        "mfg_part_num": "543143420",
+        "raw_description": "1nx6-20' Jasper Grooved - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.uslumber(3073).com/products/543143420",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.uslumber(3073).com/products/543143420"
+        ],
+        "found": true
+      },
+      {
+        "id": 183,
+        "mfg_part_num": "543141412",
+        "raw_description": "1nx6-12' Rainier Grooved - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.uslumber(3073).com/products/543141412",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.uslumber(3073).com/products/543141412"
+        ],
+        "found": true
+      },
+      {
+        "id": 184,
+        "mfg_part_num": "543141416",
+        "raw_description": "1nx6-16' Rainier Grooved - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.uslumber(3073).com/products/543141416",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.uslumber(3073).com/products/543141416"
+        ],
+        "found": true
+      },
+      {
+        "id": 185,
+        "mfg_part_num": "543141420",
+        "raw_description": "1nx6-20' Rainier Grooved - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.58,
+        "status": "HIGH",
+        "source_url": "https://www.uslumber(3073).com/products/543141420",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.uslumber(3073).com/products/543141420"
+        ],
+        "found": true
+      },
+      {
+        "id": 186,
+        "mfg_part_num": "1513703",
+        "raw_description": "1nx6-16' Hatteras Sq Edge - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.61,
+        "status": "HIGH",
+        "source_url": "https://www.boisecascadebuildingmaterials(boica).com/products/1513703",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.boisecascadebuildingmaterials(boica).com/products/1513703"
+        ],
+        "found": true
+      },
+      {
+        "id": 187,
+        "mfg_part_num": "1513704",
+        "raw_description": "1nx6-20' Hatteras Sq Edge - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.61,
+        "status": "HIGH",
+        "source_url": "https://www.boisecascadebuildingmaterials(boica).com/products/1513704",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.boisecascadebuildingmaterials(boica).com/products/1513704"
+        ],
+        "found": true
+      },
+      {
+        "id": 188,
+        "mfg_part_num": "1513705",
+        "raw_description": "1nx6-12' Hatteras Grooved - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.61,
+        "status": "HIGH",
+        "source_url": "https://www.boisecascadebuildingmaterials(boica).com/products/1513705",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.boisecascadebuildingmaterials(boica).com/products/1513705"
+        ],
+        "found": true
+      },
+      {
+        "id": 189,
+        "mfg_part_num": "1513706",
+        "raw_description": "1nx6-16' Hatteras Grooved - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.61,
+        "status": "HIGH",
+        "source_url": "https://www.boisecascadebuildingmaterials(boica).com/products/1513706",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.boisecascadebuildingmaterials(boica).com/products/1513706"
+        ],
+        "found": true
+      },
+      {
+        "id": 190,
+        "mfg_part_num": "1513707",
+        "raw_description": "1nx6-20' Hatteras Grooved - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.61,
+        "status": "HIGH",
+        "source_url": "https://www.boisecascadebuildingmaterials(boica).com/products/1513707",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.boisecascadebuildingmaterials(boica).com/products/1513707"
+        ],
+        "found": true
+      },
+      {
+        "id": 191,
+        "mfg_part_num": "1513708",
+        "raw_description": "1nx6-16' Salt Flat Sq Edge - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.61,
+        "status": "HIGH",
+        "source_url": "https://www.boisecascadebuildingmaterials(boica).com/products/1513708",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.boisecascadebuildingmaterials(boica).com/products/1513708"
+        ],
+        "found": true
+      },
+      {
+        "id": 192,
+        "mfg_part_num": "1513709",
+        "raw_description": "1nx6-20' Salt Flat Sq Edge - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.61,
+        "status": "HIGH",
+        "source_url": "https://www.boisecascadebuildingmaterials(boica).com/products/1513709",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.boisecascadebuildingmaterials(boica).com/products/1513709"
+        ],
+        "found": true
+      },
+      {
+        "id": 193,
+        "mfg_part_num": "1513710",
+        "raw_description": "1nx6-12' Salt Flat Grooved - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.61,
+        "status": "HIGH",
+        "source_url": "https://www.boisecascadebuildingmaterials(boica).com/products/1513710",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.boisecascadebuildingmaterials(boica).com/products/1513710"
+        ],
+        "found": true
+      },
+      {
+        "id": 194,
+        "mfg_part_num": "1513711",
+        "raw_description": "1nx6-16' Salt Flat Grooved - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.61,
+        "status": "HIGH",
+        "source_url": "https://www.boisecascadebuildingmaterials(boica).com/products/1513711",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.boisecascadebuildingmaterials(boica).com/products/1513711"
+        ],
+        "found": true
+      },
+      {
+        "id": 195,
+        "mfg_part_num": "1513712",
+        "raw_description": "1nx6-20' Salt Flat Grooved - Trex Transcend Lineage Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.61,
+        "status": "HIGH",
+        "source_url": "https://www.boisecascadebuildingmaterials(boica).com/products/1513712",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.boisecascadebuildingmaterials(boica).com/products/1513712"
+        ],
+        "found": true
+      },
+      {
+        "id": 196,
+        "mfg_part_num": "1513717",
+        "raw_description": "1nx6-16' Honey Grove Sq Edge - Trex Enhance Naturals Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.61,
+        "status": "HIGH",
+        "source_url": "https://www.boisecascadebuildingmaterials(boica).com/products/1513717",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.boisecascadebuildingmaterials(boica).com/products/1513717"
+        ],
+        "found": true
+      },
+      {
+        "id": 197,
+        "mfg_part_num": "1513718",
+        "raw_description": "1nx6-20' Honey Grove Sq Edge - Trex Enhance Naturals Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.61,
+        "status": "HIGH",
+        "source_url": "https://www.boisecascadebuildingmaterials(boica).com/products/1513718",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.boisecascadebuildingmaterials(boica).com/products/1513718"
+        ],
+        "found": true
+      },
+      {
+        "id": 198,
+        "mfg_part_num": "1513719",
+        "raw_description": "1nx6-12' Honey Grove Grooved - Trex Enhance Naturals Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.61,
+        "status": "HIGH",
+        "source_url": "https://www.boisecascadebuildingmaterials(boica).com/products/1513719",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.boisecascadebuildingmaterials(boica).com/products/1513719"
+        ],
+        "found": true
+      },
+      {
+        "id": 199,
+        "mfg_part_num": "1513720",
+        "raw_description": "1nx6-16' Honey Grove Grooved - Trex Enhance Naturals Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.61,
+        "status": "HIGH",
+        "source_url": "https://www.boisecascadebuildingmaterials(boica).com/products/1513720",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.boisecascadebuildingmaterials(boica).com/products/1513720"
+        ],
+        "found": true
+      },
+      {
+        "id": 200,
+        "mfg_part_num": "1513721",
+        "raw_description": "1nx6-20' Honey Grove Grooved - Trex Enhance Naturals Decking",
+        "brand": null,
+        "manufacturer": null,
+        "category": "General Industrial",
+        "confidence_score": 0.61,
+        "status": "HIGH",
+        "source_url": "https://www.boisecascadebuildingmaterials(boica).com/products/1513721",
+        "source_type": "manufacturer",
+        "grounding_sources": [
+          "https://www.boisecascadebuildingmaterials(boica).com/products/1513721"
+        ],
+        "found": true
+      }
+    ]
+  },
+  "step2_independent_evaluation": {
+    "matched_rows": 200,
+    "total_comparisons": 50400,
+    "total_populated_gt_fields": 5550,
+    "populated_gt_matches": 3014,
+    "independent_overall_field_pct": 54.3,
+    "independent_mfg_pct": 3.5,
+    "independent_brand_pct": 3.5,
+    "independent_dept_pct": 100.0,
+    "independent_class_pct": 100.0,
+    "independent_fine_pct": 100.0,
+    "discrepancies": [
+      {
+        "metric": "Overall Populated Field Match %",
+        "independent_val": 54.3,
+        "app_eval_val": 54.3,
+        "delta": 0.0,
+        "is_discrepant": false
+      },
+      {
+        "metric": "Manufacturer Name Match %",
+        "independent_val": 3.5,
+        "app_eval_val": 3.5,
+        "delta": 0.0,
+        "is_discrepant": false
+      },
+      {
+        "metric": "Brand Name Match %",
+        "independent_val": 3.5,
+        "app_eval_val": 3.5,
+        "delta": 0.0,
+        "is_discrepant": false
+      },
+      {
+        "metric": "Department Match %",
+        "independent_val": 100.0,
+        "app_eval_val": 100.0,
+        "delta": 0.0,
+        "is_discrepant": false
+      },
+      {
+        "metric": "Class Match %",
+        "independent_val": 100.0,
+        "app_eval_val": 100.0,
+        "delta": 0.0,
+        "is_discrepant": false
+      },
+      {
+        "metric": "Fine Category Match %",
+        "independent_val": 100.0,
+        "app_eval_val": 100.0,
+        "delta": 0.0,
+        "is_discrepant": false
+      }
+    ],
+    "has_major_discrepancy": false,
+    "sample_disagreements": [
+      {
+        "mpn": "DCB518ASTS06G",
+        "mismatches": [
+          [
+            "INVOICE_DESC",
+            "DCB518ASTS06G Sanding Belts",
+            "Sanding Belts DCB518ASTS06G"
+          ]
+        ]
+      },
+      {
+        "mpn": "3MABR-7100075678",
+        "mismatches": [
+          [
+            "MANUFACTURER_NAME",
+            "Jam Industrial Supply LLC",
+            ""
+          ],
+          [
+            "BRAND_NAME",
+            "3M",
+            ""
+          ],
+          [
+            "INVOICE_DESC",
+            "3MABR-7100075678 Sanding Discs",
+            "Sanding Discs 3MABR-7100075678"
+          ]
+        ]
+      },
+      {
+        "mpn": "3MABR-7100045865",
+        "mismatches": [
+          [
+            "MANUFACTURER_NAME",
+            "Jam Industrial Supply LLC",
+            ""
+          ],
+          [
+            "BRAND_NAME",
+            "3M",
+            ""
+          ],
+          [
+            "INVOICE_DESC",
+            "3MABR-7100045865 Sanding Discs",
+            "Sanding Discs 3MABR-7100045865"
+          ]
+        ]
+      },
+      {
+        "mpn": "3MABR-7100048736",
+        "mismatches": [
+          [
+            "MANUFACTURER_NAME",
+            "Jam Industrial Supply LLC",
+            ""
+          ],
+          [
+            "BRAND_NAME",
+            "3M",
+            ""
+          ],
+          [
+            "INVOICE_DESC",
+            "3MABR-7100048736 Sanding Discs",
+            "Sanding Discs 3MABR-7100048736"
+          ]
+        ]
+      },
+      {
+        "mpn": "3MABR-7100075690",
+        "mismatches": [
+          [
+            "MANUFACTURER_NAME",
+            "Jam Industrial Supply LLC",
+            ""
+          ],
+          [
+            "BRAND_NAME",
+            "3M",
+            ""
+          ],
+          [
+            "INVOICE_DESC",
+            "3MABR-7100075690 Sanding Discs",
+            "Sanding Discs 3MABR-7100075690"
+          ]
+        ]
+      }
+    ]
+  },
+  "step3_url_provenance": {
+    "total_products_with_urls": 200,
+    "sample_tested": 50,
+    "live_count": 6,
+    "live_pct": 12.0,
+    "valid_mention_count": 6,
+    "mention_pct": 100.0,
+    "error_count": 44,
+    "error_pct": 88.0,
+    "sample_results": [
+      {
+        "mpn": "DCB518ASTS06G",
+        "url": "https://www.diablotools.com/products/DCB518ASTS06G",
+        "status_code": 200,
+        "is_live": true,
+        "mentions_target": true,
+        "error": null
+      },
+      {
+        "mpn": "3MABR-7100075678",
+        "url": "https://www.jamindustrialsupplyllc(jamin).com/products/3MABR-7100075678",
+        "status_code": null,
+        "is_live": false,
+        "mentions_target": false,
+        "error": "[Errno 11001] getaddrinfo failed"
+      },
+      {
+        "mpn": "3MABR-7100045865",
+        "url": "https://www.jamindustrialsupplyllc(jamin).com/products/3MABR-7100045865",
+        "status_code": null,
+        "is_live": false,
+        "mentions_target": false,
+        "error": "[Errno 11001] getaddrinfo failed"
+      },
+      {
+        "mpn": "3MABR-7100048736",
+        "url": "https://www.jamindustrialsupplyllc(jamin).com/products/3MABR-7100048736",
+        "status_code": null,
+        "is_live": false,
+        "mentions_target": false,
+        "error": "[Errno 11001] getaddrinfo failed"
+      },
+      {
+        "mpn": "3MABR-7100075690",
+        "url": "https://www.jamindustrialsupplyllc(jamin).com/products/3MABR-7100075690",
+        "status_code": null,
+        "is_live": false,
+        "mentions_target": false,
+        "error": "[Errno 11001] getaddrinfo failed"
+      },
+      {
+        "mpn": "3MABR-7100075692",
+        "url": "https://www.jamindustrialsupplyllc(jamin).com/products/3MABR-7100075692",
+        "status_code": null,
+        "is_live": false,
+        "mentions_target": false,
+        "error": "[Errno 11001] getaddrinfo failed"
+      },
+      {
+        "mpn": "3MABR-7100145365",
+        "url": "https://www.jamindustrialsupplyllc(jamin).com/products/3MABR-7100145365",
+        "status_code": null,
+        "is_live": false,
+        "mentions_target": false,
+        "error": "[Errno 11001] getaddrinfo failed"
+      },
+      {
+        "mpn": "5B-332-080",
+        "url": "https://www.mirka.com/en/products/5B-332-080",
+        "status_code": 404,
+        "is_live": false,
+        "mentions_target": false,
+        "error": null
+      },
+      {
+        "mpn": "5B-332-120",
+        "url": "https://www.mirka.com/en/products/5B-332-120",
+        "status_code": 404,
+        "is_live": false,
+        "mentions_target": false,
+        "error": null
+      },
+      {
+        "mpn": "9A-570-240",
+        "url": "https://www.mirka.com/en/products/9A-570-240",
+        "status_code": 404,
+        "is_live": false,
+        "mentions_target": false,
+        "error": null
+      }
+    ]
+  },
+  "step4_confidence_calibration": {
+    "calibration_table": [
+      {
+        "tier": "HIGH (>=0.85)",
+        "row_count": 7,
+        "avg_confidence": 0.98,
+        "accuracy_pct": 61.3
+      },
+      {
+        "tier": "MEDIUM (0.60-0.84)",
+        "row_count": 21,
+        "avg_confidence": 0.61,
+        "accuracy_pct": 55.6
+      },
+      {
+        "tier": "NEEDS_REVIEW (<0.60)",
+        "row_count": 172,
+        "avg_confidence": 0.54,
+        "accuracy_pct": 53.9
+      }
+    ],
+    "is_calibrated": true
+  }
+}
