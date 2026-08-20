@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Navbar } from './components/Navbar';
+import { HeroSection } from './components/HeroSection';
+import { TransformationShowcase } from './components/TransformationShowcase';
+import { PipelineFlow } from './components/PipelineFlow';
 import { StatsOverview } from './components/StatsOverview';
 import { ProductTable } from './components/ProductTable';
 import { UploadModal } from './components/UploadModal';
@@ -8,13 +10,10 @@ import { ProductDetailModal } from './components/ProductDetailModal';
 import { EvaluationPanel } from './components/EvaluationPanel';
 import { ReviewPanel } from './components/ReviewPanel';
 import { Chatbot } from './components/Chatbot';
-import { LandingPage } from './components/LandingPage';
 
 const API_BASE = "http://127.0.0.1:8000/api";
 
 export const App: React.FC = () => {
-  const [isDemoActive, setIsDemoActive] = useState<boolean>(false);
-  
   const [stats, setStats] = useState<{
     total_products: number;
     processed: number;
@@ -226,88 +225,88 @@ export const App: React.FC = () => {
     window.open(url, '_blank');
   };
 
+  const highConfRate = stats.total_products > 0 ? Math.round((stats.high_confidence / stats.total_products) * 100) : 0;
+
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col font-sans relative">
-      <AnimatePresence mode="wait">
-        {!isDemoActive ? (
-          <motion.div
-            key="landing"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full h-full flex flex-col"
-          >
-            {/* Minimal nav for landing page could go here if needed, but LandingPage handles its own hero */}
-            <LandingPage onLaunchDemo={() => setIsDemoActive(true)} />
-          </motion.div>
-        ) : (
-          <motion.div
-            key="dashboard"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full flex flex-col min-h-screen"
-          >
-            {/* Header Navigation */}
-            <Navbar
-              datasets={datasets}
-              selectedDatasetId={selectedDatasetId}
-              onSelectDataset={setSelectedDatasetId}
-              onOpenUpload={() => setIsUploadOpen(true)}
-              onExport={handleExport}
-              onRunBatchEnrichment={handleRunBatchEnrichment}
-              isEnriching={isEnriching}
-              enrichmentProgress={enrichmentProgress}
-              healthStatus={healthStatus}
-              onBackToHome={() => setIsDemoActive(false)}
-            />
+    <div className="min-h-screen text-slate-100 flex flex-col font-sans relative selection:bg-indigo-500/80 selection:text-white">
+      
+      {/* Top Floating Glass Navigation */}
+      <Navbar
+        datasets={datasets}
+        selectedDatasetId={selectedDatasetId}
+        onSelectDataset={setSelectedDatasetId}
+        onOpenUpload={() => setIsUploadOpen(true)}
+        onExport={handleExport}
+        onRunBatchEnrichment={handleRunBatchEnrichment}
+        isEnriching={isEnriching}
+        enrichmentProgress={enrichmentProgress}
+        healthStatus={healthStatus}
+      />
 
-            {/* Main Container */}
-            <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8 relative z-10">
-              
-              {/* KPI Stats Header */}
-              <StatsOverview stats={stats} />
+      {/* Main Container */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 relative z-10">
+        
+        {/* Hero Section with Floating Headlines & Telemetry */}
+        <HeroSection
+          onRunBatch={handleRunBatchEnrichment}
+          onOpenUpload={() => setIsUploadOpen(true)}
+          isEnriching={isEnriching}
+          totalProducts={stats.total_products}
+          highConfidenceRate={highConfRate}
+        />
 
-              {/* Evaluation Metrics Benchmark */}
-              <EvaluationPanel evaluation={evaluationData} onRefresh={fetchEvaluation} />
+        {/* Interactive Before vs After Transformation Showcase */}
+        <TransformationShowcase />
 
-              {/* Needs Human Review Panel */}
-              <ReviewPanel
-                datasetId={selectedDatasetId}
-                onReEnrich={handleEnrichSingle}
-              />
+        {/* 5-Stage Concurrent Architecture Flow */}
+        <PipelineFlow />
 
-              {/* Product Table */}
-              <ProductTable
-                products={products}
-                total={totalProducts}
-                page={page}
-                limit={limit}
-                statusFilter={statusFilter}
-                searchQuery={searchQuery}
-                onSearchChange={setSearchQuery}
-                onStatusFilterChange={setStatusFilter}
-                onPageChange={setPage}
-                onSelectProduct={handleSelectProduct}
-                onEnrichSingle={handleEnrichSingle}
-              />
-            </main>
+        {/* Executive KPI Stats Overview */}
+        <div className="mt-8">
+          <StatsOverview stats={stats} />
+        </div>
 
-            {/* Footer */}
-            <footer className="py-8 text-center text-xs text-slate-500 border-t border-white/5 mt-10 backdrop-blur-md">
-              <div className="max-w-7xl mx-auto flex flex-col items-center justify-center gap-2">
-                <div className="flex items-center gap-2 opacity-50">
-                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
-                  AI Product Enrichment Platform
-                  <span className="w-1.5 h-1.5 rounded-full bg-pink-500"></span>
-                </div>
-                <p>Multi-Format Ingestion (CSV, XLSX, XLS) & 252-Column Delivery Export</p>
-              </div>
-            </footer>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        {/* Ground Truth Precision Benchmark Panel */}
+        <EvaluationPanel evaluation={evaluationData} onRefresh={fetchEvaluation} />
+
+        {/* Dedicated "Needs Human Review" Queue */}
+        <ReviewPanel
+          datasetId={selectedDatasetId}
+          onReEnrich={handleEnrichSingle}
+        />
+
+        {/* Interactive Product Intelligence Explorer */}
+        <div className="mt-6">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-xl font-bold text-white font-heading tracking-tight">
+                Product Intelligence Catalog
+              </h3>
+              <p className="text-xs text-slate-400 font-mono mt-0.5">
+                Explore enriched attributes, provenance grounding, and validation audit logs.
+              </p>
+            </div>
+            <span className="text-xs font-mono text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">
+              {totalProducts} Items Ingested
+            </span>
+          </div>
+
+          <ProductTable
+            products={products}
+            total={totalProducts}
+            page={page}
+            limit={limit}
+            statusFilter={statusFilter}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            onStatusFilterChange={setStatusFilter}
+            onPageChange={setPage}
+            onSelectProduct={handleSelectProduct}
+            onEnrichSingle={handleEnrichSingle}
+          />
+        </div>
+
+      </main>
 
       {/* Upload File Modal */}
       <UploadModal
@@ -330,8 +329,23 @@ export const App: React.FC = () => {
         />
       )}
 
-      {/* Interactive Chatbot */}
-      {isDemoActive && <Chatbot />}
+      {/* Interactive AI Copilot / Chatbot */}
+      <Chatbot />
+
+      {/* Footer */}
+      <footer className="py-12 text-center text-xs text-slate-500 border-t border-white/5 mt-16 backdrop-blur-md relative z-10 bg-black/40">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2 font-mono">
+            <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+            <span className="text-slate-300 font-semibold">Autonomous Product Intelligence Platform</span>
+            <span className="text-slate-600">•</span>
+            <span className="text-slate-500">Unihacks 2026</span>
+          </div>
+          <p className="font-mono text-[11px] text-slate-500">
+            Multi-Format Ingestion (CSV, XLSX, XLS) • 252-Column Enterprise Export
+          </p>
+        </div>
+      </footer>
 
     </div>
   );
