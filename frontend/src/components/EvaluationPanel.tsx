@@ -55,7 +55,7 @@ export const EvaluationPanel: React.FC<EvaluationPanelProps> = ({ evaluation, on
       <div className="absolute top-0 right-0 w-80 h-80 bg-purple-500/15 blur-[100px] rounded-full pointer-events-none -z-10"></div>
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-cyan-500/10 blur-[100px] rounded-full pointer-events-none -z-10"></div>
       
-      {/* Header with Colourful Text */}
+      {/* Header with High-Contrast Text */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 relative z-10">
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-purple-600 via-pink-500 to-indigo-600 flex items-center justify-center text-white shadow-xl shadow-purple-600/30 border border-white/20">
@@ -63,28 +63,28 @@ export const EvaluationPanel: React.FC<EvaluationPanelProps> = ({ evaluation, on
           </div>
           <div>
             <div className="flex items-center gap-3 mb-1.5 flex-wrap">
-              <h3 className="text-xl sm:text-2xl font-extrabold font-heading text-white tracking-tight">
+              <h3 className="text-xl sm:text-2xl font-extrabold font-heading text-white tracking-tight drop-shadow">
                 <span className="text-gradient-aurora">Ground Truth Benchmark</span>
               </h3>
-              <span className={`px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest font-bold ${
+              <span className={`px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest font-extrabold ${
                 evaluation.total_ground_truth_rows > 0 
-                  ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow-sm' 
-                  : 'bg-slate-800 text-slate-400 border border-slate-700'
+                  ? 'bg-purple-500/25 text-purple-200 border border-purple-500/50 shadow-sm' 
+                  : 'bg-slate-800 text-slate-300 border border-slate-700'
               }`}>
                 {evaluation.total_ground_truth_rows > 0 ? `${evaluation.total_ground_truth_rows} GT Rows Loaded` : 'Awaiting GT Data'}
               </span>
             </div>
-            <p className="text-xs text-slate-300 font-mono">
-              Live Precision Benchmark against <span className="text-cyan-300 bg-cyan-500/10 px-2 py-0.5 rounded-md border border-cyan-500/20">Unilog-Sample_200_Items.xlsx</span>
+            <p className="text-xs text-slate-200 font-mono">
+              Live Precision Benchmark against <span className="text-cyan-300 bg-cyan-950/70 px-2 py-0.5 rounded-md border border-cyan-500/30 font-bold">Unilog-Sample_200_Items.xlsx</span>
             </p>
           </div>
         </div>
 
         <button
           onClick={onRefresh}
-          className="btn-secondary flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-mono font-bold text-slate-200 hover:text-white cursor-pointer shadow-lg self-start md:self-auto"
+          className="btn-secondary flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-mono font-bold text-white cursor-pointer shadow-lg self-start md:self-auto"
         >
-          <BarChart2 className="w-4 h-4 text-purple-400" />
+          <BarChart2 className="w-4 h-4 text-purple-300" />
           <span>Re-evaluate Precision</span>
         </button>
       </div>
@@ -92,13 +92,13 @@ export const EvaluationPanel: React.FC<EvaluationPanelProps> = ({ evaluation, on
       {isNoPredictions ? (
         <motion.div 
           variants={scrollZoomBox}
-          className="p-5 rounded-2xl bg-amber-950/40 border border-amber-500/30 text-amber-300 text-xs flex flex-col sm:flex-row items-center justify-between gap-3 backdrop-blur-sm"
+          className="p-5 rounded-2xl bg-amber-950/50 border border-amber-500/40 text-amber-200 text-xs flex flex-col sm:flex-row items-center justify-between gap-3 backdrop-blur-sm shadow-md"
         >
           <div className="flex items-center gap-3">
-            <AlertCircle className="w-5 h-5 text-amber-400 shrink-0" />
-            <span className="font-medium">{evaluation.message || "Upload the 200-item input dataset and run enrichment to evaluate accuracy."}</span>
+            <AlertCircle className="w-5 h-5 text-amber-300 shrink-0" />
+            <span className="font-semibold">{evaluation.message || "Upload the 200-item input dataset and run enrichment to evaluate accuracy."}</span>
           </div>
-          <span className="font-mono text-slate-300 font-bold bg-black/60 px-3 py-1.5 rounded-xl border border-white/5">
+          <span className="font-mono text-white font-extrabold bg-black/70 px-3.5 py-1.5 rounded-xl border border-white/10">
             Evaluated: {evaluation.evaluated_rows}/{evaluation.total_ground_truth_rows}
           </span>
         </motion.div>
@@ -110,90 +110,90 @@ export const EvaluationPanel: React.FC<EvaluationPanelProps> = ({ evaluation, on
             <motion.div 
               variants={scrollZoomBox} 
               whileHover={hoverScale.hover} 
-              className="frame-3d p-4 sm:p-5 rounded-2xl hover:border-emerald-500/50 transition-all text-left bg-black/50"
+              className="frame-3d p-4 sm:p-5 rounded-2xl hover:border-emerald-500/50 transition-all text-left bg-black/60 shadow-lg"
             >
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Field Match</p>
-              <p className="font-black text-3xl text-gradient-emerald-cyan">
+              <p className="text-[10px] text-slate-200 font-extrabold uppercase tracking-wider mb-1">Field Match</p>
+              <p className="font-black text-3xl text-gradient-emerald-cyan drop-shadow">
                 {formatVal(evaluation.overall_field_exact_match_pct)}
               </p>
-              <p className="text-[10px] text-slate-500 mt-1">252 Schema Cols</p>
+              <p className="text-[10px] text-slate-300 mt-1 font-medium">252 Schema Cols</p>
             </motion.div>
 
             <motion.div 
               variants={scrollZoomBox} 
               whileHover={hoverScale.hover} 
-              className="frame-3d p-4 sm:p-5 rounded-2xl hover:border-indigo-500/50 transition-all text-left bg-black/50"
+              className="frame-3d p-4 sm:p-5 rounded-2xl hover:border-indigo-500/50 transition-all text-left bg-black/60 shadow-lg"
             >
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Manufacturer</p>
-              <p className="font-black text-3xl text-gradient-cyan-indigo">
+              <p className="text-[10px] text-slate-200 font-extrabold uppercase tracking-wider mb-1">Manufacturer</p>
+              <p className="font-black text-3xl text-gradient-cyan-indigo drop-shadow">
                 {formatVal(evaluation.manufacturer_accuracy)}
               </p>
-              <p className="text-[10px] text-slate-500 mt-1">Canonical Match</p>
+              <p className="text-[10px] text-slate-300 mt-1 font-medium">Canonical Match</p>
             </motion.div>
 
             <motion.div 
               variants={scrollZoomBox} 
               whileHover={hoverScale.hover} 
-              className="frame-3d p-4 sm:p-5 rounded-2xl hover:border-purple-500/50 transition-all text-left bg-black/50"
+              className="frame-3d p-4 sm:p-5 rounded-2xl hover:border-purple-500/50 transition-all text-left bg-black/60 shadow-lg"
             >
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Brand</p>
-              <p className="font-black text-3xl text-gradient-aurora">
+              <p className="text-[10px] text-slate-200 font-extrabold uppercase tracking-wider mb-1">Brand</p>
+              <p className="font-black text-3xl text-gradient-aurora drop-shadow">
                 {formatVal(evaluation.brand_accuracy)}
               </p>
-              <p className="text-[10px] text-slate-500 mt-1">Multi-Source Brand</p>
+              <p className="text-[10px] text-slate-300 mt-1 font-medium">Multi-Source Brand</p>
             </motion.div>
 
             <motion.div 
               variants={scrollZoomBox} 
               whileHover={hoverScale.hover} 
-              className="frame-3d p-4 sm:p-5 rounded-2xl hover:border-pink-500/50 transition-all text-left bg-black/50"
+              className="frame-3d p-4 sm:p-5 rounded-2xl hover:border-pink-500/50 transition-all text-left bg-black/60 shadow-lg"
             >
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Category / Fine</p>
-              <p className="font-black text-3xl text-gradient-amber-rose">
+              <p className="text-[10px] text-slate-200 font-extrabold uppercase tracking-wider mb-1">Category / Fine</p>
+              <p className="font-black text-3xl text-gradient-amber-rose drop-shadow">
                 {formatVal(evaluation.fine_category_accuracy)}
               </p>
-              <p className="text-[10px] text-slate-500 mt-1">Taxonomy Path</p>
+              <p className="text-[10px] text-slate-300 mt-1 font-medium">Taxonomy Path</p>
             </motion.div>
 
             <motion.div 
               variants={scrollZoomBox} 
               whileHover={hoverScale.hover} 
-              className="frame-3d p-4 sm:p-5 rounded-2xl hover:border-teal-500/50 transition-all text-left bg-black/50"
+              className="frame-3d p-4 sm:p-5 rounded-2xl hover:border-teal-500/50 transition-all text-left bg-black/60 shadow-lg"
             >
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Attributes</p>
-              <p className="font-black text-3xl text-gradient-electric">
+              <p className="text-[10px] text-slate-200 font-extrabold uppercase tracking-wider mb-1">Attributes</p>
+              <p className="font-black text-3xl text-gradient-electric drop-shadow">
                 {formatVal(evaluation.attribute_accuracy)}
               </p>
-              <p className="text-[10px] text-slate-500 mt-1">Key-Value Pairs</p>
+              <p className="text-[10px] text-slate-300 mt-1 font-medium">Key-Value Pairs</p>
             </motion.div>
 
             <motion.div 
               variants={scrollZoomBox} 
               whileHover={hoverScale.hover} 
-              className="frame-3d p-4 sm:p-5 rounded-2xl hover:border-amber-500/50 transition-all text-left bg-black/50"
+              className="frame-3d p-4 sm:p-5 rounded-2xl hover:border-amber-500/50 transition-all text-left bg-black/60 shadow-lg"
             >
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">LOV Compliance</p>
-              <p className="font-black text-3xl text-gradient-emerald-cyan">
+              <p className="text-[10px] text-slate-200 font-extrabold uppercase tracking-wider mb-1">LOV Compliance</p>
+              <p className="font-black text-3xl text-gradient-emerald-cyan drop-shadow">
                 {formatVal(evaluation.lov_compliance)}
               </p>
-              <p className="text-[10px] text-slate-500 mt-1">Master LOV Pass</p>
+              <p className="text-[10px] text-slate-300 mt-1 font-medium">Master LOV Pass</p>
             </motion.div>
 
           </div>
 
-          {/* Evaluation Details Footer with 3D Frame */}
+          {/* Evaluation Details Footer */}
           {evaluation.details && (
             <motion.div 
               variants={scrollZoomBox}
-              className="p-4 rounded-2xl bg-black/60 border border-white/10 flex flex-wrap items-center justify-between text-xs font-mono text-slate-300 gap-3 relative z-10 shadow-inner"
+              className="p-4 rounded-2xl bg-black/70 border border-white/15 flex flex-wrap items-center justify-between text-xs font-mono text-slate-200 gap-3 relative z-10 shadow-inner"
             >
-              <div className="flex items-center gap-6 flex-wrap">
-                <span>Matched: <strong className="text-white">{evaluation.evaluated_rows} / {evaluation.total_ground_truth_rows}</strong></span>
-                <span>Comparisons: <strong className="text-indigo-300">{evaluation.details.total_comparisons.toLocaleString()}</strong></span>
-                <span>Exact Matches: <strong className="text-emerald-400">{evaluation.details.exact_matches.toLocaleString()}</strong></span>
-                <span>Mismatches: <strong className="text-rose-400">{evaluation.details.mismatches.toLocaleString()}</strong></span>
+              <div className="flex items-center gap-6 flex-wrap font-medium">
+                <span>Matched: <strong className="text-white font-bold">{evaluation.evaluated_rows} / {evaluation.total_ground_truth_rows}</strong></span>
+                <span>Comparisons: <strong className="text-indigo-300 font-bold">{evaluation.details.total_comparisons.toLocaleString()}</strong></span>
+                <span>Exact Matches: <strong className="text-emerald-400 font-bold">{evaluation.details.exact_matches.toLocaleString()}</strong></span>
+                <span>Mismatches: <strong className="text-rose-400 font-bold">{evaluation.details.mismatches.toLocaleString()}</strong></span>
               </div>
-              <div className="text-[11px] text-slate-400 flex items-center gap-1.5 font-bold">
+              <div className="text-[11px] text-cyan-300 flex items-center gap-1.5 font-bold">
                 <AlertCircle className="w-3.5 h-3.5 text-cyan-400" />
                 <span>Deterministic Ground Truth Precision</span>
               </div>
