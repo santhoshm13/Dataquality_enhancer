@@ -113,7 +113,7 @@ export const TransformationShowcase: React.FC = () => {
       <div className="text-center mb-10">
         <motion.div 
           variants={scrollZoomBox}
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-mono mb-3 shadow-lg shadow-cyan-500/10"
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full frame-3d-glow text-cyan-300 text-xs font-mono mb-3"
         >
           <Zap className="w-3.5 h-3.5 text-cyan-400" />
           <span className="text-gradient-cyan-indigo font-bold">REAL-TIME TRANSFORMATION PIPELINE</span>
@@ -135,10 +135,10 @@ export const TransformationShowcase: React.FC = () => {
           Watch how dirty multi-source vendor rows are normalized into grounded 252-column enterprise schemas.
         </motion.p>
 
-        {/* Sample Selection Selector */}
+        {/* Sample Selection Selector with 3D Frame */}
         <motion.div 
           variants={scrollZoomBox}
-          className="inline-flex p-1.5 bg-slate-900/90 rounded-2xl border border-white/10 mt-6 gap-1.5 shadow-xl"
+          className="inline-flex p-1.5 frame-3d rounded-2xl mt-6 gap-1.5"
         >
           {(['sawblade', 'dishwasher', 'abrasive'] as const).map((key) => (
             <button
@@ -156,16 +156,16 @@ export const TransformationShowcase: React.FC = () => {
         </motion.div>
       </div>
 
-      {/* Side-by-Side Zooming Comparison Container */}
+      {/* Side-by-Side 3D Framed Comparison Container */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         
-        {/* Left Side: Legacy Unstructured Input */}
+        {/* Left Side: Legacy Unstructured Input in 3D Frame */}
         <motion.div 
           variants={scrollZoomBox}
           whileHover={hoverScale.hover}
-          className="lg:col-span-5 glass-panel p-6 rounded-3xl border border-red-500/30 relative flex flex-col justify-between overflow-hidden shadow-2xl shadow-red-500/5 bg-red-950/[0.05]"
+          className="lg:col-span-5 frame-3d p-6 sm:p-7 rounded-3xl border-l-4 border-rose-500 relative flex flex-col justify-between overflow-hidden shadow-2xl bg-red-950/[0.08]"
         >
-          <div className="absolute top-0 right-0 px-3.5 py-1.5 bg-red-500/20 border-b border-l border-red-500/30 rounded-bl-2xl text-[11px] font-mono font-bold text-red-300 flex items-center gap-1.5">
+          <div className="absolute top-0 right-0 px-3.5 py-1.5 bg-red-500/20 border-b border-l border-red-500/30 rounded-bl-2xl text-[11px] font-mono font-bold text-red-300 flex items-center gap-1.5 shadow-md">
             <AlertTriangle className="w-3.5 h-3.5 text-red-400" />
             <span>RAW UNSTRUCTURED ROW</span>
           </div>
@@ -175,26 +175,26 @@ export const TransformationShowcase: React.FC = () => {
             <div className="text-xl font-extrabold text-amber-300 mb-4 font-mono">{current.raw.mfg_part_num}</div>
 
             <div className="space-y-3 font-mono text-xs">
-              <div className="p-3.5 rounded-xl bg-black/50 border border-white/5">
+              <div className="p-3.5 rounded-2xl bg-black/60 border border-white/5 shadow-inner">
                 <span className="text-slate-500 block text-[10px]">Part_Desc (Raw Text):</span>
                 <span className="text-amber-200 font-semibold">{current.raw.raw_description}</span>
               </div>
 
-              <div className="p-3 rounded-xl bg-black/50 border border-white/5 flex justify-between">
+              <div className="p-3 rounded-2xl bg-black/60 border border-white/5 flex justify-between shadow-inner">
                 <span className="text-slate-500">Part_Manuf:</span>
                 <span className="text-rose-300 font-semibold">{current.raw.raw_manufacturer}</span>
               </div>
 
               <div className="grid grid-cols-3 gap-2">
-                <div className="p-2.5 rounded-xl bg-black/50 border border-white/5">
+                <div className="p-2.5 rounded-2xl bg-black/60 border border-white/5 shadow-inner">
                   <span className="text-slate-500 block text-[10px]">E1_Brand</span>
                   <span className="text-slate-300">{current.raw.raw_brand_e1 || "—"}</span>
                 </div>
-                <div className="p-2.5 rounded-xl bg-black/50 border border-white/5">
+                <div className="p-2.5 rounded-2xl bg-black/60 border border-white/5 shadow-inner">
                   <span className="text-slate-500 block text-[10px]">Unilog_Brand</span>
                   <span className="text-slate-300">{current.raw.raw_brand_unilog || "—"}</span>
                 </div>
-                <div className="p-2.5 rounded-xl bg-black/50 border border-white/5">
+                <div className="p-2.5 rounded-2xl bg-black/60 border border-white/5 shadow-inner">
                   <span className="text-slate-500 block text-[10px]">DIB_Brand</span>
                   <span className="text-slate-300">{current.raw.raw_brand_dib || "—"}</span>
                 </div>
@@ -202,23 +202,23 @@ export const TransformationShowcase: React.FC = () => {
             </div>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-white/5 text-[11px] text-slate-400 flex items-center justify-between font-mono">
-            <span className="text-red-400 font-bold">⚠️ Ambiguous UOMs & Decimal Fractions</span>
+          <div className="mt-6 pt-4 border-t border-white/10 text-[11px] text-slate-400 flex items-center justify-between font-mono">
+            <span className="text-rose-400 font-bold">⚠️ Ambiguous UOMs & Decimal Fractions</span>
             <span className="text-slate-500">Row ID: #042</span>
           </div>
         </motion.div>
 
-        {/* Middle: Interactive Pulse Conduit with Zoom Effect */}
+        {/* Middle: Interactive 3D Conduit */}
         <motion.div 
           variants={scrollZoomBox}
           className="lg:col-span-2 flex flex-col items-center justify-center py-4 lg:py-0"
         >
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-500 via-pink-500 to-cyan-400 flex items-center justify-center text-white shadow-2xl shadow-indigo-500/30 animate-pulse-radar">
-            <Sparkles className="w-7 h-7" />
+          <div className="w-16 h-16 rounded-3xl bg-gradient-to-tr from-indigo-500 via-pink-500 to-cyan-400 flex items-center justify-center text-white shadow-2xl shadow-indigo-500/40 animate-pulse-radar border border-white/20">
+            <Sparkles className="w-8 h-8" />
           </div>
           <div className="mt-3 text-center">
             <span className="text-xs font-mono font-extrabold text-gradient-electric block">AI PIPELINE</span>
-            <span className="text-[10px] text-slate-400 font-mono">140ms Latency</span>
+            <span className="text-[10px] text-cyan-400 font-mono font-bold">140ms Latency</span>
           </div>
           <div className="hidden lg:flex flex-col items-center gap-1.5 my-3">
             <div className="w-0.5 h-8 bg-gradient-to-b from-indigo-500 to-cyan-400 opacity-70" />
@@ -226,13 +226,13 @@ export const TransformationShowcase: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* Right Side: Structured & Grounded Output with Zoom Effect */}
+        {/* Right Side: Structured & Grounded Output in 3D Frame */}
         <motion.div 
           variants={scrollZoomBox}
           whileHover={hoverScale.hover}
-          className="lg:col-span-5 glass-panel p-6 rounded-3xl border border-emerald-500/35 relative flex flex-col justify-between overflow-hidden shadow-2xl shadow-emerald-500/10 bg-emerald-950/[0.06]"
+          className="lg:col-span-5 frame-3d p-6 sm:p-7 rounded-3xl border-l-4 border-emerald-500 relative flex flex-col justify-between overflow-hidden shadow-2xl bg-emerald-950/[0.08]"
         >
-          <div className="absolute top-0 right-0 px-3.5 py-1.5 bg-emerald-500/20 border-b border-l border-emerald-500/30 rounded-bl-2xl text-[11px] font-mono font-bold text-emerald-300 flex items-center gap-1.5">
+          <div className="absolute top-0 right-0 px-3.5 py-1.5 bg-emerald-500/20 border-b border-l border-emerald-500/30 rounded-bl-2xl text-[11px] font-mono font-bold text-emerald-300 flex items-center gap-1.5 shadow-md">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
             <span>GROUND TRUTH ENRICHED</span>
           </div>
@@ -246,7 +246,7 @@ export const TransformationShowcase: React.FC = () => {
             <div className="text-xl font-bold text-white mb-2">{current.title}</div>
 
             {/* Classpath Badge */}
-            <div className="mb-4 text-[11px] font-mono bg-slate-900/90 text-indigo-300 px-3 py-1.5 rounded-xl border border-indigo-500/25">
+            <div className="mb-4 text-[11px] font-mono bg-black/60 text-indigo-300 px-3 py-1.5 rounded-xl border border-indigo-500/30 shadow-inner">
               {current.enriched.classpath}
             </div>
 
@@ -255,7 +255,7 @@ export const TransformationShowcase: React.FC = () => {
               <div className="text-[10px] font-mono uppercase text-slate-400 tracking-wider font-bold">Validated Specifications:</div>
               <div className="grid grid-cols-2 gap-2 font-mono">
                 {current.enriched.attributes.map((attr, idx) => (
-                  <div key={idx} className="p-2.5 rounded-xl bg-white/5 border border-white/5 flex flex-col justify-between">
+                  <div key={idx} className="p-2.5 rounded-2xl bg-black/50 border border-white/10 flex flex-col justify-between shadow-inner">
                     <span className="text-[10px] text-slate-400">{attr.name}</span>
                     <div className="flex items-center justify-between mt-1">
                       <span className="text-xs font-bold text-slate-200">
@@ -269,13 +269,13 @@ export const TransformationShowcase: React.FC = () => {
             </div>
 
             {/* UNILOG Mobile Description preview */}
-            <div className="p-3 rounded-xl bg-black/50 border border-white/5 text-xs">
+            <div className="p-3 rounded-2xl bg-black/60 border border-white/10 text-xs shadow-inner">
               <span className="text-[10px] text-slate-400 block font-mono">MOBILE_DESC (60-80 chars):</span>
               <span className="text-emerald-200 font-medium">{current.enriched.mobile_desc}</span>
             </div>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-xs font-mono">
+          <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs font-mono">
             <a
               href={current.enriched.source_url}
               target="_blank"
@@ -285,7 +285,7 @@ export const TransformationShowcase: React.FC = () => {
               <span>Verified Source Link</span>
               <ExternalLink className="w-3 h-3" />
             </a>
-            <span className="text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
+            <span className="text-emerald-400 font-bold bg-emerald-500/20 px-3 py-1 rounded-xl border border-emerald-500/30 shadow-sm">
               Confidence: {(current.enriched.confidence * 100).toFixed(0)}%
             </span>
           </div>

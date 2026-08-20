@@ -33,10 +33,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
       <div className="max-w-6xl mx-auto text-center flex flex-col items-center">
         
-        {/* Floating Telemetry Status Pill with Chromatic Border */}
+        {/* Floating Telemetry Status Pill with 3D Frame & Chromatic Border */}
         <motion.div 
           variants={scrollZoomBox}
-          className="animate-float-subtle inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-panel-subtle text-xs font-medium border border-indigo-500/30 shadow-lg shadow-indigo-500/10 mb-6 glow-border-rainbow"
+          className="animate-float-subtle inline-flex items-center gap-2 px-4 py-1.5 rounded-full frame-3d-glow text-xs font-medium mb-6"
         >
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -62,7 +62,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           </span>
         </motion.h1>
 
-        {/* Staggered Subtitle with Colourful Highlight Words */}
+        {/* Subtitle */}
         <motion.p 
           variants={scrollZoomBox}
           className="text-base sm:text-lg md:text-xl text-slate-300 max-w-2xl font-normal leading-relaxed mb-8"
@@ -105,39 +105,39 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           </button>
         </motion.div>
 
-        {/* Zooming Real-Time Metric Pills Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 w-full max-w-4xl">
+        {/* 3D Framed Metric Boxes Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-5 w-full max-w-4xl">
           
           <motion.div 
             variants={scrollZoomBox}
             whileHover={hoverScale.hover}
-            className="glass-card p-4 sm:p-5 rounded-2xl text-left border-l-4 border-indigo-500 relative overflow-hidden"
+            className="frame-3d p-4 sm:p-5 rounded-3xl text-left border-l-4 border-indigo-500 relative overflow-hidden"
           >
             <div className="flex items-center gap-1.5 text-slate-400 text-xs mb-1.5 font-mono">
               <Cpu className="w-4 h-4 text-indigo-400" />
               <span>Concur. Workers</span>
             </div>
             <div className="text-2xl font-black text-indigo-300 font-mono tracking-tight">5x Async</div>
-            <div className="text-[10px] text-slate-500 font-mono mt-1">Bounded Semaphore</div>
+            <div className="text-[10px] text-slate-400 font-mono mt-1">Bounded Semaphore</div>
           </motion.div>
 
           <motion.div 
             variants={scrollZoomBox}
             whileHover={hoverScale.hover}
-            className="glass-card p-4 sm:p-5 rounded-2xl text-left border-l-4 border-cyan-500 relative overflow-hidden"
+            className="frame-3d p-4 sm:p-5 rounded-3xl text-left border-l-4 border-cyan-500 relative overflow-hidden"
           >
             <div className="flex items-center gap-1.5 text-slate-400 text-xs mb-1.5 font-mono">
               <ShieldCheck className="w-4 h-4 text-cyan-400" />
               <span>LOV Rule Check</span>
             </div>
             <div className="text-2xl font-black text-cyan-300 font-mono tracking-tight">100% Strict</div>
-            <div className="text-[10px] text-slate-500 font-mono mt-1">30,000+ Permitted List</div>
+            <div className="text-[10px] text-slate-400 font-mono mt-1">30,000+ Permitted List</div>
           </motion.div>
 
           <motion.div 
             variants={scrollZoomBox}
             whileHover={hoverScale.hover}
-            className="glass-card p-4 sm:p-5 rounded-2xl text-left border-l-4 border-emerald-500 relative overflow-hidden"
+            className="frame-3d p-4 sm:p-5 rounded-3xl text-left border-l-4 border-emerald-500 relative overflow-hidden"
           >
             <div className="flex items-center gap-1.5 text-slate-400 text-xs mb-1.5 font-mono">
               <Sparkles className="w-4 h-4 text-emerald-400" />
@@ -146,20 +146,20 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <div className="text-2xl font-black text-emerald-300 font-mono tracking-tight">
               {highConfidenceRate > 0 ? `${highConfidenceRate}%` : '98.5%'}
             </div>
-            <div className="text-[10px] text-slate-500 font-mono mt-1">Auto-Approved</div>
+            <div className="text-[10px] text-slate-400 font-mono mt-1">Auto-Approved</div>
           </motion.div>
 
           <motion.div 
             variants={scrollZoomBox}
             whileHover={hoverScale.hover}
-            className="glass-card p-4 sm:p-5 rounded-2xl text-left border-l-4 border-pink-500 relative overflow-hidden"
+            className="frame-3d p-4 sm:p-5 rounded-3xl text-left border-l-4 border-pink-500 relative overflow-hidden"
           >
             <div className="flex items-center gap-1.5 text-slate-400 text-xs mb-1.5 font-mono">
               <Layers className="w-4 h-4 text-pink-400" />
               <span>Schema Columns</span>
             </div>
             <div className="text-2xl font-black text-pink-300 font-mono tracking-tight">252 Total</div>
-            <div className="text-[10px] text-slate-500 font-mono mt-1">Full UNILOG Export</div>
+            <div className="text-[10px] text-slate-400 font-mono mt-1">Full UNILOG Export</div>
           </motion.div>
 
         </div>

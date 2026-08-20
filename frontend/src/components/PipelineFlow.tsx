@@ -14,7 +14,7 @@ export const PipelineFlow: React.FC = () => {
       icon: Search,
       color: "from-blue-500 via-indigo-500 to-cyan-500",
       accent: "text-blue-300",
-      borderColor: "border-blue-500/40",
+      borderColor: "border-blue-500/50",
       description: "Queries live web search with part number, manufacturer, and category hint to identify canonical manufacturer & authorized distributor product URLs without constructing hallucinated links.",
       metrics: "Avg Latency: ~1.2s • Strict JSON Found Indicator"
     },
@@ -25,7 +25,7 @@ export const PipelineFlow: React.FC = () => {
       icon: Globe,
       color: "from-cyan-500 via-teal-500 to-emerald-500",
       accent: "text-cyan-300",
-      borderColor: "border-cyan-500/40",
+      borderColor: "border-cyan-500/50",
       description: "Runs non-blocking async HEAD and fallback GET checks with 6s timeout to reject dead 404s, homepage redirect traps, and non-HTML payloads before expensive downstream scraping.",
       metrics: "Rejection Rate: 0.8% • Prevents Bot Blocks"
     },
@@ -36,7 +36,7 @@ export const PipelineFlow: React.FC = () => {
       icon: Cpu,
       color: "from-indigo-500 via-purple-500 to-pink-500",
       accent: "text-indigo-300",
-      borderColor: "border-indigo-500/40",
+      borderColor: "border-indigo-500/50",
       description: "Fast async HTTP scraping with BeautifulSoup strips scripts, cookies, and boilerplate. Automatically falls back to headless Playwright Chromium if JS hydration is detected.",
       metrics: "15k Char Window • HTML Table Reformatting"
     },
@@ -47,7 +47,7 @@ export const PipelineFlow: React.FC = () => {
       icon: Layers,
       color: "from-purple-500 via-pink-500 to-rose-500",
       accent: "text-pink-300",
-      borderColor: "border-pink-500/40",
+      borderColor: "border-pink-500/50",
       description: "Extracts full technical specs, product titles, and feature descriptions directly from cleaned page text with zero tool overhead for ultra-low latency.",
       metrics: "Deterministic Output • No Invented Values"
     },
@@ -58,7 +58,7 @@ export const PipelineFlow: React.FC = () => {
       icon: FileCheck,
       color: "from-emerald-500 via-green-500 to-teal-500",
       accent: "text-emerald-300",
-      borderColor: "border-emerald-500/40",
+      borderColor: "border-emerald-500/50",
       description: "Validates attribute labels and values strictly against 30,000+ LOV records. Normalizes decimal dimensions (.375 in -> 3/8 in) across an exact 64th fraction grid.",
       metrics: "Zero Hallucinations • 100% LOV Compliance"
     },
@@ -69,7 +69,7 @@ export const PipelineFlow: React.FC = () => {
       icon: Shield,
       color: "from-amber-500 via-orange-500 to-rose-500",
       accent: "text-amber-300",
-      borderColor: "border-amber-500/40",
+      borderColor: "border-amber-500/50",
       description: "Computes weighted multi-factor confidence scores. Routes low-confidence or failed rows automatically into the dedicated 'Needs Human Review' queue with precise failure reasons.",
       metrics: "Auto-Approve ≥ 95% • Honest Failure Tracking"
     }
@@ -86,7 +86,7 @@ export const PipelineFlow: React.FC = () => {
       <div className="text-center mb-10">
         <motion.div 
           variants={scrollZoomBox}
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-mono mb-3 shadow-lg shadow-indigo-500/10"
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full frame-3d-glow text-indigo-300 text-xs font-mono mb-3"
         >
           <Cpu className="w-3.5 h-3.5 text-indigo-400" />
           <span className="text-gradient-cyan-indigo font-bold">MULTI-STAGE CONCURRENT ARCHITECTURE</span>
@@ -107,8 +107,8 @@ export const PipelineFlow: React.FC = () => {
         </motion.p>
       </div>
 
-      {/* Interactive Flow Grid with Scroll Zoom Effects */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
+      {/* Interactive 3D Flow Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         {steps.map((s) => {
           const Icon = s.icon;
           const isActive = activeStep === s.id;
@@ -118,17 +118,17 @@ export const PipelineFlow: React.FC = () => {
               variants={scrollZoomBox}
               whileHover={hoverScale.hover}
               onClick={() => setActiveStep(s.id)}
-              className={`glass-card p-6 rounded-3xl cursor-pointer relative transition-all border ${
+              className={`frame-3d p-6 sm:p-7 rounded-3xl cursor-pointer relative transition-all ${
                 isActive 
-                  ? `${s.borderColor} bg-white/[0.05] scale-[1.03] shadow-2xl shadow-indigo-500/15` 
-                  : 'border-white/5 opacity-85 hover:opacity-100'
+                  ? `${s.borderColor} bg-white/[0.08] scale-[1.04] shadow-2xl shadow-indigo-500/25` 
+                  : 'opacity-90 hover:opacity-100'
               }`}
             >
               <div className="flex items-center justify-between mb-4">
-                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${s.color} flex items-center justify-center text-white shadow-xl`}>
+                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${s.color} flex items-center justify-center text-white shadow-xl shadow-indigo-500/20 border border-white/20`}>
                   <Icon className="w-6 h-6" />
                 </div>
-                <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-white/10 text-slate-200 border border-white/10">
+                <span className="text-[10px] font-mono font-bold px-3 py-1 rounded-full bg-black/50 text-slate-200 border border-white/10 shadow-inner">
                   {s.badge}
                 </span>
               </div>
@@ -136,7 +136,7 @@ export const PipelineFlow: React.FC = () => {
               <h3 className="font-bold text-base text-white mb-2 font-heading tracking-tight">{s.title}</h3>
               <p className="text-slate-300 text-xs leading-relaxed mb-4">{s.description}</p>
 
-              <div className="pt-3.5 border-t border-white/5 flex items-center justify-between text-[11px] font-mono text-slate-400">
+              <div className="pt-3.5 border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-slate-400">
                 <span className="text-cyan-300 font-semibold">{s.metrics}</span>
                 {isActive && <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
               </div>
@@ -145,14 +145,14 @@ export const PipelineFlow: React.FC = () => {
         })}
       </div>
 
-      {/* Summary Banner with Colourful Text */}
+      {/* Summary 3D Banner */}
       <motion.div 
         variants={scrollZoomBox}
         whileHover={hoverScale.hover}
-        className="glass-panel p-6 rounded-3xl border border-indigo-500/25 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-2xl"
+        className="frame-3d p-6 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-2xl"
       >
         <div className="flex items-center gap-3.5">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 to-pink-500 flex items-center justify-center text-white shadow-lg">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 to-pink-500 flex items-center justify-center text-white shadow-lg border border-white/20">
             <Shield className="w-6 h-6" />
           </div>
           <div>
@@ -162,7 +162,7 @@ export const PipelineFlow: React.FC = () => {
             <div className="text-xs text-slate-300 mt-0.5">Every single attribute links to a verified URL citation or LOV canonical entry.</div>
           </div>
         </div>
-        <div className="flex items-center gap-2 text-xs font-mono text-cyan-300 bg-cyan-500/10 px-4 py-2 rounded-2xl border border-cyan-500/30 font-bold">
+        <div className="flex items-center gap-2 text-xs font-mono text-cyan-300 bg-cyan-500/10 px-4 py-2 rounded-2xl border border-cyan-500/30 font-bold shadow-inner">
           <span>Concurrency: 5-20 Workers</span>
         </div>
       </motion.div>

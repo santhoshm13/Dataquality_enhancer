@@ -50,7 +50,7 @@ export const EvaluationPanel: React.FC<EvaluationPanelProps> = ({ evaluation, on
       initial="hidden"
       whileInView="visible"
       viewport={{ once: false, amount: 0.2 }}
-      className="glass-panel p-6 sm:p-8 rounded-3xl border border-white/10 mb-10 shadow-2xl relative overflow-hidden bg-purple-950/[0.05]"
+      className="frame-3d p-6 sm:p-8 rounded-3xl mb-10 shadow-2xl relative overflow-hidden bg-purple-950/[0.08]"
     >
       <div className="absolute top-0 right-0 w-80 h-80 bg-purple-500/15 blur-[100px] rounded-full pointer-events-none -z-10"></div>
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-cyan-500/10 blur-[100px] rounded-full pointer-events-none -z-10"></div>
@@ -58,7 +58,7 @@ export const EvaluationPanel: React.FC<EvaluationPanelProps> = ({ evaluation, on
       {/* Header with Colourful Text */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 relative z-10">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-purple-600 via-pink-500 to-indigo-600 flex items-center justify-center text-white shadow-xl shadow-purple-600/30">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-purple-600 via-pink-500 to-indigo-600 flex items-center justify-center text-white shadow-xl shadow-purple-600/30 border border-white/20">
             <Award className="w-7 h-7" />
           </div>
           <div>
@@ -104,13 +104,13 @@ export const EvaluationPanel: React.FC<EvaluationPanelProps> = ({ evaluation, on
         </motion.div>
       ) : (
         <>
-          {/* Detailed Accuracy Metrics Grid with Scroll Zoom */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-6 relative z-10 font-mono">
+          {/* Detailed Accuracy Metrics Grid in 3D Frames */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-5 mb-6 relative z-10 font-mono">
             
             <motion.div 
               variants={scrollZoomBox} 
               whileHover={hoverScale.hover} 
-              className="glass-card p-4 rounded-2xl border border-white/10 hover:border-emerald-500/40 transition-all text-left bg-black/30"
+              className="frame-3d p-4 sm:p-5 rounded-2xl hover:border-emerald-500/50 transition-all text-left bg-black/50"
             >
               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Field Match</p>
               <p className="font-black text-3xl text-gradient-emerald-cyan">
@@ -122,7 +122,7 @@ export const EvaluationPanel: React.FC<EvaluationPanelProps> = ({ evaluation, on
             <motion.div 
               variants={scrollZoomBox} 
               whileHover={hoverScale.hover} 
-              className="glass-card p-4 rounded-2xl border border-white/10 hover:border-indigo-500/40 transition-all text-left bg-black/30"
+              className="frame-3d p-4 sm:p-5 rounded-2xl hover:border-indigo-500/50 transition-all text-left bg-black/50"
             >
               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Manufacturer</p>
               <p className="font-black text-3xl text-gradient-cyan-indigo">
@@ -134,7 +134,7 @@ export const EvaluationPanel: React.FC<EvaluationPanelProps> = ({ evaluation, on
             <motion.div 
               variants={scrollZoomBox} 
               whileHover={hoverScale.hover} 
-              className="glass-card p-4 rounded-2xl border border-white/10 hover:border-purple-500/40 transition-all text-left bg-black/30"
+              className="frame-3d p-4 sm:p-5 rounded-2xl hover:border-purple-500/50 transition-all text-left bg-black/50"
             >
               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Brand</p>
               <p className="font-black text-3xl text-gradient-aurora">
@@ -146,7 +146,7 @@ export const EvaluationPanel: React.FC<EvaluationPanelProps> = ({ evaluation, on
             <motion.div 
               variants={scrollZoomBox} 
               whileHover={hoverScale.hover} 
-              className="glass-card p-4 rounded-2xl border border-white/10 hover:border-pink-500/40 transition-all text-left bg-black/30"
+              className="frame-3d p-4 sm:p-5 rounded-2xl hover:border-pink-500/50 transition-all text-left bg-black/50"
             >
               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Category / Fine</p>
               <p className="font-black text-3xl text-gradient-amber-rose">
@@ -158,7 +158,7 @@ export const EvaluationPanel: React.FC<EvaluationPanelProps> = ({ evaluation, on
             <motion.div 
               variants={scrollZoomBox} 
               whileHover={hoverScale.hover} 
-              className="glass-card p-4 rounded-2xl border border-white/10 hover:border-teal-500/40 transition-all text-left bg-black/30"
+              className="frame-3d p-4 sm:p-5 rounded-2xl hover:border-teal-500/50 transition-all text-left bg-black/50"
             >
               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Attributes</p>
               <p className="font-black text-3xl text-gradient-electric">
@@ -170,7 +170,7 @@ export const EvaluationPanel: React.FC<EvaluationPanelProps> = ({ evaluation, on
             <motion.div 
               variants={scrollZoomBox} 
               whileHover={hoverScale.hover} 
-              className="glass-card p-4 rounded-2xl border border-white/10 hover:border-amber-500/40 transition-all text-left bg-black/30"
+              className="frame-3d p-4 sm:p-5 rounded-2xl hover:border-amber-500/50 transition-all text-left bg-black/50"
             >
               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">LOV Compliance</p>
               <p className="font-black text-3xl text-gradient-emerald-cyan">
@@ -181,11 +181,11 @@ export const EvaluationPanel: React.FC<EvaluationPanelProps> = ({ evaluation, on
 
           </div>
 
-          {/* Evaluation Details Footer */}
+          {/* Evaluation Details Footer with 3D Frame */}
           {evaluation.details && (
             <motion.div 
               variants={scrollZoomBox}
-              className="p-4 rounded-2xl bg-black/40 border border-white/10 flex flex-wrap items-center justify-between text-xs font-mono text-slate-300 gap-3 relative z-10 backdrop-blur-md"
+              className="p-4 rounded-2xl bg-black/60 border border-white/10 flex flex-wrap items-center justify-between text-xs font-mono text-slate-300 gap-3 relative z-10 shadow-inner"
             >
               <div className="flex items-center gap-6 flex-wrap">
                 <span>Matched: <strong className="text-white">{evaluation.evaluated_rows} / {evaluation.total_ground_truth_rows}</strong></span>

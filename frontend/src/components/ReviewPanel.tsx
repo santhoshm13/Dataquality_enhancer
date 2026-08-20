@@ -86,11 +86,11 @@ export const ReviewPanel: React.FC<ReviewPanelProps> = ({ datasetId, onReEnrich 
 
   const getReasonBadge = (reason: string) => {
     const r = reason.toLowerCase();
-    if (r.includes("url lookup")) return { label: "URL Search Miss", color: "bg-red-500/15 text-red-300 border-red-500/40" };
-    if (r.includes("url validation")) return { label: "URL Trap / 404", color: "bg-amber-500/15 text-amber-300 border-amber-500/40" };
-    if (r.includes("scrape")) return { label: "Scrape Failed", color: "bg-purple-500/15 text-purple-300 border-purple-500/40" };
-    if (r.includes("spec extraction")) return { label: "Spec Extraction", color: "bg-cyan-500/15 text-cyan-300 border-cyan-500/40" };
-    if (r.includes("exception")) return { label: "Pipeline Exception", color: "bg-rose-500/15 text-rose-300 border-rose-500/40" };
+    if (r.includes("url lookup")) return { label: "URL Search Miss", color: "bg-red-500/20 text-red-300 border-red-500/40" };
+    if (r.includes("url validation")) return { label: "URL Trap / 404", color: "bg-amber-500/20 text-amber-300 border-amber-500/40" };
+    if (r.includes("scrape")) return { label: "Scrape Failed", color: "bg-purple-500/20 text-purple-300 border-purple-500/40" };
+    if (r.includes("spec extraction")) return { label: "Spec Extraction", color: "bg-cyan-500/20 text-cyan-300 border-cyan-500/40" };
+    if (r.includes("exception")) return { label: "Pipeline Exception", color: "bg-rose-500/20 text-rose-300 border-rose-500/40" };
     return { label: "Needs Audit", color: "bg-slate-800 text-slate-300 border-slate-700" };
   };
 
@@ -101,7 +101,7 @@ export const ReviewPanel: React.FC<ReviewPanelProps> = ({ datasetId, onReEnrich 
         initial="hidden"
         whileInView="visible"
         viewport={{ once: false, amount: 0.2 }}
-        className="glass-panel p-6 sm:p-8 rounded-3xl border border-emerald-500/25 text-center mb-12 bg-emerald-950/10 shadow-2xl"
+        className="frame-3d p-6 sm:p-8 rounded-3xl border-l-4 border-emerald-500 text-center mb-12 bg-emerald-950/10 shadow-2xl"
       >
         <div className="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mx-auto mb-3 shadow-lg shadow-emerald-500/20">
           <CheckCircle2 className="w-7 h-7" />
@@ -120,13 +120,13 @@ export const ReviewPanel: React.FC<ReviewPanelProps> = ({ datasetId, onReEnrich 
       initial="hidden"
       whileInView="visible"
       viewport={{ once: false, amount: 0.2 }}
-      className="glass-panel p-6 sm:p-8 rounded-3xl border border-rose-500/25 mb-14 shadow-2xl bg-rose-950/[0.05]"
+      className="frame-3d p-6 sm:p-8 rounded-3xl border-l-4 border-rose-500 mb-14 shadow-2xl bg-rose-950/[0.06]"
     >
       
       {/* Header with Colourful Text */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-white/5 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-white/10 pb-5">
         <div className="flex items-center gap-3.5">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-rose-600 via-pink-600 to-amber-500 flex items-center justify-center text-white shadow-xl shadow-rose-600/30">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-rose-600 via-pink-600 to-amber-500 flex items-center justify-center text-white shadow-xl shadow-rose-600/30 border border-white/20">
             <ShieldAlert className="w-6 h-6" />
           </div>
           <div>
@@ -160,10 +160,10 @@ export const ReviewPanel: React.FC<ReviewPanelProps> = ({ datasetId, onReEnrich 
             <button
               key={cat.key}
               onClick={() => { setActiveCategory(cat.key); setPage(1); }}
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-2xl border transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-2xl border transition-all cursor-pointer ${
                 isActive
-                  ? 'bg-gradient-to-r from-rose-600 to-pink-600 border-rose-500/40 text-white font-bold shadow-lg shadow-rose-600/30 scale-105'
-                  : 'bg-black/40 border-white/10 text-slate-300 hover:text-white hover:bg-white/5'
+                  ? 'bg-gradient-to-r from-rose-600 to-pink-600 border-rose-500/50 text-white font-bold shadow-lg shadow-rose-600/40 scale-105'
+                  : 'bg-black/50 border-white/10 text-slate-300 hover:text-white hover:bg-white/10'
               }`}
             >
               <Icon className="w-3.5 h-3.5" />
@@ -173,7 +173,7 @@ export const ReviewPanel: React.FC<ReviewPanelProps> = ({ datasetId, onReEnrich 
         })}
       </div>
 
-      {/* Structured Table with Scroll Zoom Effect */}
+      {/* Structured Table with 3D Beveled Box */}
       {loading ? (
         <div className="text-center py-14 text-slate-400 font-mono text-xs">
           <div className="w-8 h-8 border-2 border-pink-400 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
@@ -181,9 +181,9 @@ export const ReviewPanel: React.FC<ReviewPanelProps> = ({ datasetId, onReEnrich 
         </div>
       ) : (
         <>
-          <div className="overflow-x-auto rounded-2xl border border-white/10">
+          <div className="overflow-x-auto rounded-2xl border border-white/10 shadow-inner bg-black/40">
             <table className="w-full text-left text-xs font-mono">
-              <thead className="bg-black/50 text-slate-400 uppercase text-[10px] tracking-wider border-b border-white/5">
+              <thead className="bg-black/60 text-slate-400 uppercase text-[10px] tracking-wider border-b border-white/10">
                 <tr>
                   <th className="p-4 pl-5">Part Number (MPN)</th>
                   <th className="p-4">Preserved Manufacturer</th>
@@ -199,12 +199,12 @@ export const ReviewPanel: React.FC<ReviewPanelProps> = ({ datasetId, onReEnrich 
                   return (
                     <motion.tr 
                       variants={scrollZoomBox}
-                      whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.035)", scale: 1.005 }}
+                      whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.04)", scale: 1.005 }}
                       key={p.id} 
                       className="transition-all"
                     >
                       <td className="p-4 pl-5 font-extrabold text-white">
-                        <span className="px-2.5 py-1 rounded-lg bg-rose-500/10 text-rose-300 border border-rose-500/20 inline-block font-mono">
+                        <span className="px-2.5 py-1 rounded-xl bg-rose-500/15 text-rose-300 border border-rose-500/30 inline-block font-mono shadow-sm">
                           {p.mfg_part_num}
                         </span>
                       </td>
@@ -215,7 +215,7 @@ export const ReviewPanel: React.FC<ReviewPanelProps> = ({ datasetId, onReEnrich 
                         {p.raw_description}
                       </td>
                       <td className="p-4">
-                        <span className={`inline-block px-3 py-1 rounded-lg text-[10px] font-bold border ${badge.color}`}>
+                        <span className={`inline-block px-3 py-1 rounded-xl text-[10px] font-bold border ${badge.color} shadow-sm`}>
                           {badge.label}
                         </span>
                         <div className="text-[11px] text-slate-400 mt-1 truncate max-w-xs" title={p.review_reason}>

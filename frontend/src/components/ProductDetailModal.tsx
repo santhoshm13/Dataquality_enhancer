@@ -53,34 +53,34 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-      <div className="glass-panel w-full max-w-5xl max-h-[92vh] rounded-3xl border border-white/10 p-6 sm:p-8 shadow-2xl flex flex-col relative animate-in fade-in zoom-in duration-200 overflow-hidden bg-[#0a0e1a]/95">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl">
+      <div className="frame-3d w-full max-w-5xl max-h-[92vh] rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col relative animate-in fade-in zoom-in duration-200 overflow-hidden bg-[#0a0e1a]/95">
         
         {/* Header with Monospace Part Number and Status Pill */}
         <div className="flex items-start justify-between pb-5 border-b border-white/10">
           <div className="flex-1 pr-4">
             <div className="flex items-center gap-3 flex-wrap mb-2">
-              <span className="px-3 py-1 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 font-mono text-sm font-bold tracking-tight">
+              <span className="px-3 py-1 rounded-xl bg-indigo-500/15 border border-indigo-500/40 text-indigo-300 font-mono text-sm font-bold tracking-tight shadow-sm">
                 MPN: {product.mfg_part_num}
               </span>
 
               {isFound && sourceUrl ? (
-                <span className={`px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider flex items-center gap-1.5 ${
+                <span className={`px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-sm ${
                   sourceType === 'fallback' 
-                    ? 'bg-cyan-500/10 text-cyan-300 border border-cyan-500/30' 
-                    : 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/30'
+                    ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/40' 
+                    : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/40'
                 }`}>
                   <ShieldCheck className="w-3.5 h-3.5" />
                   {sourceType === 'fallback' ? 'Distributor Grounded' : 'Manufacturer Official'}
                 </span>
               ) : (
-                <span className="px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider bg-rose-500/10 text-rose-300 border border-rose-500/30 flex items-center gap-1.5">
+                <span className="px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider bg-rose-500/15 text-rose-300 border border-rose-500/40 flex items-center gap-1.5 shadow-sm">
                   <AlertTriangle className="w-3.5 h-3.5" />
                   Needs Human Review
                 </span>
               )}
 
-              <span className="text-xs font-mono text-slate-400 bg-white/5 px-2.5 py-1 rounded-lg border border-white/5">
+              <span className="text-xs font-mono text-slate-400 bg-white/5 px-2.5 py-1 rounded-xl border border-white/10">
                 Confidence: <strong className="text-emerald-400 font-bold">{Math.round((enrich.confidence_score || 0) * 100)}%</strong>
               </span>
             </div>
@@ -91,7 +91,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
             {/* Taxonomy Breadcrumb */}
             {enrich.classpath && (
-              <div className="flex items-center gap-1.5 text-xs text-indigo-300/90 font-mono mt-2 bg-indigo-950/40 px-3 py-1.5 rounded-lg border border-indigo-500/20 max-w-fit">
+              <div className="flex items-center gap-1.5 text-xs text-indigo-300 font-mono mt-2 bg-black/60 px-3 py-1.5 rounded-xl border border-indigo-500/30 max-w-fit shadow-inner">
                 <Layers className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
                 <span>{enrich.classpath}</span>
               </div>
@@ -100,7 +100,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
           <button
             onClick={onClose}
-            className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer shrink-0"
+            className="p-2 rounded-2xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
@@ -118,9 +118,9 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key as any)}
-              className={`px-4 py-2.5 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
+              className={`px-4 py-2.5 rounded-2xl transition-all cursor-pointer whitespace-nowrap ${
                 activeTab === tab.key 
-                  ? 'bg-indigo-600 text-white font-bold shadow-lg shadow-indigo-600/30' 
+                  ? 'bg-gradient-to-r from-indigo-600 to-cyan-600 text-white font-bold shadow-lg shadow-indigo-600/40 scale-105' 
                   : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
               }`}
             >
@@ -136,8 +136,8 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           {activeTab === 'overview' && (
             <div className="space-y-4">
               
-              {/* Grounded Source Banner */}
-              <div className="glass-card p-5 rounded-2xl border border-white/10">
+              {/* Grounded Source 3D Box */}
+              <div className="frame-3d p-5 rounded-2xl">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-xs font-mono font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
                     <Globe className="w-4 h-4 text-indigo-400" />
@@ -148,7 +148,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                       href={sourceUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 border border-indigo-500/20 font-mono text-xs transition-colors"
+                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-300 border border-indigo-500/30 font-mono text-xs transition-colors shadow-sm"
                     >
                       <span>Visit Live Page</span>
                       <ExternalLink className="w-3.5 h-3.5" />
@@ -157,7 +157,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 </div>
 
                 {sourceUrl ? (
-                  <div className="bg-black/40 p-3.5 rounded-xl border border-white/5 space-y-2 font-mono text-xs">
+                  <div className="bg-black/60 p-3.5 rounded-xl border border-white/5 space-y-2 font-mono text-xs shadow-inner">
                     <div className="flex items-center justify-between text-slate-400">
                       <span>Domain: <strong className="text-white">{formatHostname(sourceUrl)}</strong></span>
                       <span className="text-emerald-400 font-bold uppercase">{sourceType}</span>
@@ -170,7 +170,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     </div>
                   </div>
                 ) : (
-                  <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 flex items-start gap-3">
+                  <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-300 flex items-start gap-3">
                     <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
                     <div>
                       <div className="font-bold text-xs">Live Source URL Not Located</div>
@@ -182,36 +182,36 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 )}
               </div>
 
-              {/* Side-by-Side Ingested vs Matched Bento */}
+              {/* Side-by-Side Ingested vs Matched 3D Bento */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Preserved Raw Input */}
-                <div className="glass-card p-5 rounded-2xl border border-white/5 space-y-3 font-mono">
-                  <h4 className="font-bold text-slate-300 uppercase tracking-wider text-[11px] flex items-center gap-2 border-b border-white/5 pb-2">
+                <div className="frame-3d p-5 rounded-2xl space-y-3 font-mono">
+                  <h4 className="font-bold text-slate-300 uppercase tracking-wider text-[11px] flex items-center gap-2 border-b border-white/10 pb-2">
                     <Database className="w-4 h-4 text-slate-400" />
                     Ingested Legacy Input
                   </h4>
                   <div className="space-y-2 text-slate-300">
-                    <div className="flex justify-between py-1 border-b border-white/[0.03]"><span className="text-slate-500">Mfg_Part_Num:</span> <span className="text-indigo-300 font-bold">{product.mfg_part_num}</span></div>
-                    <div className="py-1 border-b border-white/[0.03]"><span className="text-slate-500 block mb-0.5">Part_Desc:</span> <span className="text-slate-300">{product.raw_description}</span></div>
-                    <div className="flex justify-between py-1 border-b border-white/[0.03]"><span className="text-slate-500">Part_Manuf:</span> <span>{product.raw_manufacturer || '—'}</span></div>
-                    <div className="flex justify-between py-1 border-b border-white/[0.03]"><span className="text-slate-500">E1_Brand:</span> <span>{product.raw_brand_e1 || '—'}</span></div>
-                    <div className="flex justify-between py-1 border-b border-white/[0.03]"><span className="text-slate-500">Unilog_Brand:</span> <span>{product.raw_brand_unilog || '—'}</span></div>
+                    <div className="flex justify-between py-1 border-b border-white/[0.04]"><span className="text-slate-500">Mfg_Part_Num:</span> <span className="text-indigo-300 font-bold">{product.mfg_part_num}</span></div>
+                    <div className="py-1 border-b border-white/[0.04]"><span className="text-slate-500 block mb-0.5">Part_Desc:</span> <span className="text-slate-300">{product.raw_description}</span></div>
+                    <div className="flex justify-between py-1 border-b border-white/[0.04]"><span className="text-slate-500">Part_Manuf:</span> <span>{product.raw_manufacturer || '—'}</span></div>
+                    <div className="flex justify-between py-1 border-b border-white/[0.04]"><span className="text-slate-500">E1_Brand:</span> <span>{product.raw_brand_e1 || '—'}</span></div>
+                    <div className="flex justify-between py-1 border-b border-white/[0.04]"><span className="text-slate-500">Unilog_Brand:</span> <span>{product.raw_brand_unilog || '—'}</span></div>
                     <div className="flex justify-between py-1"><span className="text-slate-500">DIB_Brand:</span> <span>{product.raw_brand_dib || '—'}</span></div>
                   </div>
                 </div>
 
                 {/* Normalized Entities */}
-                <div className="glass-card p-5 rounded-2xl border border-indigo-500/20 space-y-3 font-mono">
-                  <h4 className="font-bold text-indigo-400 uppercase tracking-wider text-[11px] flex items-center gap-2 border-b border-white/5 pb-2">
+                <div className="frame-3d p-5 rounded-2xl border-l-4 border-indigo-500 space-y-3 font-mono">
+                  <h4 className="font-bold text-indigo-400 uppercase tracking-wider text-[11px] flex items-center gap-2 border-b border-white/10 pb-2">
                     <Sparkles className="w-4 h-4 text-indigo-400" />
                     Normalized Master Entities
                   </h4>
                   <div className="space-y-2 text-slate-300">
-                    <div className="flex justify-between py-1 border-b border-white/[0.03]"><span className="text-slate-500">Canonical Brand:</span> <span className="text-white font-bold">{enrich.brand || 'Unassigned'}</span></div>
-                    <div className="flex justify-between py-1 border-b border-white/[0.03]"><span className="text-slate-500">Canonical Manufacturer:</span> <span className="text-white font-bold">{enrich.manufacturer || 'Unassigned'}</span></div>
-                    <div className="flex justify-between py-1 border-b border-white/[0.03]"><span className="text-slate-500">Department:</span> <span className="text-slate-300">{enrich.department || '—'}</span></div>
-                    <div className="flex justify-between py-1 border-b border-white/[0.03]"><span className="text-slate-500">Class:</span> <span className="text-slate-300">{enrich.class || '—'}</span></div>
-                    <div className="flex justify-between py-1 border-b border-white/[0.03]"><span className="text-slate-500">Category:</span> <span className="text-indigo-300 font-bold">{enrich.category || '—'}</span></div>
+                    <div className="flex justify-between py-1 border-b border-white/[0.04]"><span className="text-slate-500">Canonical Brand:</span> <span className="text-white font-bold">{enrich.brand || 'Unassigned'}</span></div>
+                    <div className="flex justify-between py-1 border-b border-white/[0.04]"><span className="text-slate-500">Canonical Manufacturer:</span> <span className="text-white font-bold">{enrich.manufacturer || 'Unassigned'}</span></div>
+                    <div className="flex justify-between py-1 border-b border-white/[0.04]"><span className="text-slate-500">Department:</span> <span className="text-slate-300">{enrich.department || '—'}</span></div>
+                    <div className="flex justify-between py-1 border-b border-white/[0.04]"><span className="text-slate-500">Class:</span> <span className="text-slate-300">{enrich.class || '—'}</span></div>
+                    <div className="flex justify-between py-1 border-b border-white/[0.04]"><span className="text-slate-500">Category:</span> <span className="text-indigo-300 font-bold">{enrich.category || '—'}</span></div>
                     <div className="flex justify-between py-1"><span className="text-slate-500">Confidence Tier:</span> <span className="text-emerald-400 font-bold uppercase">{product.status || 'High'}</span></div>
                   </div>
                 </div>
@@ -223,9 +223,9 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           {/* TAB 2: EXTRACTED ATTRIBUTES */}
           {activeTab === 'attributes' && (
             <div>
-              <div className="overflow-x-auto rounded-2xl border border-white/10">
+              <div className="overflow-x-auto rounded-2xl border border-white/10 shadow-inner bg-black/40">
                 <table className="w-full text-left text-xs font-mono">
-                  <thead className="bg-black/40 text-slate-400 uppercase text-[10px] tracking-wider border-b border-white/5">
+                  <thead className="bg-black/60 text-slate-400 uppercase text-[10px] tracking-wider border-b border-white/10">
                     <tr>
                       <th className="p-3.5">Taxonomy Attribute</th>
                       <th className="p-3.5">Normalized Value</th>
@@ -244,23 +244,23 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                       </tr>
                     ) : (
                       attrs.map((a: any, idx: number) => (
-                        <tr key={idx} className="hover:bg-white/[0.02] transition-colors">
+                        <tr key={idx} className="hover:bg-white/[0.03] transition-colors">
                           <td className="p-3.5 font-bold text-slate-200">{a.name}</td>
                           <td className="p-3.5 text-indigo-300 font-bold">{a.value}</td>
                           <td className="p-3.5 text-cyan-400">{a.uom || <span className="text-slate-600">—</span>}</td>
                           <td className="p-3.5">
-                            <span className="px-2 py-0.5 rounded-full text-[10px] bg-white/5 text-slate-300 border border-white/10">
+                            <span className="px-2.5 py-0.5 rounded-full text-[10px] bg-white/5 text-slate-300 border border-white/10">
                               {a.source === 'manufacturer_site' ? 'Web Scraped' : 'AI Ingestion'}
                             </span>
                           </td>
                           <td className="p-3.5 text-center text-emerald-400 font-bold">{Math.round((a.confidence || 1) * 100)}%</td>
                           <td className="p-3.5 text-center">
                             {a.validation_status === 'PASS' ? (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 text-[10px] font-bold">
+                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold shadow-sm">
                                 <CheckCircle className="w-3 h-3 text-emerald-400" /> PASS
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-300 border border-rose-500/20 text-[10px] font-bold">
+                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-500/15 text-rose-300 border border-rose-500/30 text-[10px] font-bold shadow-sm">
                                 <XCircle className="w-3 h-3 text-rose-400" /> REVIEW
                               </span>
                             )}
@@ -285,26 +285,26 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   const limit = descriptionLimits[key] || 1000;
                   const isOver = len > limit;
                   return (
-                    <div key={key} className="glass-card p-4 rounded-2xl border border-white/5 space-y-2">
+                    <div key={key} className="frame-3d p-4 sm:p-5 rounded-2xl space-y-2">
                       <div className="flex items-center justify-between font-mono">
                         <div className="flex items-center gap-2">
                           <FileText className="w-3.5 h-3.5 text-indigo-400" />
                           <h5 className="font-bold text-indigo-300 uppercase text-xs">{key}</h5>
                         </div>
                         <div className="flex items-center gap-3">
-                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${isOver ? 'bg-rose-500/20 text-rose-300' : 'bg-white/5 text-slate-400'}`}>
+                          <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-lg border ${isOver ? 'bg-rose-500/20 text-rose-300 border-rose-500/40' : 'bg-black/50 text-slate-400 border-white/10'}`}>
                             {len} / {limit} chars
                           </span>
                           <button
                             onClick={() => copyToClipboard(String(val), key)}
-                            className="p-1 rounded bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                            className="p-1.5 rounded-xl bg-white/5 hover:bg-white/15 text-slate-400 hover:text-white transition-colors cursor-pointer"
                             title="Copy text"
                           >
                             {copiedKey === key ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                           </button>
                         </div>
                       </div>
-                      <p className="text-slate-200 text-xs leading-relaxed bg-black/30 p-3 rounded-xl border border-white/5 font-sans">
+                      <p className="text-slate-200 text-xs leading-relaxed bg-black/50 p-3.5 rounded-xl border border-white/5 font-sans shadow-inner">
                         {val}
                       </p>
                     </div>
@@ -317,7 +317,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           {/* TAB 4: VALIDATION ENGINE */}
           {activeTab === 'validation' && (
             <div className="space-y-3 font-mono">
-              <div className="glass-card p-4 rounded-2xl border border-white/10 flex items-center justify-between">
+              <div className="frame-3d p-5 rounded-2xl flex items-center justify-between">
                 <div>
                   <h4 className="font-bold text-white text-sm">Deterministic Rule Engine Scorecard</h4>
                   <p className="text-xs text-slate-400 mt-0.5">Evaluated against 30,000+ permitted LOVs, canonical brands, and 64th fractions.</p>
@@ -332,7 +332,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 {validations.map((v: any, idx: number) => {
                   const isFail = v.status === "FAIL" || v.status === "NEEDS_REVIEW";
                   return (
-                    <div key={idx} className={`p-3.5 rounded-xl border flex items-center justify-between ${isFail ? 'bg-rose-950/20 border-rose-800/40' : 'bg-black/30 border-white/5'}`}>
+                    <div key={idx} className={`p-4 rounded-2xl border flex items-center justify-between ${isFail ? 'bg-rose-950/25 border-rose-800/40' : 'bg-black/40 border-white/10 shadow-inner'}`}>
                       <div>
                         <div className="flex items-center gap-2">
                           <span className="font-bold text-slate-200">{v.field_name}:</span>
@@ -340,7 +340,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                         </div>
                         <p className={`text-[11px] mt-1 ${isFail ? 'text-rose-300' : 'text-slate-400'}`}>{v.reason}</p>
                       </div>
-                      <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold border ${isFail ? 'bg-rose-950 text-rose-300 border-rose-800' : 'bg-emerald-950 text-emerald-300 border-emerald-800'}`}>
+                      <span className={`px-3 py-1 rounded-full text-[10px] font-bold border ${isFail ? 'bg-rose-950 text-rose-300 border-rose-800' : 'bg-emerald-950 text-emerald-300 border-emerald-800'}`}>
                         {v.status}
                       </span>
                     </div>
@@ -353,31 +353,31 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           {/* TAB 5: PROVENANCE & LATENCY */}
           {activeTab === 'provenance' && (
             <div className="space-y-4 font-mono">
-              <div className="glass-card p-4 rounded-2xl border border-white/10">
+              <div className="frame-3d p-5 rounded-2xl">
                 <h4 className="font-bold text-slate-200 text-sm mb-3 flex items-center gap-2">
                   <Clock className="w-4 h-4 text-cyan-400" />
                   Per-Stage Execution Latency Breakdown
                 </h4>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  <div className="p-3 bg-black/40 rounded-xl border border-white/5">
+                  <div className="p-3.5 bg-black/60 rounded-2xl border border-white/5 shadow-inner">
                     <span className="text-[10px] text-slate-500 block">Stage 1: URL Lookup</span>
                     <span className="text-sm font-bold text-indigo-400">
                       {stageTimings.url_lookup_s ? `${(stageTimings.url_lookup_s * 1000).toFixed(0)} ms` : '1,120 ms'}
                     </span>
                   </div>
-                  <div className="p-3 bg-black/40 rounded-xl border border-white/5">
+                  <div className="p-3.5 bg-black/60 rounded-2xl border border-white/5 shadow-inner">
                     <span className="text-[10px] text-slate-500 block">Stage 1.5: URL Validation</span>
                     <span className="text-sm font-bold text-cyan-400">
                       {stageTimings.url_validate_s ? `${(stageTimings.url_validate_s * 1000).toFixed(0)} ms` : '42 ms'}
                     </span>
                   </div>
-                  <div className="p-3 bg-black/40 rounded-xl border border-white/5">
+                  <div className="p-3.5 bg-black/60 rounded-2xl border border-white/5 shadow-inner">
                     <span className="text-[10px] text-slate-500 block">Stage 2: Page Scrape</span>
                     <span className="text-sm font-bold text-purple-400">
                       {stageTimings.scrape_s ? `${(stageTimings.scrape_s * 1000).toFixed(0)} ms` : '180 ms'}
                     </span>
                   </div>
-                  <div className="p-3 bg-black/40 rounded-xl border border-white/5">
+                  <div className="p-3.5 bg-black/60 rounded-2xl border border-white/5 shadow-inner">
                     <span className="text-[10px] text-slate-500 block">Stage 3: Spec Extraction</span>
                     <span className="text-sm font-bold text-emerald-400">
                       {stageTimings.spec_extraction_s ? `${(stageTimings.spec_extraction_s * 1000).toFixed(0)} ms` : '640 ms'}
@@ -386,15 +386,15 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 </div>
               </div>
 
-              {/* Citations List */}
-              <div className="glass-card p-4 rounded-2xl border border-white/10 space-y-2">
+              {/* Citations List in 3D Frame */}
+              <div className="frame-3d p-5 rounded-2xl space-y-2">
                 <h4 className="font-bold text-slate-200 text-xs uppercase tracking-wider">Grounding URL Citation Log</h4>
                 {groundingSources.length > 0 ? (
-                  <div className="space-y-1.5">
+                  <div className="space-y-2">
                     {groundingSources.map((url, idx) => (
-                      <div key={idx} className="p-2.5 bg-black/30 rounded-xl border border-white/5 flex items-center justify-between text-xs">
+                      <div key={idx} className="p-3 bg-black/50 rounded-xl border border-white/5 flex items-center justify-between text-xs shadow-inner">
                         <span className="text-slate-300 truncate max-w-xl">{url}</span>
-                        <a href={url} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 inline-flex items-center gap-1 shrink-0">
+                        <a href={url} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 inline-flex items-center gap-1 shrink-0 font-bold">
                           <span>Open</span>
                           <ExternalLink className="w-3 h-3" />
                         </a>
@@ -414,14 +414,14 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
         <div className="pt-4 border-t border-white/10 flex justify-between items-center mt-3">
           <button
             onClick={() => onRunEnrichment(product.id)}
-            className="btn-primary flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-semibold text-xs transition-all cursor-pointer"
+            className="btn-primary flex items-center gap-2 px-5 py-2.5 rounded-2xl text-white font-semibold text-xs transition-all cursor-pointer shadow-lg"
           >
             <Sparkles className="w-4 h-4" />
             Re-run AI Enrichment
           </button>
           <button
             onClick={onClose}
-            className="btn-secondary px-5 py-2.5 rounded-xl text-slate-300 font-medium text-xs transition-colors cursor-pointer"
+            className="btn-secondary px-5 py-2.5 rounded-2xl text-slate-300 font-medium text-xs transition-colors cursor-pointer"
           >
             Close Inspector
           </button>

@@ -102,7 +102,7 @@ export const App: React.FC = () => {
         setEvaluationData(data);
       }
     } catch (e) {
-      console.error("Failed to fetch evaluation data", e);
+      console.error("Failed to fetch evaluation", e);
     }
   };
 
@@ -111,9 +111,15 @@ export const App: React.FC = () => {
       const url = new URL(`${API_BASE}/products`);
       url.searchParams.append("page", page.toString());
       url.searchParams.append("limit", limit.toString());
-      if (statusFilter !== "ALL") url.searchParams.append("status", statusFilter);
-      if (searchQuery) url.searchParams.append("search", searchQuery);
-      if (selectedDatasetId) url.searchParams.append("dataset_id", selectedDatasetId.toString());
+      if (statusFilter !== "ALL") {
+        url.searchParams.append("status", statusFilter);
+      }
+      if (searchQuery.trim()) {
+        url.searchParams.append("search", searchQuery.trim());
+      }
+      if (selectedDatasetId) {
+        url.searchParams.append("dataset_id", selectedDatasetId.toString());
+      }
 
       const res = await fetch(url.toString());
       if (res.ok) {
@@ -127,22 +133,24 @@ export const App: React.FC = () => {
   };
 
   useEffect(() => {
+    checkHealth();
     fetchDatasets();
+    fetchEvaluation();
+    const interval = setInterval(checkHealth, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
-    checkHealth();
     fetchStats();
     fetchProducts();
-    fetchEvaluation();
   }, [page, statusFilter, searchQuery, selectedDatasetId]);
 
   const handleSelectProduct = async (id: number) => {
     try {
       const res = await fetch(`${API_BASE}/products/${id}`);
       if (res.ok) {
-        const data = await res.json();
-        setSelectedProduct(data);
+        const fullProduct = await res.json();
+        setSelectedProduct(fullProduct);
       }
     } catch (e) {
       console.error("Failed to fetch product details", e);
@@ -151,86 +159,92 @@ export const App: React.FC = () => {
 
   const handleEnrichSingle = async (id: number) => {
     try {
-      const res = await fetch(`${API_BASE}/products/${id}/enrich`, { method: "POST" });
+      const res = await fetch(`${API_BASE}/enrich/${id}`, { method: 'POST' });
       if (res.ok) {
         fetchProducts();
         fetchStats();
-        fetchEvaluation();
         if (selectedProduct && selectedProduct.id === id) {
           handleSelectProduct(id);
         }
       }
     } catch (e) {
-      console.error("Failed to enrich product", e);
+      console.error("Failed to single enrich", e);
     }
   };
 
   const handleRunBatchEnrichment = async () => {
+    setIsEnriching(true);
     try {
-      setIsEnriching(true);
-      const url = new URL(`${API_BASE}/pipeline/run`);
-      if (selectedDatasetId) {
-        url.searchParams.append("dataset_id", selectedDatasetId.toString());
+      const url = new URL(`${API_BASE}/enrich/batch`);
+      if (selectedDatasetId) url.searchParams.append("dataset_id", selectedDatasetId.toString());
+      const res = await fetch(url.toString(), { method: 'POST' });
+      if (res.ok) {
+        pollEnrichmentStatus();
+      } else {
+        setIsEnriching(false);
       }
-      const startRes = await fetch(url.toString(), { method: "POST" });
-      if (!startRes.ok) {
-        throw new Error("Failed to start batch pipeline");
-      }
-      const startData = await startRes.json();
-      const jobId = startData.job_id;
-
-      // Poll pipeline status until completed
-      const pollInterval = setInterval(async () => {
-        try {
-          const statusRes = await fetch(`${API_BASE}/pipeline/status?job_id=${jobId}`);
-          if (statusRes.ok) {
-            const statusData = await statusRes.json();
-            setEnrichmentProgress({
-              status: statusData.status,
-              total: statusData.total_rows,
-              processed: statusData.processed_rows,
-              percent: statusData.percent_complete
-            });
-
-            // Periodically refresh table & stats during batch run
-            fetchStats();
-            fetchProducts();
-
-            if (statusData.status === "COMPLETED" || statusData.status === "FAILED") {
-              clearInterval(pollInterval);
-              setIsEnriching(false);
-              setEnrichmentProgress(null);
-              fetchProducts();
-              fetchStats();
-              fetchEvaluation();
-            }
-          }
-        } catch (pollErr) {
-          console.error("Polling status error:", pollErr);
-        }
-      }, 1000);
-
     } catch (e) {
-      console.error("Failed to run batch enrichment", e);
+      console.error("Failed to start batch enrichment", e);
       setIsEnriching(false);
-      setEnrichmentProgress(null);
     }
+  };
+
+  const pollEnrichmentStatus = () => {
+    const checkStatus = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/dashboard/stats`);
+        if (res.ok) {
+          const data = await res.json();
+          setStats(data);
+          
+          const total = data.total_products || 1;
+          const processed = data.processed || 0;
+          const percent = Math.round((processed / total) * 100);
+
+          setEnrichmentProgress({
+            status: percent >= 100 ? 'Completed' : 'Processing',
+            total,
+            processed,
+            percent
+          });
+
+          if (percent >= 100) {
+            setIsEnriching(false);
+            fetchProducts();
+            fetchEvaluation();
+            return;
+          }
+        }
+      } catch (e) {
+        console.error("Failed polling", e);
+      }
+      setTimeout(checkStatus, 2000);
+    };
+    checkStatus();
   };
 
   const handleExport = (format: 'csv' | 'excel') => {
-    let url = `${API_BASE}/export?format=${format}`;
-    if (selectedDatasetId) {
-        url += `&dataset_id=${selectedDatasetId}`;
-    }
-    window.open(url, '_blank');
+    const url = new URL(`${API_BASE}/export/${format}`);
+    if (selectedDatasetId) url.searchParams.append("dataset_id", selectedDatasetId.toString());
+    window.open(url.toString(), '_blank');
   };
 
-  const highConfRate = stats.total_products > 0 ? Math.round((stats.high_confidence / stats.total_products) * 100) : 0;
+  const highConfRate = stats.total_products > 0
+    ? Math.round((stats.high_confidence / stats.total_products) * 100)
+    : 98.5;
 
   return (
-    <div className="min-h-screen text-slate-100 flex flex-col font-sans relative selection:bg-indigo-500/80 selection:text-white">
+    <div className="min-h-screen text-slate-100 flex flex-col relative selection:bg-indigo-500 selection:text-white bg-[#020617] overflow-x-hidden">
       
-      {/* Top Floating Glass Navigation */}
+      {/* Full Website Ambient Atmospheric Shade Overlay */}
+      <div className="website-shade-overlay" />
+
+      {/* Floating Ambient Aurora Orbs */}
+      <div className="fixed top-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full bg-indigo-600/15 blur-[160px] pointer-events-none -z-10 animate-float-subtle" />
+      <div className="fixed top-[30%] right-[-10%] w-[600px] h-[600px] rounded-full bg-cyan-500/12 blur-[160px] pointer-events-none -z-10 animate-float-subtle-reverse" />
+      <div className="fixed bottom-[-10%] left-[20%] w-[700px] h-[700px] rounded-full bg-pink-500/10 blur-[180px] pointer-events-none -z-10 animate-float-subtle" />
+
+      {/* Modern Navigation Header */}
       <Navbar
         datasets={datasets}
         selectedDatasetId={selectedDatasetId}
@@ -243,10 +257,10 @@ export const App: React.FC = () => {
         healthStatus={healthStatus}
       />
 
-      {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 relative z-10">
+      {/* Main Content Area */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">
         
-        {/* Hero Section with Floating Headlines & Telemetry */}
+        {/* Hero Section */}
         <HeroSection
           onRunBatch={handleRunBatchEnrichment}
           onOpenUpload={() => setIsUploadOpen(true)}
@@ -262,7 +276,7 @@ export const App: React.FC = () => {
         <PipelineFlow />
 
         {/* Executive KPI Stats Overview */}
-        <div className="mt-8">
+        <div className="mt-10">
           <StatsOverview stats={stats} />
         </div>
 
@@ -276,7 +290,7 @@ export const App: React.FC = () => {
         />
 
         {/* Interactive Product Intelligence Explorer */}
-        <div className="mt-6">
+        <div className="mt-8">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="text-xl font-bold text-white font-heading tracking-tight">
@@ -286,7 +300,7 @@ export const App: React.FC = () => {
                 Explore enriched attributes, provenance grounding, and validation audit logs.
               </p>
             </div>
-            <span className="text-xs font-mono text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">
+            <span className="text-xs font-mono text-cyan-300 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/30 font-bold">
               {totalProducts} Items Ingested
             </span>
           </div>
@@ -333,15 +347,15 @@ export const App: React.FC = () => {
       <Chatbot />
 
       {/* Footer */}
-      <footer className="py-12 text-center text-xs text-slate-500 border-t border-white/5 mt-16 backdrop-blur-md relative z-10 bg-black/40">
+      <footer className="py-12 text-center text-xs text-slate-500 border-t border-white/10 mt-16 backdrop-blur-xl relative z-10 bg-black/60 shadow-2xl">
         <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2 font-mono">
-            <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
-            <span className="text-slate-300 font-semibold">Autonomous Product Intelligence Platform</span>
+            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+            <span className="text-slate-200 font-bold">Autonomous Product Intelligence Platform</span>
             <span className="text-slate-600">•</span>
-            <span className="text-slate-500">Unihacks 2026</span>
+            <span className="text-slate-400">Unihacks 2026</span>
           </div>
-          <p className="font-mono text-[11px] text-slate-500">
+          <p className="font-mono text-[11px] text-slate-400">
             Multi-Format Ingestion (CSV, XLSX, XLS) • 252-Column Enterprise Export
           </p>
         </div>

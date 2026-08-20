@@ -55,7 +55,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
       case 'ENRICHED':
       case 'HIGH':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 shadow-sm shadow-emerald-500/10">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-sm shadow-emerald-500/10">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
             HIGH {confPct}%
           </span>
@@ -63,14 +63,14 @@ export const ProductTable: React.FC<ProductTableProps> = ({
       case 'MEDIUM_CONFIDENCE':
       case 'MEDIUM':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold bg-amber-500/10 text-amber-300 border border-amber-500/30">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
             MED {confPct}%
           </span>
         );
       case 'NEEDS_REVIEW':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold bg-rose-500/10 text-rose-300 border border-rose-500/30">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold bg-rose-500/15 text-rose-300 border border-rose-500/30">
             <span className="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
             REVIEW {confPct}%
           </span>
@@ -100,11 +100,11 @@ export const ProductTable: React.FC<ProductTableProps> = ({
       initial="hidden"
       whileInView="visible"
       viewport={{ once: false, amount: 0.15 }}
-      className="glass-panel rounded-3xl border border-white/10 overflow-hidden shadow-2xl mb-14 bg-[#0a0e1a]/90"
+      className="frame-3d rounded-3xl overflow-hidden shadow-2xl mb-14"
     >
       
-      {/* Search & Filter Header */}
-      <div className="p-5 sm:p-6 border-b border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white/[0.02]">
+      {/* Search & Filter Header with 3D Bevel Line */}
+      <div className="p-5 sm:p-6 border-b border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white/[0.02]">
         
         {/* Search Input with Gradient Focus */}
         <div className="relative w-full sm:w-96 group">
@@ -114,7 +114,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
             placeholder="Search MPN, description, manufacturer..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-black/50 border border-white/10 rounded-2xl text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-mono"
+            className="w-full pl-10 pr-4 py-2.5 bg-black/60 border border-white/10 rounded-2xl text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-mono shadow-inner"
           />
         </div>
 
@@ -126,7 +126,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
             <select
               value={statusFilter}
               onChange={(e) => onStatusFilterChange(e.target.value)}
-              className="bg-black/60 border border-white/10 text-slate-200 text-xs font-semibold rounded-xl px-3.5 py-2 focus:outline-none focus:border-indigo-500 cursor-pointer transition-colors"
+              className="bg-black/70 border border-white/10 text-slate-200 text-xs font-semibold rounded-xl px-3.5 py-2 focus:outline-none focus:border-indigo-500 cursor-pointer transition-colors shadow-inner"
             >
               <option value="ALL">All Statuses</option>
               <option value="RAW">Raw Ingest</option>
@@ -143,7 +143,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
       <div className="overflow-x-auto min-h-[360px]">
         <table className="w-full text-left border-collapse text-xs font-mono">
           <thead>
-            <tr className="bg-black/40 text-slate-400 font-bold uppercase tracking-wider text-[10px] border-b border-white/5">
+            <tr className="bg-black/50 text-slate-400 font-bold uppercase tracking-wider text-[10px] border-b border-white/10">
               <th className="p-4 pl-6">Part Number (MPN)</th>
               <th className="p-4">Raw Description</th>
               <th className="p-4">Canonical Brand</th>
@@ -169,12 +169,12 @@ export const ProductTable: React.FC<ProductTableProps> = ({
               products.map((p) => (
                 <motion.tr 
                   variants={scrollZoomBox}
-                  whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.035)", scale: 1.003 }}
+                  whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.04)", scale: 1.003 }}
                   key={p.id} 
                   className="transition-all group"
                 >
                   <td className="p-4 pl-6 text-white font-extrabold text-xs">
-                    <span className="px-2.5 py-1 rounded-lg bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 inline-block font-mono">
+                    <span className="px-2.5 py-1 rounded-xl bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 inline-block font-mono shadow-sm">
                       {p.mfg_part_num}
                     </span>
                   </td>
@@ -195,8 +195,8 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                       <div className="flex items-center gap-1.5 flex-wrap">
                         <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${
                           p.source_type === 'fallback' 
-                            ? 'bg-cyan-500/10 text-cyan-300 border border-cyan-500/20' 
-                            : 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20'
+                            ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/30' 
+                            : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
                         }`}>
                           {p.source_type === 'fallback' ? 'distributor' : 'manufacturer'}
                         </span>
@@ -212,7 +212,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                         </a>
                       </div>
                     ) : p.found === false ? (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 font-mono">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 font-mono">
                         <AlertCircle className="w-3 h-3 text-amber-400 shrink-0" />
                         No URL found
                       </span>
@@ -228,7 +228,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                         whileHover={{ scale: 1.15 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => onEnrichSingle(p.id)}
-                        className="p-2 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/25 text-indigo-300 border border-indigo-500/30 transition-all cursor-pointer shadow-sm"
+                        className="p-2 rounded-xl bg-indigo-500/15 hover:bg-indigo-500/30 text-indigo-300 border border-indigo-500/40 transition-all cursor-pointer shadow-sm"
                         title="Run AI Enrichment"
                       >
                         <Play className="w-3.5 h-3.5 fill-current" />
@@ -252,7 +252,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
       </div>
 
       {/* Pagination Footer */}
-      <div className="p-4 sm:p-5 border-t border-white/5 bg-black/30 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-300 font-mono">
+      <div className="p-4 sm:p-5 border-t border-white/10 bg-black/40 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-300 font-mono">
         <div>
           Showing <span className="text-cyan-300 font-bold">{products.length > 0 ? (page - 1) * limit + 1 : 0}</span> to <span className="text-cyan-300 font-bold">{Math.min(page * limit, total)}</span> of <span className="text-white font-bold">{total}</span> items
         </div>
@@ -264,7 +264,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
-          <span className="px-3.5 py-1.5 text-slate-200 font-bold bg-white/5 border border-white/10 rounded-xl">
+          <span className="px-3.5 py-1.5 text-slate-200 font-bold bg-white/5 border border-white/10 rounded-xl shadow-inner">
             Page {page} / {totalPages}
           </span>
           <button

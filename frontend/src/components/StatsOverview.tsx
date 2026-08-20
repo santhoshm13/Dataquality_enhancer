@@ -29,18 +29,18 @@ export const StatsOverview: React.FC<StatsProps> = ({ stats }) => {
       viewport={{ once: false, amount: 0.2 }}
       className="mb-12"
     >
-      {/* 4 Metric Cards with Scroll Zoom and Colourful Text */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-6">
+      {/* 4 Metric Cards with 3D Frames, Scroll Zoom, and Colourful Text */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 mb-6">
         
         {/* Total Ingested */}
         <motion.div 
           variants={scrollZoomBox} 
           whileHover={hoverScale.hover} 
-          className="glass-card rounded-3xl p-6 border border-white/10 relative overflow-hidden group shadow-xl"
+          className="frame-3d rounded-3xl p-6 relative overflow-hidden group shadow-2xl"
         >
           <div className="flex items-center justify-between mb-3">
             <span className="text-[11px] font-mono font-bold text-slate-400 uppercase tracking-wider">Total Catalog Items</span>
-            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shadow-md">
+            <div className="w-10 h-10 rounded-2xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shadow-md">
               <Layers className="w-5 h-5" />
             </div>
           </div>
@@ -57,11 +57,11 @@ export const StatsOverview: React.FC<StatsProps> = ({ stats }) => {
         <motion.div 
           variants={scrollZoomBox} 
           whileHover={hoverScale.hover} 
-          className="glass-card rounded-3xl p-6 border border-emerald-500/25 relative overflow-hidden group shadow-xl bg-emerald-950/[0.04]"
+          className="frame-3d rounded-3xl p-6 border-l-4 border-emerald-500 relative overflow-hidden group shadow-2xl bg-emerald-950/[0.06]"
         >
           <div className="flex items-center justify-between mb-3">
             <span className="text-[11px] font-mono font-bold text-emerald-400 uppercase tracking-wider">High Confidence Pass</span>
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-300 shadow-md">
+            <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-300 shadow-md">
               <CheckCircle2 className="w-5 h-5" />
             </div>
           </div>
@@ -77,11 +77,11 @@ export const StatsOverview: React.FC<StatsProps> = ({ stats }) => {
         <motion.div 
           variants={scrollZoomBox} 
           whileHover={hoverScale.hover} 
-          className="glass-card rounded-3xl p-6 border border-rose-500/25 relative overflow-hidden group shadow-xl bg-rose-950/[0.04]"
+          className="frame-3d rounded-3xl p-6 border-l-4 border-rose-500 relative overflow-hidden group shadow-2xl bg-rose-950/[0.06]"
         >
           <div className="flex items-center justify-between mb-3">
             <span className="text-[11px] font-mono font-bold text-rose-400 uppercase tracking-wider">Needs Review</span>
-            <div className="w-10 h-10 rounded-xl bg-rose-500/20 border border-rose-500/30 flex items-center justify-center text-rose-300 shadow-md">
+            <div className="w-10 h-10 rounded-2xl bg-rose-500/20 border border-rose-500/30 flex items-center justify-center text-rose-300 shadow-md">
               <AlertTriangle className="w-5 h-5" />
             </div>
           </div>
@@ -97,11 +97,11 @@ export const StatsOverview: React.FC<StatsProps> = ({ stats }) => {
         <motion.div 
           variants={scrollZoomBox} 
           whileHover={hoverScale.hover} 
-          className="glass-card rounded-3xl p-6 border border-cyan-500/25 relative overflow-hidden group shadow-xl bg-cyan-950/[0.04]"
+          className="frame-3d rounded-3xl p-6 border-l-4 border-cyan-500 relative overflow-hidden group shadow-2xl bg-cyan-950/[0.06]"
         >
           <div className="flex items-center justify-between mb-3">
             <span className="text-[11px] font-mono font-bold text-cyan-400 uppercase tracking-wider">LOV Compliance Rate</span>
-            <div className="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-300 shadow-md">
+            <div className="w-10 h-10 rounded-2xl bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-300 shadow-md">
               <ShieldCheck className="w-5 h-5" />
             </div>
           </div>
@@ -115,11 +115,11 @@ export const StatsOverview: React.FC<StatsProps> = ({ stats }) => {
 
       </div>
 
-      {/* Confidence Distribution Bar with Zoom Effect */}
+      {/* Confidence Distribution Bar with 3D Frame */}
       <motion.div 
         variants={scrollZoomBox} 
         whileHover={hoverScale.hover}
-        className="glass-panel p-6 rounded-3xl border border-white/10 shadow-2xl"
+        className="frame-3d p-6 rounded-3xl shadow-2xl"
       >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
           <div className="flex items-center gap-2 text-xs font-mono font-extrabold text-white tracking-wide">
@@ -143,7 +143,7 @@ export const StatsOverview: React.FC<StatsProps> = ({ stats }) => {
         </div>
 
         {/* Multi-Stop Rainbow Progress Bar */}
-        <div className="w-full h-3.5 bg-black/60 rounded-full overflow-hidden flex p-0.5 border border-white/10 shadow-inner">
+        <div className="w-full h-4 bg-black/80 rounded-full overflow-hidden flex p-0.5 border border-white/10 shadow-inner">
           <div 
             className="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-l-full transition-all duration-1000 ease-out shadow-sm"
             style={{ width: `${total > 0 ? (stats.high_confidence / total) * 100 : 0}%` }}
