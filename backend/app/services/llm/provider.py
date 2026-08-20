@@ -221,26 +221,34 @@ class MockLLMProvider(BaseLLMProvider):
         }
 
     async def find_manufacturer_url(self, mpn: str, manufacturer: str, category_hint: str = None) -> Dict[str, Any]:
+        """
+        Mock URL lookup: returns known-good demo URLs for a small allowlist.
+        All other manufacturers honestly return found=false to exercise the
+        NEEDS_HUMAN_REVIEW flow (never fabricate or guess URLs).
+        """
         mfg_clean = (manufacturer or "").lower()
-        if "frigidaire" in mfg_clean:
-            url = f"https://www.frigidaire.com/en/p/dishwashers/built-in-dishwashers/{mpn}"
-            return {"found": True, "url": url, "source_type": "manufacturer", "grounding_sources": [url]}
-        elif "diablo" in mfg_clean or "freud" in mfg_clean:
-            url = f"https://www.diablotools.com/products/{mpn}"
-            return {"found": True, "url": url, "source_type": "manufacturer", "grounding_sources": [url]}
-        elif "3m" in mfg_clean:
-            url = f"https://www.3m.com/3M/en_US/p/d/{mpn}/"
-            return {"found": True, "url": url, "source_type": "manufacturer", "grounding_sources": [url]}
-        elif "whirlpool" in mfg_clean:
-            url = f"https://www.whirlpool.com/kitchen/dishwashers/{mpn}.html"
-            return {"found": True, "url": url, "source_type": "manufacturer", "grounding_sources": [url]}
-        elif "mirka" in mfg_clean:
-            url = f"https://www.mirka.com/en/products/{mpn}"
-            return {"found": True, "url": url, "source_type": "manufacturer", "grounding_sources": [url]}
-        elif manufacturer and mpn:
-            url = f"https://www.{manufacturer.lower().replace(' ', '')}.com/products/{mpn}"
-            return {"found": True, "url": url, "source_type": "manufacturer", "grounding_sources": [url]}
-        return {"found": False, "url": "", "source_type": "none", "grounding_sources": []}
+
+        # Small allowlist of known-good demo manufacturer URLs
+        MOCK_URL_MAP = {
+            "frigidaire": "https://www.frigidaire.com/en/p/dishwashers/built-in-dishwashers/{mpn}",
+            "diablo": "https://www.diablotools.com/products/{mpn}",
+            "freud": "https://www.diablotools.com/products/{mpn}",
+            "3m": "https://www.3m.com/3M/en_US/p/d/{mpn}/",
+            "whirlpool": "https://www.whirlpool.com/kitchen/dishwashers/{mpn}.html",
+            "mirka": "https://www.mirka.com/en/products/{mpn}",
+        }
+
+        for key, url_template in MOCK_URL_MAP.items():
+            if key in mfg_clean:
+                url = url_template.format(mpn=mpn)
+                return {"found": True, "url": url, "source_type": "manufacturer", "grounding_sources": [url]}
+
+        # Honest failure for unknown manufacturers — do NOT construct/guess URLs
+        return {
+            "found": False, "url": "", "source_type": "none", "grounding_sources": [],
+            "review_status": "NEEDS_HUMAN_REVIEW",
+            "review_reason": f"No known manufacturer URL for {manufacturer} {mpn}"
+        }
 
     async def extract_specs_from_text(self, mpn: str, manufacturer: str, page_text: str, source_url: str, source_type: str = "manufacturer") -> Dict[str, Any]:
         return {
