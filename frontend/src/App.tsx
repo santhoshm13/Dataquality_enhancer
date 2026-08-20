@@ -10,6 +10,7 @@ import { ProductDetailModal } from './components/ProductDetailModal';
 import { EvaluationPanel } from './components/EvaluationPanel';
 import { ReviewPanel } from './components/ReviewPanel';
 import { Chatbot } from './components/Chatbot';
+import { AnimatedBackground } from './components/AnimatedBackground';
 
 const API_BASE = "http://127.0.0.1:8000/api";
 
@@ -236,6 +237,9 @@ export const App: React.FC = () => {
   return (
     <div className="min-h-screen text-slate-100 flex flex-col relative selection:bg-indigo-500 selection:text-white bg-[#020617] overflow-x-hidden">
       
+      {/* Dynamic Animated Cybernetic Background with Image, Mesh & Particles */}
+      <AnimatedBackground />
+
       {/* Full Website Ambient Atmospheric Shade Overlay */}
       <div className="website-shade-overlay" />
 
