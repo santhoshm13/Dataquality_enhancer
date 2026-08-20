@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Navbar } from './components/Navbar';
 import { StatsOverview } from './components/StatsOverview';
 import { ProductTable } from './components/ProductTable';
@@ -7,10 +8,13 @@ import { ProductDetailModal } from './components/ProductDetailModal';
 import { EvaluationPanel } from './components/EvaluationPanel';
 import { ReviewPanel } from './components/ReviewPanel';
 import { Chatbot } from './components/Chatbot';
+import { LandingPage } from './components/LandingPage';
 
 const API_BASE = "http://127.0.0.1:8000/api";
 
 export const App: React.FC = () => {
+  const [isDemoActive, setIsDemoActive] = useState<boolean>(false);
+  
   const [stats, setStats] = useState<{
     total_products: number;
     processed: number;
@@ -223,52 +227,87 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-transparent text-slate-100 flex flex-col font-sans relative">
-      
-      {/* Header Navigation */}
-      <Navbar
-        datasets={datasets}
-        selectedDatasetId={selectedDatasetId}
-        onSelectDataset={setSelectedDatasetId}
-        onOpenUpload={() => setIsUploadOpen(true)}
-        onExport={handleExport}
-        onRunBatchEnrichment={handleRunBatchEnrichment}
-        isEnriching={isEnriching}
-        enrichmentProgress={enrichmentProgress}
-        healthStatus={healthStatus}
-      />
+    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col font-sans relative">
+      <AnimatePresence mode="wait">
+        {!isDemoActive ? (
+          <motion.div
+            key="landing"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="w-full h-full flex flex-col"
+          >
+            {/* Minimal nav for landing page could go here if needed, but LandingPage handles its own hero */}
+            <LandingPage onLaunchDemo={() => setIsDemoActive(true)} />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="dashboard"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="w-full flex flex-col min-h-screen"
+          >
+            {/* Header Navigation */}
+            <Navbar
+              datasets={datasets}
+              selectedDatasetId={selectedDatasetId}
+              onSelectDataset={setSelectedDatasetId}
+              onOpenUpload={() => setIsUploadOpen(true)}
+              onExport={handleExport}
+              onRunBatchEnrichment={handleRunBatchEnrichment}
+              isEnriching={isEnriching}
+              enrichmentProgress={enrichmentProgress}
+              healthStatus={healthStatus}
+              onBackToHome={() => setIsDemoActive(false)}
+            />
 
-      {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8 relative z-10 animate-slide-in">
-        
-        {/* KPI Stats Header */}
-        <StatsOverview stats={stats} />
+            {/* Main Container */}
+            <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8 relative z-10">
+              
+              {/* KPI Stats Header */}
+              <StatsOverview stats={stats} />
 
-        {/* Evaluation Metrics Benchmark */}
-        <EvaluationPanel evaluation={evaluationData} onRefresh={fetchEvaluation} />
+              {/* Evaluation Metrics Benchmark */}
+              <EvaluationPanel evaluation={evaluationData} onRefresh={fetchEvaluation} />
 
-        {/* Needs Human Review Panel */}
-        <ReviewPanel
-          datasetId={selectedDatasetId}
-          onReEnrich={handleEnrichSingle}
-        />
+              {/* Needs Human Review Panel */}
+              <ReviewPanel
+                datasetId={selectedDatasetId}
+                onReEnrich={handleEnrichSingle}
+              />
 
-        {/* Product Table */}
-        <ProductTable
-          products={products}
-          total={totalProducts}
-          page={page}
-          limit={limit}
-          statusFilter={statusFilter}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          onStatusFilterChange={setStatusFilter}
-          onPageChange={setPage}
-          onSelectProduct={handleSelectProduct}
-          onEnrichSingle={handleEnrichSingle}
-        />
+              {/* Product Table */}
+              <ProductTable
+                products={products}
+                total={totalProducts}
+                page={page}
+                limit={limit}
+                statusFilter={statusFilter}
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                onStatusFilterChange={setStatusFilter}
+                onPageChange={setPage}
+                onSelectProduct={handleSelectProduct}
+                onEnrichSingle={handleEnrichSingle}
+              />
+            </main>
 
-      </main>
+            {/* Footer */}
+            <footer className="py-8 text-center text-xs text-slate-500 border-t border-white/5 mt-10 backdrop-blur-md">
+              <div className="max-w-7xl mx-auto flex flex-col items-center justify-center gap-2">
+                <div className="flex items-center gap-2 opacity-50">
+                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                  AI Product Enrichment Platform
+                  <span className="w-1.5 h-1.5 rounded-full bg-pink-500"></span>
+                </div>
+                <p>Multi-Format Ingestion (CSV, XLSX, XLS) & 252-Column Delivery Export</p>
+              </div>
+            </footer>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Upload File Modal */}
       <UploadModal
@@ -292,19 +331,7 @@ export const App: React.FC = () => {
       )}
 
       {/* Interactive Chatbot */}
-      <Chatbot />
-
-      {/* Footer */}
-      <footer className="py-8 text-center text-xs text-slate-500 border-t border-white/5 mt-10 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto flex flex-col items-center justify-center gap-2">
-          <div className="flex items-center gap-2 opacity-50">
-            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
-            AI Product Enrichment Platform
-            <span className="w-1.5 h-1.5 rounded-full bg-pink-500"></span>
-          </div>
-          <p>Multi-Format Ingestion (CSV, XLSX, XLS) & 252-Column Delivery Export</p>
-        </div>
-      </footer>
+      {isDemoActive && <Chatbot />}
 
     </div>
   );

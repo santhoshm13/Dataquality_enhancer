@@ -13,3 +13,4 @@ asyncpg>=0.29.0
 psycopg2-binary>=2.9.9
 sqlalchemy[asyncio]>=2.0.28
 pytest>=8.1.0
+beautifulsoup4>=4.12.0

@@ -1,8 +1,13 @@
 import os
 import logging
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from pathlib import Path
+
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, JSONResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.config.settings import settings
 from app.api.routes import health, upload, products, dashboard, export, evaluation, chat, pipeline
@@ -47,6 +52,29 @@ app.include_router(dashboard.router, prefix="/api", tags=["Dashboard"])
 app.include_router(export.router, prefix="/api", tags=["Export"])
 app.include_router(evaluation.router, prefix="/api", tags=["Evaluation"])
 app.include_router(chat.router, prefix="/api/chat", tags=["Chat"])
+
+# Serve static frontend files
+frontend_dist = Path(__file__).parent.parent.parent / "frontend" / "dist"
+if frontend_dist.exists():
+    app.mount("/assets", StaticFiles(directory=frontend_dist / "assets"), name="assets")
+
+    @app.exception_handler(404)
+    async def spa_route_handler(request: Request, exc: StarletteHTTPException):
+        # API 404s should return JSON
+        if request.url.path.startswith("/api/"):
+            return JSONResponse({"detail": exc.detail}, status_code=exc.status_code)
+        
+        # Check if the requested file exists in the root of the dist directory
+        file_path = frontend_dist / request.url.path.lstrip("/")
+        if file_path.is_file():
+            return FileResponse(file_path)
+
+        # Otherwise serve index.html for SPA routing
+        index_path = frontend_dist / "index.html"
+        if index_path.exists():
+            return FileResponse(index_path)
+        
+        return JSONResponse({"detail": "Not Found"}, status_code=404)
 
 if __name__ == "__main__":
     import uvicorn
