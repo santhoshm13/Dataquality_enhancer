@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Sparkles, ArrowRight, AlertTriangle, Check, ShieldCheck, ExternalLink, Zap } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { scrollZoomSection, scrollZoomBox, hoverScale } from '../lib/animations';
 
 export const TransformationShowcase: React.FC = () => {
   const [activeSample, setActiveSample] = useState<'sawblade' | 'dishwasher' | 'abrasive'>('sawblade');
@@ -100,73 +102,99 @@ export const TransformationShowcase: React.FC = () => {
   const current = samples[activeSample];
 
   return (
-    <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
-      {/* Section Header with Subtle Floating Tagline */}
-      <div className="text-center mb-8">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-mono mb-3">
+    <motion.section 
+      variants={scrollZoomSection}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: false, amount: 0.25 }}
+      className="py-14 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto"
+    >
+      {/* Section Header with Colourful Text */}
+      <div className="text-center mb-10">
+        <motion.div 
+          variants={scrollZoomBox}
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-mono mb-3 shadow-lg shadow-cyan-500/10"
+        >
           <Zap className="w-3.5 h-3.5 text-cyan-400" />
-          <span>REAL-TIME TRANSFORMATION PIPELINE</span>
-        </div>
-        <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight">
-          Unstructured Data <span className="text-indigo-400">→</span> Verified Product Intelligence
-        </h2>
-        <p className="text-slate-400 text-sm sm:text-base max-w-2xl mx-auto mt-2">
+          <span className="text-gradient-cyan-indigo font-bold">REAL-TIME TRANSFORMATION PIPELINE</span>
+        </motion.div>
+
+        <motion.h2 
+          variants={scrollZoomBox}
+          className="font-heading text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight"
+        >
+          <span className="text-gradient-amber-rose">Unstructured Data</span>{' '}
+          <span className="text-indigo-400">→</span>{' '}
+          <span className="text-gradient-emerald-cyan">Verified Product Intelligence</span>
+        </motion.h2>
+
+        <motion.p 
+          variants={scrollZoomBox}
+          className="text-slate-300 text-sm sm:text-base max-w-2xl mx-auto mt-3"
+        >
           Watch how dirty multi-source vendor rows are normalized into grounded 252-column enterprise schemas.
-        </p>
+        </motion.p>
 
         {/* Sample Selection Selector */}
-        <div className="inline-flex p-1 bg-slate-900/80 rounded-xl border border-white/10 mt-6 gap-1">
+        <motion.div 
+          variants={scrollZoomBox}
+          className="inline-flex p-1.5 bg-slate-900/90 rounded-2xl border border-white/10 mt-6 gap-1.5 shadow-xl"
+        >
           {(['sawblade', 'dishwasher', 'abrasive'] as const).map((key) => (
             <button
               key={key}
               onClick={() => setActiveSample(key)}
-              className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+              className={`px-4 py-2 rounded-xl text-xs font-bold font-mono transition-all cursor-pointer ${
                 activeSample === key
-                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30'
+                  ? 'bg-gradient-to-r from-indigo-600 to-cyan-500 text-white shadow-lg shadow-indigo-600/40 scale-105'
                   : 'text-slate-400 hover:text-white hover:bg-white/5'
               }`}
             >
               {samples[key].title}
             </button>
           ))}
-        </div>
+        </motion.div>
       </div>
 
-      {/* Side-by-Side Comparison Container */}
+      {/* Side-by-Side Zooming Comparison Container */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         
         {/* Left Side: Legacy Unstructured Input */}
-        <div className="lg:col-span-5 glass-panel p-6 rounded-2xl border border-red-500/20 relative flex flex-col justify-between overflow-hidden">
-          <div className="absolute top-0 right-0 px-3 py-1 bg-red-500/20 border-b border-l border-red-500/30 rounded-bl-xl text-[11px] font-mono font-bold text-red-400 flex items-center gap-1.5">
-            <AlertTriangle className="w-3 h-3" />
+        <motion.div 
+          variants={scrollZoomBox}
+          whileHover={hoverScale.hover}
+          className="lg:col-span-5 glass-panel p-6 rounded-3xl border border-red-500/30 relative flex flex-col justify-between overflow-hidden shadow-2xl shadow-red-500/5 bg-red-950/[0.05]"
+        >
+          <div className="absolute top-0 right-0 px-3.5 py-1.5 bg-red-500/20 border-b border-l border-red-500/30 rounded-bl-2xl text-[11px] font-mono font-bold text-red-300 flex items-center gap-1.5">
+            <AlertTriangle className="w-3.5 h-3.5 text-red-400" />
             <span>RAW UNSTRUCTURED ROW</span>
           </div>
 
           <div>
             <div className="text-xs font-mono text-slate-400 mb-1">DATASET SOURCE INGESTION</div>
-            <div className="text-lg font-bold text-slate-200 mb-4 font-mono">{current.raw.mfg_part_num}</div>
+            <div className="text-xl font-extrabold text-amber-300 mb-4 font-mono">{current.raw.mfg_part_num}</div>
 
             <div className="space-y-3 font-mono text-xs">
-              <div className="p-3 rounded-lg bg-black/40 border border-white/5">
+              <div className="p-3.5 rounded-xl bg-black/50 border border-white/5">
                 <span className="text-slate-500 block text-[10px]">Part_Desc (Raw Text):</span>
                 <span className="text-amber-200 font-semibold">{current.raw.raw_description}</span>
               </div>
 
-              <div className="p-2.5 rounded-lg bg-black/40 border border-white/5 flex justify-between">
+              <div className="p-3 rounded-xl bg-black/50 border border-white/5 flex justify-between">
                 <span className="text-slate-500">Part_Manuf:</span>
-                <span className="text-slate-300">{current.raw.raw_manufacturer}</span>
+                <span className="text-rose-300 font-semibold">{current.raw.raw_manufacturer}</span>
               </div>
 
               <div className="grid grid-cols-3 gap-2">
-                <div className="p-2 rounded bg-black/40 border border-white/5">
+                <div className="p-2.5 rounded-xl bg-black/50 border border-white/5">
                   <span className="text-slate-500 block text-[10px]">E1_Brand</span>
                   <span className="text-slate-300">{current.raw.raw_brand_e1 || "—"}</span>
                 </div>
-                <div className="p-2 rounded bg-black/40 border border-white/5">
+                <div className="p-2.5 rounded-xl bg-black/50 border border-white/5">
                   <span className="text-slate-500 block text-[10px]">Unilog_Brand</span>
                   <span className="text-slate-300">{current.raw.raw_brand_unilog || "—"}</span>
                 </div>
-                <div className="p-2 rounded bg-black/40 border border-white/5">
+                <div className="p-2.5 rounded-xl bg-black/50 border border-white/5">
                   <span className="text-slate-500 block text-[10px]">DIB_Brand</span>
                   <span className="text-slate-300">{current.raw.raw_brand_dib || "—"}</span>
                 </div>
@@ -174,59 +202,66 @@ export const TransformationShowcase: React.FC = () => {
             </div>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-white/5 text-[11px] text-slate-400 flex items-center justify-between">
-            <span className="text-red-400/90 font-medium">⚠️ Ambiguous UOMs & Decimal Fractions</span>
-            <span className="font-mono text-slate-500">Row ID: #042</span>
+          <div className="mt-6 pt-4 border-t border-white/5 text-[11px] text-slate-400 flex items-center justify-between font-mono">
+            <span className="text-red-400 font-bold">⚠️ Ambiguous UOMs & Decimal Fractions</span>
+            <span className="text-slate-500">Row ID: #042</span>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Middle: Interactive Pulse Conduit */}
-        <div className="lg:col-span-2 flex flex-col items-center justify-center py-4 lg:py-0">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center text-white shadow-xl shadow-indigo-500/20 animate-pulse-radar">
-            <Sparkles className="w-6 h-6" />
+        {/* Middle: Interactive Pulse Conduit with Zoom Effect */}
+        <motion.div 
+          variants={scrollZoomBox}
+          className="lg:col-span-2 flex flex-col items-center justify-center py-4 lg:py-0"
+        >
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-500 via-pink-500 to-cyan-400 flex items-center justify-center text-white shadow-2xl shadow-indigo-500/30 animate-pulse-radar">
+            <Sparkles className="w-7 h-7" />
           </div>
-          <div className="mt-2 text-center">
-            <span className="text-[11px] font-mono font-bold text-cyan-400 block">AI PIPELINE</span>
-            <span className="text-[10px] text-slate-500 font-mono">140ms Latency</span>
+          <div className="mt-3 text-center">
+            <span className="text-xs font-mono font-extrabold text-gradient-electric block">AI PIPELINE</span>
+            <span className="text-[10px] text-slate-400 font-mono">140ms Latency</span>
           </div>
-          <div className="hidden lg:flex flex-col items-center gap-1.5 my-2">
-            <div className="w-0.5 h-6 bg-gradient-to-b from-indigo-500 to-cyan-400 opacity-60" />
+          <div className="hidden lg:flex flex-col items-center gap-1.5 my-3">
+            <div className="w-0.5 h-8 bg-gradient-to-b from-indigo-500 to-cyan-400 opacity-70" />
             <ArrowRight className="w-4 h-4 text-cyan-400 transform rotate-90 lg:rotate-0" />
           </div>
-        </div>
+        </motion.div>
 
-        {/* Right Side: Structured & Grounded Output */}
-        <div className="lg:col-span-5 glass-panel p-6 rounded-2xl border border-emerald-500/30 relative flex flex-col justify-between overflow-hidden shadow-2xl shadow-emerald-500/5">
-          <div className="absolute top-0 right-0 px-3 py-1 bg-emerald-500/20 border-b border-l border-emerald-500/30 rounded-bl-xl text-[11px] font-mono font-bold text-emerald-300 flex items-center gap-1.5">
-            <ShieldCheck className="w-3 h-3 text-emerald-400" />
+        {/* Right Side: Structured & Grounded Output with Zoom Effect */}
+        <motion.div 
+          variants={scrollZoomBox}
+          whileHover={hoverScale.hover}
+          className="lg:col-span-5 glass-panel p-6 rounded-3xl border border-emerald-500/35 relative flex flex-col justify-between overflow-hidden shadow-2xl shadow-emerald-500/10 bg-emerald-950/[0.06]"
+        >
+          <div className="absolute top-0 right-0 px-3.5 py-1.5 bg-emerald-500/20 border-b border-l border-emerald-500/30 rounded-bl-2xl text-[11px] font-mono font-bold text-emerald-300 flex items-center gap-1.5">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
             <span>GROUND TRUTH ENRICHED</span>
           </div>
 
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-mono text-emerald-400 font-bold uppercase">{current.enriched.canonical_brand}</span>
+              <span className="text-xs font-mono text-emerald-400 font-extrabold uppercase">{current.enriched.canonical_brand}</span>
               <span className="text-slate-500">•</span>
-              <span className="text-xs font-mono text-slate-400">{current.enriched.category}</span>
+              <span className="text-xs font-mono text-cyan-300 font-semibold">{current.enriched.category}</span>
             </div>
-            <div className="text-lg font-bold text-white mb-2">{current.title}</div>
+            <div className="text-xl font-bold text-white mb-2">{current.title}</div>
 
             {/* Classpath Badge */}
-            <div className="mb-4 text-[11px] font-mono bg-slate-900/90 text-indigo-300 px-2.5 py-1.5 rounded-lg border border-indigo-500/20">
+            <div className="mb-4 text-[11px] font-mono bg-slate-900/90 text-indigo-300 px-3 py-1.5 rounded-xl border border-indigo-500/25">
               {current.enriched.classpath}
             </div>
 
             {/* Validated Attributes Grid */}
             <div className="space-y-1.5 mb-4">
-              <div className="text-[10px] font-mono uppercase text-slate-400 tracking-wider">Validated Specifications:</div>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="text-[10px] font-mono uppercase text-slate-400 tracking-wider font-bold">Validated Specifications:</div>
+              <div className="grid grid-cols-2 gap-2 font-mono">
                 {current.enriched.attributes.map((attr, idx) => (
-                  <div key={idx} className="p-2 rounded-lg bg-white/5 border border-white/5 flex flex-col justify-between">
+                  <div key={idx} className="p-2.5 rounded-xl bg-white/5 border border-white/5 flex flex-col justify-between">
                     <span className="text-[10px] text-slate-400">{attr.name}</span>
                     <div className="flex items-center justify-between mt-1">
-                      <span className="text-xs font-bold text-slate-200 font-mono">
+                      <span className="text-xs font-bold text-slate-200">
                         {attr.value} {attr.uom ? <span className="text-cyan-400 font-normal">{attr.uom}</span> : ''}
                       </span>
-                      <Check className="w-3 h-3 text-emerald-400" />
+                      <Check className="w-3.5 h-3.5 text-emerald-400" />
                     </div>
                   </div>
                 ))}
@@ -234,29 +269,29 @@ export const TransformationShowcase: React.FC = () => {
             </div>
 
             {/* UNILOG Mobile Description preview */}
-            <div className="p-2.5 rounded-lg bg-black/40 border border-white/5 text-xs">
-              <span className="text-[10px] text-slate-500 block font-mono">MOBILE_DESC (60-80 chars):</span>
-              <span className="text-slate-300 font-medium">{current.enriched.mobile_desc}</span>
+            <div className="p-3 rounded-xl bg-black/50 border border-white/5 text-xs">
+              <span className="text-[10px] text-slate-400 block font-mono">MOBILE_DESC (60-80 chars):</span>
+              <span className="text-emerald-200 font-medium">{current.enriched.mobile_desc}</span>
             </div>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-xs">
+          <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-xs font-mono">
             <a
               href={current.enriched.source_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-cyan-400 hover:text-cyan-300 inline-flex items-center gap-1 font-mono text-[11px] transition-colors"
+              className="text-cyan-400 hover:text-cyan-300 inline-flex items-center gap-1 text-[11px] font-bold transition-colors"
             >
               <span>Verified Source Link</span>
               <ExternalLink className="w-3 h-3" />
             </a>
-            <span className="font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+            <span className="text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
               Confidence: {(current.enriched.confidence * 100).toFixed(0)}%
             </span>
           </div>
-        </div>
+        </motion.div>
 
       </div>
-    </section>
+    </motion.section>
   );
 };
