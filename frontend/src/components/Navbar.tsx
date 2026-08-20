@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { UploadCloud, Download, RefreshCw, FileSpreadsheet, ChevronDown, Activity, Database, ArrowLeft, Sparkles } from 'lucide-react';
+import { UploadCloud, Download, RefreshCw, FileSpreadsheet, ChevronDown, Activity, Database, Sparkles, Layers, Terminal } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { hoverScale } from '../lib/animations';
 
 interface NavbarProps {
+  activePage: 'intro' | 'working';
+  onChangePage: (page: 'intro' | 'working') => void;
   datasets: any[];
   selectedDatasetId: number | null;
   onSelectDataset: (id: number) => void;
@@ -18,10 +20,11 @@ interface NavbarProps {
     percent: number;
   } | null;
   healthStatus: boolean;
-  onBackToHome?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
+  activePage,
+  onChangePage,
   datasets,
   selectedDatasetId,
   onSelectDataset,
@@ -30,8 +33,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onRunBatchEnrichment,
   isEnriching,
   enrichmentProgress,
-  healthStatus,
-  onBackToHome
+  healthStatus
 }) => {
   const [exportDropdownOpen, setExportDropdownOpen] = useState(false);
   const [datasetDropdownOpen, setDatasetDropdownOpen] = useState(false);
@@ -51,26 +53,19 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header 
       className={`sticky top-0 z-50 transition-all duration-300 border-b ${
         isScrolled 
-          ? 'bg-slate-950/50 backdrop-blur-2xl border-white/10 shadow-2xl py-3' 
-          : 'bg-slate-950/30 backdrop-blur-xl border-white/5 py-4'
+          ? 'bg-slate-950/75 backdrop-blur-2xl border-white/10 shadow-2xl py-3' 
+          : 'bg-slate-950/50 backdrop-blur-xl border-white/5 py-4'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
         
-        {/* Brand Logo & Back with Vibrant Aurora Gradient */}
-        <div className="flex items-center gap-4">
-          {onBackToHome && (
-            <button 
-              onClick={onBackToHome}
-              className="p-2 -ml-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-colors cursor-pointer"
-              title="Back to Landing Page"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </button>
-          )}
-          
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-500 via-pink-500 to-cyan-400 p-0.5 flex items-center justify-center shadow-lg shadow-indigo-500/25">
+        {/* Brand Logo */}
+        <div className="flex items-center gap-6">
+          <div 
+            onClick={() => onChangePage('intro')} 
+            className="flex items-center gap-3 cursor-pointer group"
+          >
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-500 via-pink-500 to-cyan-400 p-0.5 flex items-center justify-center shadow-lg shadow-indigo-500/25 group-hover:scale-105 transition-transform">
               <div className="w-full h-full bg-[#030712] rounded-[14px] flex items-center justify-center">
                 <Database className="w-5 h-5 text-cyan-400" />
               </div>
@@ -81,10 +76,37 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span className="text-gradient-aurora">Intelligence</span>
               </h1>
               <p className="text-[10px] text-slate-400 font-mono font-bold uppercase tracking-widest flex items-center gap-1">
-                <span>Autonomous Product Quality</span>
+                <span>Product Data Quality</span>
                 <Sparkles className="w-3 h-3 text-pink-400 inline" />
               </p>
             </div>
+          </div>
+
+          {/* Segmented Page Switcher (Intro vs Working) */}
+          <div className="inline-flex p-1 rounded-2xl bg-black/60 border border-white/10 font-mono text-xs shadow-inner">
+            <button
+              onClick={() => onChangePage('intro')}
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-bold transition-all cursor-pointer ${
+                activePage === 'intro'
+                  ? 'bg-gradient-to-r from-indigo-600 to-cyan-600 text-white shadow-md shadow-indigo-600/30'
+                  : 'text-slate-300 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              <Layers className="w-3.5 h-3.5" />
+              <span>Overview & Intro</span>
+            </button>
+
+            <button
+              onClick={() => onChangePage('working')}
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-bold transition-all cursor-pointer ${
+                activePage === 'working'
+                  ? 'bg-gradient-to-r from-indigo-600 to-pink-600 text-white shadow-md shadow-pink-600/30'
+                  : 'text-slate-300 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              <Terminal className="w-3.5 h-3.5" />
+              <span>Working Studio</span>
+            </button>
           </div>
         </div>
 
@@ -106,9 +128,9 @@ export const Navbar: React.FC<NavbarProps> = ({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setDatasetDropdownOpen(!datasetDropdownOpen)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 font-mono text-xs border border-white/10 transition-all cursor-pointer min-w-[190px] justify-between shadow-md"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 font-mono text-xs border border-white/10 transition-all cursor-pointer min-w-[170px] justify-between shadow-md"
             >
-              <div className="truncate text-left flex-1 max-w-[140px] font-bold text-cyan-300">
+              <div className="truncate text-left flex-1 max-w-[130px] font-bold text-cyan-300">
                 {selectedDataset ? selectedDataset.name : 'Select Dataset'}
               </div>
               <ChevronDown className={`w-3.5 h-3.5 opacity-70 shrink-0 transition-transform ${datasetDropdownOpen ? 'rotate-180' : ''}`} />
@@ -121,10 +143,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.95 }}
                   transition={{ duration: 0.2 }}
-                  className="absolute right-0 mt-2 w-64 rounded-2xl bg-[#0a0e1a] border border-white/10 shadow-2xl z-50 py-1.5 max-h-64 overflow-y-auto font-mono backdrop-blur-xl"
+                  className="absolute right-0 mt-2 w-64 rounded-2xl bg-[#0a0e1a] border border-white/15 shadow-2xl z-50 py-1.5 max-h-64 overflow-y-auto font-mono backdrop-blur-xl"
                 >
                   {datasets.length === 0 ? (
-                    <div className="px-4 py-3 text-xs text-slate-500 flex items-center justify-center">No datasets uploaded</div>
+                    <div className="px-4 py-3 text-xs text-slate-400 flex items-center justify-center">No datasets uploaded</div>
                   ) : (
                     datasets.map(d => (
                       <button
@@ -138,7 +160,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         }`}
                       >
                         <span className="truncate max-w-[150px]">{d.name}</span>
-                        <span className="text-cyan-400 shrink-0 text-[10px] bg-black/50 px-2 py-0.5 rounded-md border border-white/5">{d.total_rows} rows</span>
+                        <span className="text-cyan-400 shrink-0 text-[10px] bg-black/60 px-2 py-0.5 rounded-md border border-white/10">{d.total_rows} rows</span>
                       </button>
                     ))
                   )}
@@ -176,7 +198,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={onOpenUpload}
-            className="btn-secondary flex items-center gap-2 px-3.5 py-2 rounded-xl text-slate-200 hover:text-white font-mono font-semibold text-xs cursor-pointer"
+            className="btn-secondary flex items-center gap-2 px-3.5 py-2 rounded-xl text-slate-100 font-mono font-bold text-xs cursor-pointer"
           >
             <UploadCloud className="w-4 h-4 text-cyan-400" />
             <span className="hidden sm:inline">Upload</span>
@@ -188,7 +210,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setExportDropdownOpen(!exportDropdownOpen)}
-              className="btn-secondary flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-slate-200 font-mono font-semibold text-xs cursor-pointer"
+              className="btn-secondary flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-slate-100 font-mono font-bold text-xs cursor-pointer"
             >
               <Download className="w-3.5 h-3.5 text-pink-400" />
               <span className="hidden sm:inline">Export</span>
@@ -202,7 +224,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.95 }}
                   transition={{ duration: 0.2 }}
-                  className="absolute right-0 mt-2 w-52 rounded-2xl bg-[#0a0e1a] border border-white/10 shadow-2xl z-50 py-1.5 overflow-hidden font-mono backdrop-blur-xl"
+                  className="absolute right-0 mt-2 w-52 rounded-2xl bg-[#0a0e1a] border border-white/15 shadow-2xl z-50 py-1.5 overflow-hidden font-mono backdrop-blur-xl"
                 >
                   <button
                     onClick={() => {
