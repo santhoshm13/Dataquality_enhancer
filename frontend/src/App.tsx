@@ -235,7 +235,7 @@ export const App: React.FC = () => {
     : 98.5;
 
   return (
-    <div className="min-h-screen text-slate-100 flex flex-col relative selection:bg-indigo-500 selection:text-white bg-[#020617] overflow-x-hidden">
+    <div className="min-h-screen text-slate-100 flex flex-col relative selection:bg-indigo-500 selection:text-white bg-[#030712] overflow-x-hidden">
       
       {/* Dynamic Animated Cybernetic Background with Image, Mesh & Particles */}
       <AnimatedBackground />
@@ -243,10 +243,11 @@ export const App: React.FC = () => {
       {/* Full Website Ambient Atmospheric Shade Overlay */}
       <div className="website-shade-overlay" />
 
-      {/* Floating Ambient Aurora Orbs */}
-      <div className="fixed top-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full bg-indigo-600/15 blur-[160px] pointer-events-none -z-10 animate-float-subtle" />
-      <div className="fixed top-[30%] right-[-10%] w-[600px] h-[600px] rounded-full bg-cyan-500/12 blur-[160px] pointer-events-none -z-10 animate-float-subtle-reverse" />
-      <div className="fixed bottom-[-10%] left-[20%] w-[700px] h-[700px] rounded-full bg-pink-500/10 blur-[180px] pointer-events-none -z-10 animate-float-subtle" />
+      {/* Floating Edge-to-Edge Ambient Aurora Blobs */}
+      <div className="fixed top-[-10%] -left-[15%] w-[800px] h-[800px] rounded-full bg-cyan-500/20 blur-[180px] pointer-events-none -z-10 animate-float-subtle mix-blend-screen" />
+      <div className="fixed top-[20%] -right-[15%] w-[850px] h-[850px] rounded-full bg-pink-500/18 blur-[190px] pointer-events-none -z-10 animate-float-subtle-reverse mix-blend-screen" />
+      <div className="fixed bottom-[-15%] -left-[10%] w-[900px] h-[900px] rounded-full bg-emerald-500/16 blur-[190px] pointer-events-none -z-10 animate-float-subtle mix-blend-screen" />
+      <div className="fixed bottom-[10%] -right-[10%] w-[800px] h-[800px] rounded-full bg-indigo-600/22 blur-[180px] pointer-events-none -z-10 animate-float-subtle-reverse mix-blend-screen" />
 
       {/* Modern Navigation Header */}
       <Navbar
@@ -304,7 +305,7 @@ export const App: React.FC = () => {
                 Explore enriched attributes, provenance grounding, and validation audit logs.
               </p>
             </div>
-            <span className="text-xs font-mono text-cyan-300 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/30 font-bold">
+            <span className="text-xs font-mono text-cyan-300 bg-cyan-500/15 px-3 py-1 rounded-full border border-cyan-500/40 font-bold shadow-sm">
               {totalProducts} Items Ingested
             </span>
           </div>
