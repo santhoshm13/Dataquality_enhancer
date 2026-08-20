@@ -235,7 +235,7 @@ export const App: React.FC = () => {
     : 98.5;
 
   return (
-    <div className="min-h-screen text-slate-100 flex flex-col relative selection:bg-indigo-500 selection:text-white bg-[#030712] overflow-x-hidden">
+    <div className="min-h-screen text-slate-100 flex flex-col relative selection:bg-indigo-500 selection:text-white bg-transparent overflow-x-hidden">
       
       {/* Dynamic Animated Cybernetic Background with Image, Mesh & Particles */}
       <AnimatedBackground />
