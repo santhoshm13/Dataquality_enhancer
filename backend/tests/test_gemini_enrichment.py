@@ -4,14 +4,6 @@ import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 
 from app.services.llm.provider import GeminiProvider
-from app.services.enrichment_cache import enrichment_cache
-
-
-@pytest.fixture(autouse=True)
-def clear_test_cache():
-    enrichment_cache.clear_cache()
-    yield
-    enrichment_cache.clear_cache()
 
 
 def test_gemini_find_manufacturer_url_stage1_success():
@@ -143,8 +135,7 @@ def test_gemini_enrich_from_manufacturer_three_stage_success():
         provider = GeminiProvider(api_key="test-gemini-key")
 
         with patch("google.genai.Client") as mock_client_cls, \
-             patch("app.services.llm.provider.validate_url", return_value={"valid": True, "final_url": "https://www.frigidaire.com/en/p/dishwashers/built-in-dishwashers/PDSH4816AF", "status_code": 200, "redirect_chain": [], "rejection_reason": None}), \
-             patch("app.services.llm.provider.scrape_page_with_fallback", return_value="Scraped text with specs Width: 24 in Noise Level: 47 dBA"):
+             patch("app.services.llm.provider.scrape_page_async", return_value="Scraped text with specs Width: 24 in Noise Level: 47 dBA"):
 
             mock_client = MagicMock()
             mock_client.aio.models.generate_content = AsyncMock(side_effect=[mock_resp1, mock_resp3])
@@ -162,7 +153,6 @@ def test_gemini_enrich_from_manufacturer_three_stage_success():
             assert len(result["raw_specs"]) == 3
             assert "stage_timings" in result
             assert "url_lookup_s" in result["stage_timings"]
-            assert "url_validate_s" in result["stage_timings"]
             assert "scrape_s" in result["stage_timings"]
             assert "spec_extraction_s" in result["stage_timings"]
             assert "grounding_sources" in result
@@ -188,8 +178,7 @@ def test_gemini_enrich_from_manufacturer_stage1_failure_short_circuit():
         provider = GeminiProvider(api_key="test-gemini-key")
 
         with patch("google.genai.Client") as mock_client_cls, \
-             patch("app.services.llm.provider.validate_url") as mock_val, \
-             patch("app.services.llm.provider.scrape_page_with_fallback") as mock_scrape:
+             patch("app.services.llm.provider.scrape_page_async") as mock_scrape:
 
             mock_client = MagicMock()
             mock_client.aio.models.generate_content = AsyncMock(return_value=mock_resp1)
@@ -203,45 +192,7 @@ def test_gemini_enrich_from_manufacturer_stage1_failure_short_circuit():
             assert result["found"] is False
             assert result["stage_failed"] == "url_lookup"
             assert "url_lookup_s" in result["stage_timings"]
-            mock_val.assert_not_called()
-            mock_scrape.assert_not_called()
-
-    asyncio.run(run())
-
-
-def test_gemini_enrich_from_manufacturer_stage1_5_validation_failure_short_circuit():
-    """
-    Test that when Stage 1.5 fails URL validation, it returns stage_failed='url_validation' immediately.
-    """
-    stage1_payload = {
-        "found": True,
-        "url": "https://www.example.com/deadlink",
-        "source_type": "manufacturer"
-    }
-    mock_resp1 = MagicMock()
-    mock_resp1.text = json.dumps(stage1_payload)
-    mock_resp1.candidates = [MagicMock()]
-
-    async def run():
-        provider = GeminiProvider(api_key="test-gemini-key")
-
-        with patch("google.genai.Client") as mock_client_cls, \
-             patch("app.services.llm.provider.validate_url", return_value={"valid": False, "final_url": "https://www.example.com/deadlink", "rejection_reason": "non_200_status_404"}), \
-             patch("app.services.llm.provider.scrape_page_with_fallback") as mock_scrape:
-
-            mock_client = MagicMock()
-            mock_client.aio.models.generate_content = AsyncMock(return_value=mock_resp1)
-            mock_client_cls.return_value = mock_client
-
-            result = await provider.enrich_from_manufacturer(
-                manufacturer="BRAND",
-                mpn="MPN123"
-            )
-
-            assert result["found"] is False
-            assert result["stage_failed"] == "url_validation"
-            assert result["review_status"] == "NEEDS_HUMAN_REVIEW"
-            assert "url_validate_s" in result["stage_timings"]
+            # Assert scrape was never invoked
             mock_scrape.assert_not_called()
 
     asyncio.run(run())
@@ -265,8 +216,7 @@ def test_gemini_enrich_from_manufacturer_stage2_failure_short_circuit():
         provider = GeminiProvider(api_key="test-gemini-key")
 
         with patch("google.genai.Client") as mock_client_cls, \
-             patch("app.services.llm.provider.validate_url", return_value={"valid": True, "final_url": "https://www.example.com/item/123", "rejection_reason": None}), \
-             patch("app.services.llm.provider.scrape_page_with_fallback", return_value=None), \
+             patch("app.services.llm.provider.scrape_page_async", return_value=None), \
              patch.object(provider, "extract_specs_from_text") as mock_extract:
 
             mock_client = MagicMock()
@@ -283,7 +233,6 @@ def test_gemini_enrich_from_manufacturer_stage2_failure_short_circuit():
             assert result["source_url"] == "https://www.example.com/item/123"
             assert result["source_type"] == "fallback"
             assert "url_lookup_s" in result["stage_timings"]
-            assert "url_validate_s" in result["stage_timings"]
             assert "scrape_s" in result["stage_timings"]
             mock_extract.assert_not_called()
 

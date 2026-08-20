@@ -2,13 +2,7 @@ import pytest
 import httpx
 from unittest.mock import patch, MagicMock
 
-from app.services.scraper.spider import (
-    clean_html_content,
-    scrape_page,
-    scrape_page_async,
-    validate_url,
-    scrape_page_with_fallback
-)
+from app.services.scraper.spider import clean_html_content, scrape_page, scrape_page_async
 
 
 def test_clean_html_content_strips_unwanted_tags_and_formats_tables():
@@ -106,56 +100,3 @@ async def test_scrape_page_async_success():
         assert res is not None
         assert "Diablo D0724R Circular Saw Blade" in res
         assert "Blade Diameter: 7-1/4 in" in res
-
-
-@pytest.mark.anyio
-async def test_validate_url_success():
-    mock_resp = MagicMock()
-    mock_resp.status_code = 200
-    mock_resp.url = "https://www.frigidaire.com/en/p/dishwashers/PDSH4816AF"
-    mock_resp.history = []
-    mock_resp.headers = {"content-type": "text/html; charset=utf-8"}
-
-    with patch("httpx.AsyncClient.head", return_value=mock_resp):
-        res = await validate_url("https://www.frigidaire.com/en/p/dishwashers/PDSH4816AF")
-        assert res["valid"] is True
-        assert res["status_code"] == 200
-        assert res["rejection_reason"] is None
-
-
-@pytest.mark.anyio
-async def test_validate_url_rejects_non_200():
-    mock_resp = MagicMock()
-    mock_resp.status_code = 404
-    mock_resp.url = "https://www.example.com/missing"
-    mock_resp.history = []
-    mock_resp.headers = {"content-type": "text/html"}
-
-    with patch("httpx.AsyncClient.head", return_value=mock_resp):
-        res = await validate_url("https://www.example.com/missing")
-        assert res["valid"] is False
-        assert "404" in res["rejection_reason"]
-
-
-@pytest.mark.anyio
-async def test_validate_url_rejects_homepage_redirect():
-    mock_resp = MagicMock()
-    mock_resp.status_code = 200
-    mock_resp.url = "https://www.frigidaire.com/"
-    mock_history_item = MagicMock()
-    mock_history_item.url = "https://www.frigidaire.com/en/p/dishwashers/discontinued-item"
-    mock_resp.history = [mock_history_item]
-    mock_resp.headers = {"content-type": "text/html"}
-
-    with patch("httpx.AsyncClient.head", return_value=mock_resp):
-        res = await validate_url("https://www.frigidaire.com/en/p/dishwashers/discontinued-item")
-        assert res["valid"] is False
-        assert res["rejection_reason"] == "redirected_to_homepage"
-
-
-@pytest.mark.anyio
-async def test_scrape_page_with_fallback_uses_httpx_when_sufficient():
-    sample_text = "Detailed product specifications for industrial tool: Width: 24 in, Voltage: 120 V, Pack Quantity: 6 pc"
-    with patch("app.services.scraper.spider.scrape_page_async", return_value=sample_text):
-        res = await scrape_page_with_fallback("https://www.example.com/item")
-        assert res == sample_text
