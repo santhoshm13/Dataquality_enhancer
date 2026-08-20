@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, Any, List, Tuple
+from typing import Dict, Any, List, Tuple, Optional
 
 logger = logging.getLogger("app.services.confidence")
 
@@ -9,10 +9,13 @@ class ConfidenceEngine:
         mfg_match: Dict[str, Any],
         brand_match: Dict[str, Any],
         class_res: Dict[str, Any],
-        validated_attributes: List[Dict[str, Any]]
+        validated_attributes: List[Dict[str, Any]],
+        found: Optional[bool] = None,
+        review_status: Optional[str] = None
     ) -> Tuple[float, str, List[str]]:
         """
         Calculates holistic confidence score (0.0 to 1.0), pipeline status, and granular reason codes.
+        Now accepts optional `found` and `review_status` from enrichment to influence scoring.
         """
         reasons: List[str] = []
 
@@ -40,6 +43,11 @@ class ConfidenceEngine:
             2
         )
 
+        # Penalize if manufacturer enrichment did not find a source
+        if found is False:
+            overall_score = round(overall_score * 0.85, 2)
+            reasons.append("Manufacturer source URL not found — enrichment incomplete")
+
         # Specific reason checks
         if mfg_match.get("status") == "NEEDS_REVIEW":
             reasons.append(f"Manufacturer matching requires review (Score: {mfg_conf})")
@@ -47,6 +55,14 @@ class ConfidenceEngine:
             reasons.append(f"Brand matching requires review (Score: {brand_conf})")
         if attr_failures > 0:
             reasons.append(f"{attr_failures} attribute(s) failed LOV/UOM validation")
+
+        # Force NEEDS_REVIEW if enrichment flagged it
+        if review_status == "NEEDS_HUMAN_REVIEW":
+            pipeline_status = "NEEDS_REVIEW"
+            reasons.insert(0, "Enrichment pipeline flagged for human review")
+            if not reasons:
+                reasons.append("Manual review required")
+            return overall_score, pipeline_status, reasons
 
         # Determine pipeline status based on weighted tier aggregation
         core_fields = {"Brand", "Manufacturer", "Classpath"}

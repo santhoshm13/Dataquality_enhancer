@@ -5,6 +5,7 @@ import { ProductTable } from './components/ProductTable';
 import { UploadModal } from './components/UploadModal';
 import { ProductDetailModal } from './components/ProductDetailModal';
 import { EvaluationPanel } from './components/EvaluationPanel';
+import { ReviewPanel } from './components/ReviewPanel';
 import { Chatbot } from './components/Chatbot';
 
 const API_BASE = "http://127.0.0.1:8000/api";
@@ -245,6 +246,12 @@ export const App: React.FC = () => {
 
         {/* Evaluation Metrics Benchmark */}
         <EvaluationPanel evaluation={evaluationData} onRefresh={fetchEvaluation} />
+
+        {/* Needs Human Review Panel */}
+        <ReviewPanel
+          datasetId={selectedDatasetId}
+          onReEnrich={handleEnrichSingle}
+        />
 
         {/* Product Table */}
         <ProductTable

@@ -12,9 +12,15 @@ async def get_products(
     limit: int = Query(20, ge=1, le=100),
     status: Optional[str] = None,
     search: Optional[str] = None,
-    dataset_id: Optional[int] = None
+    dataset_id: Optional[int] = None,
+    review_status: Optional[str] = None
 ):
     all_products = repository.get_all_products(status_filter=status, search_query=search, dataset_id=dataset_id)
+    
+    # Apply review_status filter if specified
+    if review_status:
+        all_products = [p for p in all_products if (p.get("review_status") or "").upper() == review_status.upper()]
+    
     total = len(all_products)
     
     start_idx = (page - 1) * limit
@@ -36,7 +42,9 @@ async def get_products(
             source_url=p.get("source_url") or enrich.get("source_url"),
             source_type=p.get("source_type") or enrich.get("source_type"),
             grounding_sources=p.get("grounding_sources") or enrich.get("grounding_sources", []),
-            found=p.get("found", enrich.get("found", None))
+            found=p.get("found", enrich.get("found", None)),
+            review_status=p.get("review_status") or enrich.get("review_status"),
+            review_reason=p.get("review_reason") or enrich.get("review_reason")
         ))
 
     return ProductListResponse(
@@ -69,6 +77,8 @@ async def get_product_by_id(product_id: int):
         source_type=product.get("source_type") or enrich.get("source_type"),
         grounding_sources=product.get("grounding_sources") or enrich.get("grounding_sources", []),
         found=product.get("found", enrich.get("found", None)),
+        review_status=product.get("review_status") or enrich.get("review_status"),
+        review_reason=product.get("review_reason") or enrich.get("review_reason"),
         enrichment={
             "manufacturer": enrich.get("manufacturer"),
             "brand": enrich.get("brand"),
@@ -80,7 +90,9 @@ async def get_product_by_id(product_id: int):
             "source_url": product.get("source_url") or enrich.get("source_url"),
             "source_type": product.get("source_type") or enrich.get("source_type"),
             "grounding_sources": product.get("grounding_sources") or enrich.get("grounding_sources", []),
-            "found": product.get("found", enrich.get("found", None))
+            "found": product.get("found", enrich.get("found", None)),
+            "review_status": product.get("review_status") or enrich.get("review_status"),
+            "review_reason": product.get("review_reason") or enrich.get("review_reason")
         },
         attributes=product.get("attributes", []),
         descriptions=product.get("descriptions", {}),

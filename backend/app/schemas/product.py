@@ -31,6 +31,8 @@ class ProductEnrichmentSummary(BaseModel):
     source_type: Optional[str] = None  # "manufacturer", "fallback", "none"
     grounding_sources: List[str] = []
     found: Optional[bool] = None
+    review_status: Optional[str] = None
+    review_reason: Optional[str] = None
 
 class ProductDetailResponse(BaseModel):
     id: int
@@ -45,6 +47,8 @@ class ProductDetailResponse(BaseModel):
     source_type: Optional[str] = None
     grounding_sources: List[str] = []
     found: Optional[bool] = None
+    review_status: Optional[str] = None
+    review_reason: Optional[str] = None
     enrichment: ProductEnrichmentSummary
     attributes: List[AttributeSchema] = []
     descriptions: Dict[str, str] = {}
@@ -63,6 +67,8 @@ class ProductListItem(BaseModel):
     source_type: Optional[str] = None
     grounding_sources: List[str] = []
     found: Optional[bool] = None
+    review_status: Optional[str] = None
+    review_reason: Optional[str] = None
 
 class ProductListResponse(BaseModel):
     total: int

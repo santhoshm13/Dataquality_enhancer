@@ -51,6 +51,8 @@ class ProductEnrichmentPipeline:
         source_type = product.get("source_type")
         grounding_sources = product.get("grounding_sources", [])
         found = product.get("found")
+        review_status = product.get("review_status")
+        review_reason = product.get("review_reason")
 
         stage_timings = {}
         stage_failed = None
@@ -61,9 +63,12 @@ class ProductEnrichmentPipeline:
             try:
                 mfg_for_search = mfg_match["matched_value"] or raw_mfg
                 if part_num and mfg_for_search:
+                    # Pass category_hint from classification to bias URL search
+                    category_hint = class_res.get("category") or class_res.get("class")
                     mfg_enrich = await self.llm_service.enrich_from_manufacturer(
                         mpn=part_num,
-                        manufacturer=mfg_for_search
+                        manufacturer=mfg_for_search,
+                        category_hint=category_hint
                     )
                     if mfg_enrich.get("error") and ("429" in str(mfg_enrich["error"]) or "RESOURCE_EXHAUSTED" in str(mfg_enrich["error"])):
                         _gemini_rate_limited = True
@@ -73,45 +78,18 @@ class ProductEnrichmentPipeline:
                     grounding_sources = mfg_enrich.get("grounding_sources", [])
                     stage_timings = mfg_enrich.get("stage_timings", {})
                     stage_failed = mfg_enrich.get("stage_failed")
+                    # Propagate review status from enrichment
+                    review_status = mfg_enrich.get("review_status")
+                    review_reason = mfg_enrich.get("review_reason")
             except Exception as e:
                 if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
                     _gemini_rate_limited = True
                 logger.warning(f"Failed manufacturer grounding for MPN {part_num}: {e}")
                 found = False
+                review_status = "NEEDS_HUMAN_REVIEW"
+                review_reason = f"Enrichment exception: {str(e)[:100]}"
 
-        # If product has a known brand/mfg, construct canonical manufacturer source URL if live search did not return one
-        if not source_url:
-            mfg_clean = (mfg_match.get("matched_value") or raw_mfg or "").lower()
-            brand_clean = (brand_match.get("matched_value") or "").lower()
-            if "frigidaire" in mfg_clean or "frigidaire" in brand_clean:
-                source_url = f"https://www.frigidaire.com/en/p/kitchen/dishwashers/{part_num}"
-                source_type = "manufacturer"
-                grounding_sources = [source_url]
-                found = True
-            elif "diablo" in brand_clean or "freud" in mfg_clean:
-                source_url = f"https://www.diablotools.com/products/{part_num}"
-                source_type = "manufacturer"
-                grounding_sources = [source_url]
-                found = True
-            elif "3m" in brand_clean or "3 m" in mfg_clean or "3m" in mfg_clean:
-                source_url = f"https://www.3m.com/3M/en_US/p/d/{part_num}/"
-                source_type = "manufacturer"
-                grounding_sources = [source_url]
-                found = True
-            elif "whirlpool" in mfg_clean or "whirlpool" in brand_clean:
-                source_url = f"https://www.whirlpool.com/kitchen/dishwashers/{part_num}.html"
-                source_type = "manufacturer"
-                grounding_sources = [source_url]
-                found = True
-            elif "mirka" in mfg_clean or "mirka" in brand_clean:
-                source_url = f"https://www.mirka.com/en/products/{part_num}"
-                source_type = "manufacturer"
-                grounding_sources = [source_url]
-                found = True
-            else:
-                found = False
-
-        # If product has a known brand/mfg but no live URL in mock/test mode, provide realistic fallback
+        # Normalize found state
         if found is None and source_url:
             found = True
         elif found is None and not source_url:
@@ -148,8 +126,16 @@ class ProductEnrichmentPipeline:
             mfg_match=mfg_match,
             brand_match=brand_match,
             class_res=class_res,
-            validated_attributes=validated_attributes
+            validated_attributes=validated_attributes,
+            found=found,
+            review_status=review_status
         )
+
+        # If enrichment flagged NEEDS_HUMAN_REVIEW, ensure pipeline_status reflects it
+        if review_status == "NEEDS_HUMAN_REVIEW":
+            pipeline_status = "NEEDS_REVIEW"
+            if review_reason and review_reason not in review_reasons:
+                review_reasons.insert(0, review_reason)
 
         # Stage 6: Fact-Grounded Description Generation
         descriptions = await description_generator.generate_fact_grounded_descriptions(
@@ -171,6 +157,8 @@ class ProductEnrichmentPipeline:
             "found": found,
             "stage_timings": stage_timings,
             "stage_failed": stage_failed,
+            "review_status": review_status,
+            "review_reason": review_reason,
             "enrichment": {
                 "manufacturer": mfg_match["matched_value"],
                 "brand": brand_match["matched_value"],
@@ -186,6 +174,8 @@ class ProductEnrichmentPipeline:
                 "found": found,
                 "stage_timings": stage_timings,
                 "stage_failed": stage_failed,
+                "review_status": review_status,
+                "review_reason": review_reason,
                 "review_reasons": review_reasons
             },
             "attributes": validated_attributes,

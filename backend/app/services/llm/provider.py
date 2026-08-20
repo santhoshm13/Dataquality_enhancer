@@ -16,7 +16,8 @@ except ImportError:
 from .retry_wrapper import fetch_with_retry
 from .prompt_builder import build_extraction_prompt, build_description_prompt
 from app.services.lov.lov_retrieval_service import get_lov_for_classpath
-from app.services.scraper.spider import scrape_page, scrape_page_async
+from app.services.scraper.spider import scrape_page, scrape_page_async, validate_url, scrape_page_with_fallback
+from app.services.enrichment_cache import enrichment_cache
 
 logger = logging.getLogger("app.services.llm")
 
@@ -219,7 +220,7 @@ class MockLLMProvider(BaseLLMProvider):
             "MARKETING_DESCRIPTION": f"Upgrade your operations with the trusted quality of {brand} {category}."[:500]
         }
 
-    async def find_manufacturer_url(self, mpn: str, manufacturer: str) -> Dict[str, Any]:
+    async def find_manufacturer_url(self, mpn: str, manufacturer: str, category_hint: str = None) -> Dict[str, Any]:
         mfg_clean = (manufacturer or "").lower()
         if "frigidaire" in mfg_clean:
             url = f"https://www.frigidaire.com/en/p/dishwashers/built-in-dishwashers/{mpn}"
@@ -255,27 +256,84 @@ class MockLLMProvider(BaseLLMProvider):
             "source_type": source_type
         }
 
-    async def enrich_from_manufacturer(self, mpn: str, manufacturer: str) -> Dict[str, Any]:
+    async def enrich_from_manufacturer(self, mpn: str, manufacturer: str, category_hint: str = None) -> Dict[str, Any]:
+        """Mock orchestrator: cache → Stage 1 → 1.5 → 2 → 3, with review_status on failure."""
+        # Check cache first
+        cached = enrichment_cache.get_cached(mpn, manufacturer)
+        if cached:
+            logger.info(f"[Mock Cache HIT] {manufacturer} {mpn}")
+            return cached
+
+        stage_timings: Dict[str, float] = {}
+
+        # STAGE 1: URL Lookup
         t0 = time.perf_counter()
-        stage1 = await self.find_manufacturer_url(mpn, manufacturer)
-        d1 = time.perf_counter() - t0
-        stage_timings = {"url_lookup_s": d1}
+        stage1 = await self.find_manufacturer_url(mpn, manufacturer, category_hint=category_hint)
+        s1 = time.perf_counter() - t0
+        stage_timings["url_lookup_s"] = s1
 
         if not stage1.get("found") or not stage1.get("url"):
-            return {"found": False, "stage_failed": "url_lookup", "stage_timings": stage_timings}
+            return {
+                "found": False, "stage_failed": "url_lookup", "stage_timings": stage_timings,
+                "review_status": "NEEDS_HUMAN_REVIEW",
+                "review_reason": f"URL lookup failed for {manufacturer} {mpn}"
+            }
 
+        source_url = stage1["url"]
+        source_type = stage1.get("source_type", "manufacturer")
+        grounding_sources = stage1.get("grounding_sources", [])
+
+        # STAGE 1.5: URL Validation
         t1 = time.perf_counter()
-        page_text = f"Manufacturer: {manufacturer}\nMPN: {mpn}\nProduct Title: {manufacturer} {mpn}\nSpecifications:\nWidth: 24 in\nVoltage: 120 V"
-        d2 = time.perf_counter() - t1
-        stage_timings["scrape_s"] = d2
+        val_result = await validate_url(source_url)
+        s15 = time.perf_counter() - t1
+        stage_timings["url_validate_s"] = s15
 
+        if not val_result.get("valid"):
+            return {
+                "found": False, "stage_failed": "url_validation", "stage_timings": stage_timings,
+                "source_url": source_url, "source_type": source_type, "grounding_sources": grounding_sources,
+                "review_status": "NEEDS_HUMAN_REVIEW",
+                "review_reason": f"URL validation failed: {val_result.get('rejection_reason', 'unknown')}"
+            }
+
+        # STAGE 2: Scrape Page (with Playwright fallback)
         t2 = time.perf_counter()
-        stage3 = await self.extract_specs_from_text(mpn, manufacturer, page_text, stage1["url"], stage1.get("source_type", "manufacturer"))
-        d3 = time.perf_counter() - t2
-        stage_timings["spec_extraction_s"] = d3
+        page_text = await scrape_page_with_fallback(val_result.get("final_url", source_url))
+        s2 = time.perf_counter() - t2
+        stage_timings["scrape_s"] = s2
 
-        stage3["grounding_sources"] = stage1.get("grounding_sources", [stage1["url"]])
+        if not page_text or not page_text.strip():
+            return {
+                "found": False, "stage_failed": "scrape", "stage_timings": stage_timings,
+                "source_url": source_url, "source_type": source_type, "grounding_sources": grounding_sources,
+                "review_status": "NEEDS_HUMAN_REVIEW",
+                "review_reason": f"Page scrape returned empty content for {source_url}"
+            }
+
+        # STAGE 3: Extract Specs from Text
+        t3 = time.perf_counter()
+        stage3 = await self.extract_specs_from_text(mpn, manufacturer, page_text, source_url, source_type)
+        s3 = time.perf_counter() - t3
+        stage_timings["spec_extraction_s"] = s3
+
+        if not stage3.get("found"):
+            return {
+                "found": False, "stage_failed": "spec_extraction", "stage_timings": stage_timings,
+                "source_url": source_url, "source_type": source_type, "grounding_sources": grounding_sources,
+                "review_status": "NEEDS_HUMAN_REVIEW",
+                "review_reason": f"Spec extraction failed for {manufacturer} {mpn}"
+            }
+
+        # Success — assemble result
+        stage3["grounding_sources"] = list(dict.fromkeys(grounding_sources + [source_url]))
         stage3["stage_timings"] = stage_timings
+        stage3["review_status"] = None
+        stage3["review_reason"] = None
+
+        # Cache the successful result
+        enrichment_cache.set_cached(mpn, manufacturer, stage3)
+
         return stage3
 
 
@@ -466,17 +524,25 @@ class GeminiProvider(BaseLLMProvider):
             logger.warning(f"Gemini description generation failed: {e}. Falling back to MockLLMProvider.")
             return await MockLLMProvider().generate_descriptions(attributes, raw_desc)
 
-    async def find_manufacturer_url(self, mpn: str, manufacturer: str) -> Dict[str, Any]:
+    async def find_manufacturer_url(self, mpn: str, manufacturer: str, category_hint: str = None) -> Dict[str, Any]:
         """
         STAGE 1: Find the product's official or fallback distributor URL using
         gemini-3.7-flash with ONLY google_search tool enabled.
+        category_hint biases search towards the right product category.
         """
+        hint_line = ""
+        if category_hint:
+            hint_line = f"Product Category: {category_hint}\n"
+
         prompt = (
             f"Manufacturer: {manufacturer}\n"
-            f"Manufacturer Part Number (MPN): {mpn}\n\n"
+            f"Manufacturer Part Number (MPN): {mpn}\n"
+            f"{hint_line}\n"
             f"Find the URL of this exact product's page on the manufacturer's official "
             f"website. If unavailable, find a reputable distributor's product page "
-            f"instead. Return ONLY strict JSON, nothing else:\n"
+            f"instead. Only return a URL from real search results. Never construct or "
+            f"guess a URL from a pattern. If uncertain, return found=false.\n"
+            f"Return ONLY strict JSON, nothing else:\n"
             f'{{"found": true/false, "url": "...", "source_type": "manufacturer"|"fallback"}}'
         )
 
@@ -630,16 +696,23 @@ class GeminiProvider(BaseLLMProvider):
             logger.warning(f"Error in extract_specs_from_text for {manufacturer} {mpn}: {e}")
             return {"found": False, "error": str(e), "source_url": source_url, "source_type": source_type}
 
-    async def enrich_from_manufacturer(self, mpn: str, manufacturer: str) -> Dict[str, Any]:
+    async def enrich_from_manufacturer(self, mpn: str, manufacturer: str, category_hint: str = None) -> Dict[str, Any]:
         """
-        ORCHESTRATION: Executes Stage 1 -> Stage 2 -> Stage 3 in sequence.
-        Short-circuits immediately on failure at each stage and records stage timings.
+        ORCHESTRATION: cache → Stage 1 → 1.5 → 2 → 3.
+        Short-circuits on failure with review_status=NEEDS_HUMAN_REVIEW.
+        Caches successful results to SQLite.
         """
+        # Check cache first
+        cached = enrichment_cache.get_cached(mpn, manufacturer)
+        if cached:
+            logger.info(f"[Cache HIT] {manufacturer} {mpn}")
+            return cached
+
         stage_timings: Dict[str, float] = {}
 
         # STAGE 1: URL Lookup
         t0 = time.perf_counter()
-        stage1_res = await self.find_manufacturer_url(mpn=mpn, manufacturer=manufacturer)
+        stage1_res = await self.find_manufacturer_url(mpn=mpn, manufacturer=manufacturer, category_hint=category_hint)
         s1_time = time.perf_counter() - t0
         stage_timings["url_lookup_s"] = s1_time
         logger.info(f"[Stage 1: URL Lookup] {manufacturer} {mpn} completed in {s1_time:.3f}s (found={stage1_res.get('found')})")
@@ -649,19 +722,43 @@ class GeminiProvider(BaseLLMProvider):
                 "found": False,
                 "stage_failed": "url_lookup",
                 "error": stage1_res.get("error"),
-                "stage_timings": stage_timings
+                "stage_timings": stage_timings,
+                "review_status": "NEEDS_HUMAN_REVIEW",
+                "review_reason": f"URL lookup failed for {manufacturer} {mpn}"
             }
 
         source_url = stage1_res["url"]
         source_type = stage1_res.get("source_type", "manufacturer")
         grounding_sources = stage1_res.get("grounding_sources", [])
 
-        # STAGE 2: Scrape Page
-        t1 = time.perf_counter()
-        page_text = await scrape_page_async(source_url)
-        s2_time = time.perf_counter() - t1
+        # STAGE 1.5: URL Validation
+        t15 = time.perf_counter()
+        val_result = await validate_url(source_url)
+        s15_time = time.perf_counter() - t15
+        stage_timings["url_validate_s"] = s15_time
+        logger.info(f"[Stage 1.5: URL Validation] {source_url} valid={val_result.get('valid')} in {s15_time:.3f}s")
+
+        if not val_result.get("valid"):
+            return {
+                "found": False,
+                "stage_failed": "url_validation",
+                "source_url": source_url,
+                "source_type": source_type,
+                "grounding_sources": grounding_sources,
+                "stage_timings": stage_timings,
+                "review_status": "NEEDS_HUMAN_REVIEW",
+                "review_reason": f"URL validation failed ({val_result.get('rejection_reason', 'unknown')}): {source_url}"
+            }
+
+        # Use validated final URL (may differ from original after redirects)
+        final_url = val_result.get("final_url", source_url)
+
+        # STAGE 2: Scrape Page (with Playwright fallback)
+        t2 = time.perf_counter()
+        page_text = await scrape_page_with_fallback(final_url)
+        s2_time = time.perf_counter() - t2
         stage_timings["scrape_s"] = s2_time
-        logger.info(f"[Stage 2: Scrape] {source_url} completed in {s2_time:.3f}s (text_length={len(page_text) if page_text else 0})")
+        logger.info(f"[Stage 2: Scrape] {final_url} completed in {s2_time:.3f}s (text_length={len(page_text) if page_text else 0})")
 
         if not page_text or not page_text.strip():
             return {
@@ -670,11 +767,13 @@ class GeminiProvider(BaseLLMProvider):
                 "source_url": source_url,
                 "source_type": source_type,
                 "grounding_sources": grounding_sources,
-                "stage_timings": stage_timings
+                "stage_timings": stage_timings,
+                "review_status": "NEEDS_HUMAN_REVIEW",
+                "review_reason": f"Page scrape returned empty content for {final_url}"
             }
 
         # STAGE 3: Extract Specs from Text
-        t2 = time.perf_counter()
+        t3 = time.perf_counter()
         stage3_res = await self.extract_specs_from_text(
             mpn=mpn,
             manufacturer=manufacturer,
@@ -682,7 +781,7 @@ class GeminiProvider(BaseLLMProvider):
             source_url=source_url,
             source_type=source_type
         )
-        s3_time = time.perf_counter() - t2
+        s3_time = time.perf_counter() - t3
         stage_timings["spec_extraction_s"] = s3_time
         logger.info(f"[Stage 3: Spec Extraction] {manufacturer} {mpn} completed in {s3_time:.3f}s")
 
@@ -694,11 +793,20 @@ class GeminiProvider(BaseLLMProvider):
                 "source_type": source_type,
                 "grounding_sources": grounding_sources,
                 "error": stage3_res.get("error"),
-                "stage_timings": stage_timings
+                "stage_timings": stage_timings,
+                "review_status": "NEEDS_HUMAN_REVIEW",
+                "review_reason": f"Spec extraction failed for {manufacturer} {mpn}"
             }
 
+        # Success — assemble result
         stage3_res["grounding_sources"] = list(dict.fromkeys(grounding_sources + [source_url]))
         stage3_res["stage_timings"] = stage_timings
+        stage3_res["review_status"] = None
+        stage3_res["review_reason"] = None
+
+        # Cache the successful result
+        enrichment_cache.set_cached(mpn, manufacturer, stage3_res)
+
         return stage3_res
 
 
@@ -728,7 +836,7 @@ class LLMService:
             return await self.provider.extract_specs_from_text(mpn, manufacturer, page_text, source_url, source_type)
         return {"found": False, "error": "Current provider does not support extract_specs_from_text"}
 
-    async def enrich_from_manufacturer(self, mpn: str, manufacturer: str) -> Dict[str, Any]:
+    async def enrich_from_manufacturer(self, mpn: str, manufacturer: str, category_hint: str = None) -> Dict[str, Any]:
         if hasattr(self.provider, "enrich_from_manufacturer"):
-            return await self.provider.enrich_from_manufacturer(mpn, manufacturer)
+            return await self.provider.enrich_from_manufacturer(mpn, manufacturer, category_hint=category_hint)
         return {"found": False, "error": "Current provider does not support manufacturer enrichment"}
