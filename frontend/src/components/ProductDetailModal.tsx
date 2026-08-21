@@ -17,6 +17,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const [expandedProvenance, setExpandedProvenance] = useState<string | null>(null);
 
   const fieldProvenance: Record<string, any> = product.field_provenance || {};
+  const notFoundReason: string = product.not_found_reason || '';
 
   if (!product) return null;
 
@@ -176,9 +177,13 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-300 flex items-start gap-3">
                     <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
                     <div>
-                      <div className="font-bold text-xs">Live Source URL Not Located</div>
+                      <div className="font-bold text-xs">Manufacturer Source Page Not Found</div>
                       <p className="text-[11px] text-amber-300/80 mt-1">
-                        Automated search did not return a 100% verified link. Product was safely normalized using deterministic LOV rules and input descriptors.
+                        {notFoundReason ||
+                          'No verified manufacturer page was located for this product. Enrichment was performed using description text and LOV rules only.'}
+                      </p>
+                      <p className="text-[10px] text-amber-200/50 mt-1 font-mono">
+                        To resolve: verify the MPN and manufacturer name are correct, then re-run enrichment.
                       </p>
                     </div>
                   </div>
@@ -210,8 +215,8 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     Normalized Master Entities
                   </h4>
                   <div className="space-y-2 text-slate-300">
-                    <div className="flex justify-between py-1 border-b border-white/[0.04]"><span className="text-slate-500">Canonical Brand:</span> <span className="text-white font-bold">{enrich.brand || 'Unassigned'}</span></div>
-                    <div className="flex justify-between py-1 border-b border-white/[0.04]"><span className="text-slate-500">Canonical Manufacturer:</span> <span className="text-white font-bold">{enrich.manufacturer || 'Unassigned'}</span></div>
+                    <div className="flex justify-between py-1 border-b border-white/[0.04]"><span className="text-slate-500">Canonical Brand:</span> <span className={enrich.brand ? 'text-white font-bold' : 'text-slate-600 italic'}>{enrich.brand || 'Not identified'}</span></div>
+                    <div className="flex justify-between py-1 border-b border-white/[0.04]"><span className="text-slate-500">Canonical Manufacturer:</span> <span className={enrich.manufacturer ? 'text-white font-bold' : 'text-slate-600 italic'}>{enrich.manufacturer || 'Not identified'}</span></div>
                     <div className="flex justify-between py-1 border-b border-white/[0.04]"><span className="text-slate-500">Department:</span> <span className="text-slate-300">{enrich.department || '—'}</span></div>
                     <div className="flex justify-between py-1 border-b border-white/[0.04]"><span className="text-slate-500">Class:</span> <span className="text-slate-300">{enrich.class || '—'}</span></div>
                     <div className="flex justify-between py-1 border-b border-white/[0.04]"><span className="text-slate-500">Category:</span> <span className="text-indigo-300 font-bold">{enrich.category || '—'}</span></div>
@@ -241,8 +246,21 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   <tbody className="divide-y divide-white/[0.04] bg-black/20">
                     {attrs.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="p-12 text-center text-slate-500">
-                          No attributes extracted. Click "Re-run AI Enrichment" to extract.
+                        <td colSpan={6} className="p-12 text-center">
+                          {product.status === 'RAW' || !product.status ? (
+                            <div className="space-y-2">
+                              <p className="text-slate-400 font-bold">Product not yet enriched</p>
+                              <p className="text-slate-600 text-[11px]">Click the ▶ Run AI Enrichment button to extract attributes.</p>
+                            </div>
+                          ) : (
+                            <div className="space-y-2">
+                              <p className="text-slate-400 font-bold">No attributes extracted</p>
+                              <p className="text-slate-600 text-[11px]">
+                                The AI pipeline ran but could not confidently extract attributes for this product type.<br />
+                                This is honest behaviour — no fabricated values are shown.
+                              </p>
+                            </div>
+                          )}
                         </td>
                       </tr>
                     ) : (

@@ -11,7 +11,7 @@ import { EvaluationPanel } from './components/EvaluationPanel';
 import { ReviewPanel } from './components/ReviewPanel';
 import { Chatbot } from './components/Chatbot';
 import { AnimatedBackground } from './components/AnimatedBackground';
-import { ArrowRight, Terminal, Database, Play, Download, Brain, Network } from 'lucide-react';
+import { ArrowRight, Terminal, Database, Play, Download, Brain } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { scrollZoomBox } from './lib/animations';
 
@@ -231,10 +231,12 @@ export const App: React.FC = () => {
         const res = await fetch(`${API_BASE}/pipeline/status`);
         if (res.ok) {
           const data = await res.json();
-          const total = data.total || 1;
-          const processed = data.processed || 0;
+          // pipeline/status returns: total_rows, processed_rows, status (PENDING/RUNNING/COMPLETED/IDLE)
+          const total = data.total_rows || 1;
+          const processed = data.processed_rows || 0;
           const percent = Math.round((processed / total) * 100);
-          const isDone = data.status === 'completed' || data.status === 'idle' || percent >= 100;
+          const statusUpper = (data.status || '').toUpperCase();
+          const isDone = statusUpper === 'COMPLETED' || statusUpper === 'IDLE' || percent >= 100;
 
           setEnrichmentProgress({
             status: isDone ? 'Completed' : 'Processing',
@@ -257,11 +259,50 @@ export const App: React.FC = () => {
     }, 2000);
   };
 
-  const handleExport = (format: 'csv' | 'excel') => {
-    const url = new URL(`${API_BASE}/export/${format}`);
-    if (selectedDatasetId) url.searchParams.append("dataset_id", selectedDatasetId.toString());
-    window.open(url.toString(), '_blank');
+  /**
+   * Fetches a file from the API and triggers a native browser download.
+   * Works for CSV, Excel, JSON — any binary or text blob.
+   */
+  const downloadFile = async (
+    url: string,
+    filename: string,
+    mimeType: string
+  ) => {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) {
+        alert(`Download failed: ${res.status} ${res.statusText}`);
+        return;
+      }
+      const blob = await res.blob();
+      const objectUrl = URL.createObjectURL(new Blob([blob], { type: mimeType }));
+      const anchor = document.createElement('a');
+      anchor.href = objectUrl;
+      anchor.download = filename;
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+      URL.revokeObjectURL(objectUrl);
+    } catch (err) {
+      console.error('Download error:', err);
+      alert('Download failed. Make sure the backend is running.');
+    }
   };
+
+  const handleExport = async (format: 'csv' | 'excel') => {
+    const url = new URL(`${API_BASE}/export`);
+    url.searchParams.append("format", format);
+    if (selectedDatasetId) url.searchParams.append("dataset_id", selectedDatasetId.toString());
+
+    const isExcel = format === 'excel';
+    const ext = isExcel ? 'xlsx' : 'csv';
+    const mime = isExcel
+      ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      : 'text/csv;charset=utf-8';
+    const date = new Date().toISOString().slice(0, 10);
+    await downloadFile(url.toString(), `Enriched_Delivery_Format_${date}.${ext}`, mime);
+  };
+
 
   const highConfRate = stats.total_products > 0
     ? Math.round((stats.high_confidence / stats.total_products) * 100)
@@ -500,8 +541,11 @@ export const App: React.FC = () => {
                   </div>
                   <button
                     onClick={() => {
-                      const dsParam = selectedDatasetId ? `?dataset_id=${selectedDatasetId}&format=csv` : '?format=csv';
-                      window.open(`${API_BASE}/export/audit${dsParam}`, '_blank');
+                      const url = new URL(`${API_BASE}/export/audit`);
+                      url.searchParams.append('format', 'csv');
+                      if (selectedDatasetId) url.searchParams.append('dataset_id', selectedDatasetId.toString());
+                      const date = new Date().toISOString().slice(0, 10);
+                      downloadFile(url.toString(), `Audit_Trail_${date}.csv`, 'text/csv;charset=utf-8');
                     }}
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 text-xs font-bold cursor-pointer transition-colors"
                   >

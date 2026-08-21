@@ -94,6 +94,11 @@ class ProductRepository:
     def get_product_by_id(self, product_id: int) -> Optional[Dict[str, Any]]:
         return self._products.get(product_id)
 
+    def get_product(self, product_id: int) -> Optional[Dict[str, Any]]:
+        """Alias for get_product_by_id() — used by audit and export routes."""
+        return self._products.get(product_id)
+
+
     def update_product(self, product_id: int, updates: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         if product_id in self._products:
             self._products[product_id].update(updates)

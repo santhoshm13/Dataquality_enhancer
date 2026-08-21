@@ -19,11 +19,14 @@ async def export_delivery_file(
 
     if fmt == "csv":
         csv_data = delivery_generator.generate_csv_string(products)
+        # Prepend UTF-8 BOM so Excel auto-detects encoding correctly on Windows
+        csv_bytes = ("\ufeff" + csv_data).encode("utf-8")
         return Response(
-            content=csv_data,
-            media_type="text/csv",
+            content=csv_bytes,
+            media_type="text/csv; charset=utf-8",
             headers={
-                "Content-Disposition": "attachment; filename=Unihack_Enriched_Delivery_Format.csv"
+                "Content-Disposition": "attachment; filename=Unihack_Enriched_Delivery_Format.csv",
+                "Access-Control-Expose-Headers": "Content-Disposition"
             }
         )
     elif fmt in ["excel", "xlsx"]:
@@ -32,7 +35,8 @@ async def export_delivery_file(
             content=excel_bytes,
             media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             headers={
-                "Content-Disposition": "attachment; filename=Unihack_Enriched_Delivery_Format.xlsx"
+                "Content-Disposition": "attachment; filename=Unihack_Enriched_Delivery_Format.xlsx",
+                "Access-Control-Expose-Headers": "Content-Disposition"
             }
         )
     else:
@@ -42,10 +46,24 @@ async def export_delivery_file(
         )
 
 
+# -- Alias routes so both ?format=csv and /export/csv paths work --
+@router.get("/export/csv")
+async def export_csv_alias(dataset_id: Optional[int] = Query(None)):
+    """Alias: GET /export/csv -- same as GET /export?format=csv"""
+    return await export_delivery_file(format="csv", dataset_id=dataset_id)
+
+
+@router.get("/export/excel")
+@router.get("/export/xlsx")
+async def export_excel_alias(dataset_id: Optional[int] = Query(None)):
+    """Alias: GET /export/excel -- same as GET /export?format=excel"""
+    return await export_delivery_file(format="excel", dataset_id=dataset_id)
+
+
 @router.get("/export/audit/{product_id}")
 async def export_single_audit(product_id: int):
     """Export a per-product provenance audit report as JSON."""
-    product = repository.get_product(product_id)
+    product = repository.get_product_by_id(product_id)
     if not product:
         raise HTTPException(status_code=404, detail=f"Product {product_id} not found")
     report = generate_audit_report(product)
@@ -64,7 +82,7 @@ async def export_batch_audit(
     format: Optional[str] = Query("json")
 ):
     """Export provenance audit trail for all (or a dataset's) products.
-    format=json → JSON array; format=csv → flattened CSV.
+    format=json -> JSON array; format=csv -> flattened CSV.
     """
     products = repository.get_all_products(dataset_id=dataset_id)
     if not products:
@@ -79,7 +97,10 @@ async def export_batch_audit(
             headers={"Content-Disposition": "attachment; filename=audit_trail.csv"}
         )
     elif fmt == "pdf":
-        raise HTTPException(status_code=501, detail="PDF export requires reportlab. Install with: pip install reportlab")
+        raise HTTPException(
+            status_code=501,
+            detail="PDF export requires reportlab. Install with: pip install reportlab"
+        )
     else:
         reports = [generate_audit_report(p) for p in products]
         return Response(

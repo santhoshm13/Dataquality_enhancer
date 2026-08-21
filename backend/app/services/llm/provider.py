@@ -111,7 +111,7 @@ def validate_attributes_against_lov(raw_attributes: Any, lov_entries: List[Any])
     return validated
 
 def enforce_description_limits(descriptions: Dict[str, Any], context: Dict[str, Any]) -> Dict[str, str]:
-    """Apply UNILOG length constraints and minimum padding."""
+    """Apply UNILOG length constraints. Never pad with filler text."""
     expected_keys = ["MOBILE_DESC", "INVOICE_DESC", "SHORT_DESC", "LONG_DESC1", "RETAIL_DESC", "MARKETING_DESCRIPTION"]
     corrected = {}
 
@@ -123,14 +123,19 @@ def enforce_description_limits(descriptions: Dict[str, Any], context: Dict[str, 
         else:
             corrected[key] = val
 
-    # Enforce minimum 60 chars for MOBILE_DESC
+    # MOBILE_DESC minimum: pad only with real product identity info — never filler
     mobile = corrected.get("MOBILE_DESC", "")
-    if len(mobile) < 60:
-        base = f"{context.get('brand', '')} {context.get('category', '')} {context.get('mfg_part_num', '')}".strip()
-        padded = base if base else mobile
-        while len(padded) < 60:
-            padded += " high quality"
-        corrected["MOBILE_DESC"] = padded[:80].strip()
+    if len(mobile) < 10:
+        # Only use real identity tokens; leave empty rather than fabricate
+        base_parts = [
+            context.get("brand", ""),
+            context.get("category", ""),
+            context.get("mfg_part_num", "")
+        ]
+        base = " ".join(p for p in base_parts if p).strip()
+        if base:
+            corrected["MOBILE_DESC"] = base[:80].strip()
+        # If base is also empty, leave mobile empty — honest is better than fabricated
 
     return corrected
 
@@ -147,12 +152,17 @@ class BaseLLMProvider(ABC):
 
 class MockLLMProvider(BaseLLMProvider):
     """
-    Mock LLM provider for deterministic offline testing and demonstration.
+    Mock LLM provider for deterministic offline testing.
+    HONESTY RULES:
+    - Only return attributes we can confidently extract from the description text.
+    - Never return made-up values for products we don't recognise.
+    - Return empty attributes list when the product type is unknown.
+    - dept/class/category are returned as None when not confidently identified
+      so the category_classifier (Stage 2) remains the authoritative source.
     """
     async def extract_attributes(self, product_desc: str, category: str, part_num: str, classpath: str = "", manufacturer: str = "", brand: str = "") -> Dict[str, Any]:
         desc_lower = product_desc.lower()
         lov_entries = get_lov_for_classpath(classpath)
-        permitted_attrs = {e.attribute_label.lower(): e for e in lov_entries}
 
         if "dishwasher" in desc_lower or "pdsh" in desc_lower or "wdts" in desc_lower:
             raw_extracted = [
@@ -163,61 +173,85 @@ class MockLLMProvider(BaseLLMProvider):
                 {"name": "Mounting Type", "value": "Leg", "uom": None, "confidence": 0.94},
                 {"name": "Sound Level", "value": "47", "uom": "dBA", "confidence": 0.96},
                 {"name": "Finish", "value": "Stainless Steel", "uom": None, "confidence": 0.99},
-                {"name": "Hallucinated Field", "value": "Fake", "uom": None, "confidence": 0.99}
             ]
+            dept, cls, cat = "Appliances", "Large Appliances", "Built-In Dishwashers"
+
         elif "sanding belt" in desc_lower or "abrasive" in desc_lower or "p80" in desc_lower or "p150" in desc_lower:
-            grit = "P80"
+            grit = None
             for g in ["P80", "P120", "P150", "P180", "P220", "P320"]:
                 if g.lower() in desc_lower:
                     grit = g
                     break
-            raw_extracted = [
-                {"name": "Grit", "value": grit, "uom": None, "confidence": 0.98},
-                {"name": "Abrasive Material", "value": "Aluminum Oxide", "uom": None, "confidence": 0.92},
-                {"name": "Backing Weight", "value": "X-Weight", "uom": None, "confidence": 0.90},
-                {"name": "Pack Quantity", "value": "6", "uom": "pc", "confidence": 0.96}
-            ]
+            raw_extracted = []
+            if grit:
+                raw_extracted.append({"name": "Grit", "value": grit, "uom": None, "confidence": 0.98})
+            if "aluminum oxide" in desc_lower or "alum" in desc_lower:
+                raw_extracted.append({"name": "Abrasive Material", "value": "Aluminum Oxide", "uom": None, "confidence": 0.92})
+            if "6" in desc_lower or "six" in desc_lower:
+                raw_extracted.append({"name": "Pack Quantity", "value": "6", "uom": "pc", "confidence": 0.80})
+            dept, cls, cat = "Abrasives", "Coated Abrasives", "Sanding Belts"
+
         else:
-            raw_extracted = [
-                {"name": "Color", "value": "Standard", "uom": None, "confidence": 0.80},
-                {"name": "Material", "value": "Steel", "uom": None, "confidence": 0.85},
-                {"name": "Finish", "value": "Chrome", "uom": None, "confidence": 0.90}
-            ]
+            # Unknown product type — return nothing rather than fabricate
+            logger.debug(f"MockLLMProvider: unknown product type for MPN={part_num}, returning no attributes")
+            raw_extracted = []
+            dept, cls, cat = None, None, None
 
         validated = validate_attributes_against_lov(raw_extracted, lov_entries)
 
         return {
-            "department": "Appliances" if "dishwasher" in desc_lower else "Abrasives",
-            "class": "Large Appliances" if "dishwasher" in desc_lower else "Coated Abrasives",
-            "category": "Built-In Dishwashers" if "dishwasher" in desc_lower else "Sanding Belts",
+            "department": dept,
+            "class": cls,
+            "category": cat,
             "attributes": validated
         }
 
     async def generate_descriptions(self, attributes: Dict[str, Any], raw_desc: str) -> Dict[str, str]:
-        part_num = attributes.get("mfg_part_num", "PRODUCT")
-        brand = attributes.get("brand", "Generic")
-        category = attributes.get("category", "Item")
+        """
+        Generate descriptions from REAL extracted attributes only.
+        Never fabricate marketing copy for unknown products.
+        """
+        part_num = attributes.get("mfg_part_num", "") or ""
+        brand = attributes.get("brand", "") or ""
+        category = attributes.get("category", "") or ""
+        manufacturer = attributes.get("manufacturer", "") or ""
         validated = attributes.get("validated_attributes", [])
 
-        attr_summary = ", ".join([f"{a.get('name')}: {a.get('value')} {a.get('uom', '')}".strip() for a in validated])
+        # Build fact-based attr summary from ONLY what was actually extracted
+        attr_parts = []
+        for a in validated:
+            name = a.get("name", "")
+            val = a.get("value", "")
+            uom = a.get("uom") or ""
+            if name and val:
+                attr_parts.append(f"{name}: {val}{' ' + uom if uom else ''}")
+        attr_summary = ", ".join(attr_parts)
 
-        invoice = f"{category} {part_num}"[:40]
+        # Build descriptions using only real facts — no filler
+        identity = " ".join(filter(None, [brand, category, part_num])).strip()
+        invoice = (identity)[:40] if identity else (raw_desc[:40] if raw_desc else "")
+        short_desc = (f"{identity}" + (f" - {attr_summary}" if attr_summary else ""))[:80]
+        mobile_base = identity or raw_desc[:40]
+        mobile = mobile_base[:80]
+        long_desc = (f"{identity}. " if identity else "") + \
+                    (f"Specs: {attr_summary}. " if attr_summary else "") + \
+                    (f"Part Number: {part_num}. " if part_num else "") + \
+                    (f"Manufacturer: {manufacturer}." if manufacturer else "")
+        long_desc = long_desc.strip()[:1000]
 
-        mobile = f"{brand} {category} {part_num}"
-        if len(mobile) < 60:
-            mobile = f"{brand} {category} {part_num} high quality"
-        mobile = mobile[:80]
+        # RETAIL_DESC: fact-based, no filler marketing language
+        retail = short_desc[:255]
 
-        short_desc = f"{brand} {category} {attr_summary}"[:80]
-        long_desc = f"{brand} {category}. Part: {part_num}. Specs: {attr_summary}."[:1000]
+        # MARKETING_DESCRIPTION: only if we have real content
+        marketing = long_desc[:500] if long_desc else ""
 
         return {
             "MOBILE_DESC": mobile,
             "INVOICE_DESC": invoice,
             "SHORT_DESC": short_desc,
             "LONG_DESC1": long_desc,
-            "RETAIL_DESC": f"Premium {brand} {category} designed for professional performance."[:255],
-            "MARKETING_DESCRIPTION": f"Upgrade your operations with the trusted quality of {brand} {category}."[:500]
+            "RETAIL_DESC": retail,
+            "MARKETING_DESCRIPTION": marketing
         }
 
     async def find_manufacturer_url(self, mpn: str, manufacturer: str, category_hint: str = None) -> Dict[str, Any]:
@@ -251,17 +285,18 @@ class MockLLMProvider(BaseLLMProvider):
         }
 
     async def extract_specs_from_text(self, mpn: str, manufacturer: str, page_text: str, source_url: str, source_type: str = "manufacturer") -> Dict[str, Any]:
+        """
+        Mock: never actually scrapes — always returns found=False.
+        The real GeminiProvider has a real implementation.
+        Returning found=True here would be fabrication.
+        """
+        logger.debug(f"MockLLMProvider.extract_specs_from_text called for {manufacturer} {mpn} — returning not-found (mock cannot scrape)")
         return {
-            "found": True,
-            "product_title": f"{manufacturer} {mpn} Industrial Product",
-            "raw_specs": [
-                {"label": "Manufacturer Part Number", "value": mpn, "unit": None},
-                {"label": "Brand", "value": manufacturer, "unit": None}
-            ],
-            "raw_description": f"Official product specification page for {manufacturer} {mpn}.",
-            "image_urls": [],
+            "found": False,
             "source_url": source_url,
-            "source_type": source_type
+            "source_type": source_type,
+            "review_status": "NEEDS_HUMAN_REVIEW",
+            "review_reason": f"Mock provider cannot scrape manufacturer page for {manufacturer} {mpn}. Configure a real LLM provider to enable page scraping."
         }
 
     async def enrich_from_manufacturer(self, mpn: str, manufacturer: str, category_hint: str = None) -> Dict[str, Any]:

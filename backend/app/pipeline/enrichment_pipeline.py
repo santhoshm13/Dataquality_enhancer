@@ -45,14 +45,26 @@ class ProductEnrichmentPipeline:
         class_res = classifier.classify(raw_desc, mfg_part_num=part_num, manufacturer=mfg_match["matched_value"])
 
         # Stage 3: Structured AI Attribute Extraction
-        extracted_data = await self.llm_service.extract_attributes(
-            product_desc=raw_desc,
-            category=class_res["category"],
-            part_num=part_num,
-            classpath=class_res.get("classpath", ""),
-            manufacturer=mfg_match["matched_value"],
-            brand=brand_match["matched_value"]
-        )
+        try:
+            extracted_data = await self.llm_service.extract_attributes(
+                product_desc=raw_desc,
+                category=class_res["category"],
+                part_num=part_num,
+                classpath=class_res.get("classpath", ""),
+                manufacturer=mfg_match["matched_value"],
+                brand=brand_match["matched_value"]
+            )
+        except Exception as e:
+            logger.error(f"[Stage 3] extract_attributes failed for MPN={part_num}: {e}")
+            extracted_data = {"attributes": [], "department": None, "class": None, "category": None}
+
+        # If LLM returned None dept/class/category, fall back to classifier values
+        if not extracted_data.get("department"):
+            extracted_data["department"] = class_res.get("department", "")
+        if not extracted_data.get("class"):
+            extracted_data["class"] = class_res.get("class", "")
+        if not extracted_data.get("category"):
+            extracted_data["category"] = class_res.get("category", "")
 
         # Stage 0: Grounded Manufacturer Search & Provenance
         source_url = product.get("source_url")
@@ -97,11 +109,18 @@ class ProductEnrichmentPipeline:
                 review_status = "NEEDS_HUMAN_REVIEW"
                 review_reason = f"Enrichment exception: {str(e)[:100]}"
 
-        # Normalize found state
+        # Normalize found state + build not_found_reason for UI transparency
+        not_found_reason: str = ""
         if found is None and source_url:
             found = True
         elif found is None and not source_url:
             found = False
+        if found is False:
+            not_found_reason = (
+                review_reason or
+                stage_failed and f"Pipeline stopped at stage: {stage_failed}" or
+                "No manufacturer page found for this product. Enrichment uses description text only."
+            )
 
         # Stage 3.5: Vision-Assisted Attribute Extraction (optional, skips gracefully)
         image_url = product.get("image_url") or product.get("Product_Image_URL") or product.get("Image_URL", "")
@@ -277,6 +296,7 @@ class ProductEnrichmentPipeline:
             "source_type": source_type or ("manufacturer" if found else "none"),
             "grounding_sources": grounding_sources,
             "found": found,
+            "not_found_reason": not_found_reason if not found else "",
             "stage_timings": stage_timings,
             "stage_failed": stage_failed,
             "review_status": review_status,
