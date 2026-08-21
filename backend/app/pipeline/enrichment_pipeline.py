@@ -101,6 +101,31 @@ class ProductEnrichmentPipeline:
                     # Propagate review status from enrichment
                     review_status = mfg_enrich.get("review_status")
                     review_reason = mfg_enrich.get("review_reason")
+
+                    # Stage 3b: extract_full_record — populate all 252 delivery columns
+                    # Only runs when we have a successfully scraped page (found=True)
+                    full_record = {}
+                    if found and source_url and hasattr(self.llm_service, "extract_full_record") and not _gemini_rate_limited:
+                        page_text_for_record = mfg_enrich.get("page_text", "") or ""
+                        try:
+                            full_record = await self.llm_service.extract_full_record(
+                                mpn=part_num,
+                                manufacturer=mfg_for_search,
+                                page_text=page_text_for_record,
+                                source_url=source_url
+                            )
+                            if full_record.get("error") and (
+                                "429" in str(full_record["error"]) or
+                                "RESOURCE_EXHAUSTED" in str(full_record["error"])
+                            ):
+                                _gemini_rate_limited = True
+                                full_record = {}
+                        except Exception as efr:
+                            if "429" in str(efr) or "RESOURCE_EXHAUSTED" in str(efr):
+                                _gemini_rate_limited = True
+                            logger.warning(f"extract_full_record failed for MPN {part_num}: {efr}")
+                            full_record = {}
+                    product["full_record"] = full_record
             except Exception as e:
                 if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
                     _gemini_rate_limited = True
@@ -322,6 +347,7 @@ class ProductEnrichmentPipeline:
                 "review_reasons": review_reasons
             },
             "attributes": validated_attributes,
+            "full_record": product.get("full_record", {}),
             "vision_stage": {
                 "skipped": vision_skipped,
                 "skip_reason": vision_skip_reason,

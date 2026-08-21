@@ -1,11 +1,30 @@
 import re
 import logging
+import os
 from typing import Optional, Dict, Any, List
 from urllib.parse import urlparse
 import httpx
 from bs4 import BeautifulSoup
 
 logger = logging.getLogger("app.services.scraper")
+
+# ---------------------------------------------------------------------------
+# Firecrawl integration (Stage 2 primary scraper)
+# ---------------------------------------------------------------------------
+# firecrawl-py v4 — uses AsyncV1FirecrawlApp for async scraping
+# Install: pip install firecrawl-py
+# Get a free API key at: https://www.firecrawl.dev/app/api-keys
+# Set FIRECRAWL_API_KEY in your .env file to enable.
+# If the key is absent or Firecrawl fails, the pipeline falls through to
+# the existing httpx + Playwright fallback chain automatically.
+try:
+    from firecrawl import AsyncV1FirecrawlApp
+    _firecrawl_available = True
+except ImportError:
+    AsyncV1FirecrawlApp = None  # type: ignore
+    _firecrawl_available = False
+    logger.info("firecrawl-py not installed — Firecrawl scraping disabled. Install with: pip install firecrawl-py")
+
 
 DEFAULT_HEADERS = {
     "User-Agent": (
@@ -280,18 +299,71 @@ async def _scrape_with_playwright(url: str, timeout_ms: int = 10000) -> Optional
         return None
 
 
+async def _scrape_with_firecrawl(url: str, api_key: str) -> Optional[str]:
+    """
+    Primary Stage 2 scraper: uses Firecrawl cloud API to get clean markdown.
+    Firecrawl handles JS-rendering, bot detection, and proxy rotation.
+    Uses AsyncV1FirecrawlApp.scrape_url() from firecrawl-py v4.
+    Returns clean markdown text, or None on any failure.
+    """
+    if not _firecrawl_available or not AsyncV1FirecrawlApp:
+        return None
+    try:
+        app = AsyncV1FirecrawlApp(api_key=api_key)
+        result = await app.scrape_url(
+            url,
+            formats=["markdown"],
+            only_main_content=True,
+        )
+        # result is a V1ScrapeResponse — markdown is in result.markdown
+        text = None
+        if hasattr(result, "markdown") and result.markdown:
+            text = result.markdown
+        elif hasattr(result, "content") and result.content:
+            text = result.content
+        elif isinstance(result, dict):
+            text = result.get("markdown") or result.get("content") or ""
+        if text and len(str(text).strip()) >= 50:
+            text = str(text).strip()
+            logger.info(f"[Firecrawl] Scraped {url}: {len(text)} chars")
+            return text
+        logger.warning(f"[Firecrawl] Empty/short result for {url}")
+        return None
+    except Exception as e:
+        logger.warning(f"[Firecrawl] Scrape failed for {url}: {e}")
+        return None
+
+
 async def scrape_page_with_fallback(url: str, httpx_timeout: float = 8.0) -> Optional[str]:
     """
-    Stage 2: Enhanced scraping — tries httpx first, falls back to Playwright
-    if the httpx result is empty or too short (< 100 chars).
+    Stage 2: Enhanced scraping with priority chain:
+      1. Firecrawl (cloud API, handles JS/bot-protection) — if FIRECRAWL_API_KEY is set
+      2. httpx + BeautifulSoup (fast, lightweight)
+      3. Playwright headless Chromium (JS-rendering fallback, if installed)
+    Returns the best available page text, or None.
     """
-    # Primary: httpx + BeautifulSoup
+    # --- Attempt 1: Firecrawl (primary, cloud) ---
+    # Import here to avoid circular import at module load time
+    firecrawl_key = ""
+    try:
+        from app.config.settings import settings
+        firecrawl_key = settings.FIRECRAWL_API_KEY or os.environ.get("FIRECRAWL_API_KEY", "")
+    except Exception:
+        firecrawl_key = os.environ.get("FIRECRAWL_API_KEY", "")
+
+    if firecrawl_key:
+        fc_text = await _scrape_with_firecrawl(url, api_key=firecrawl_key)
+        if fc_text and len(fc_text.strip()) >= 100:
+            return fc_text
+        logger.info(f"[Firecrawl] Insufficient result for {url} — falling back to httpx")
+
+    # --- Attempt 2: httpx + BeautifulSoup ---
     text = await scrape_page_async(url, timeout=httpx_timeout)
 
     if text and len(text.strip()) >= 100:
         return text
 
-    # Fallback: Playwright headless
+    # --- Attempt 3: Playwright headless (JS fallback) ---
     logger.info(f"httpx scrape insufficient for {url} (got {len(text) if text else 0} chars). Trying Playwright fallback...")
     pw_text = await _scrape_with_playwright(url)
 

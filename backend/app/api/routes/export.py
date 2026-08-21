@@ -5,7 +5,9 @@ from app.database.repository import repository
 from app.pipeline.delivery_formatter import delivery_generator
 from app.services.audit_trail import generate_audit_report, generate_audit_csv
 import json
+import logging
 
+logger = logging.getLogger("app.export")
 router = APIRouter()
 
 @router.post("/export")
@@ -17,10 +19,23 @@ async def export_delivery_file(
     products = repository.get_all_products(dataset_id=dataset_id)
     fmt = (format or "csv").lower().strip()
 
+    if not products:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No products found to export. Run the pipeline first."
+        )
+
     if fmt == "csv":
-        csv_data = delivery_generator.generate_csv_string(products)
-        # Prepend UTF-8 BOM so Excel auto-detects encoding correctly on Windows
-        csv_bytes = ("\ufeff" + csv_data).encode("utf-8")
+        try:
+            csv_data = delivery_generator.generate_csv_string(products)
+            # Prepend UTF-8 BOM so Excel auto-detects encoding correctly on Windows
+            csv_bytes = ("\ufeff" + csv_data).encode("utf-8")
+        except Exception as e:
+            logger.error(f"CSV export generation failed: {e}", exc_info=True)
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"CSV generation failed: {str(e)[:200]}"
+            )
         return Response(
             content=csv_bytes,
             media_type="text/csv; charset=utf-8",
@@ -30,7 +45,14 @@ async def export_delivery_file(
             }
         )
     elif fmt in ["excel", "xlsx"]:
-        excel_bytes = delivery_generator.generate_excel_bytes(products)
+        try:
+            excel_bytes = delivery_generator.generate_excel_bytes(products)
+        except Exception as e:
+            logger.error(f"Excel export generation failed: {e}", exc_info=True)
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Excel generation failed: {str(e)[:200]}"
+            )
         return Response(
             content=excel_bytes,
             media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

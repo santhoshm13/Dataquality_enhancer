@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: str = ""
     OPENAI_API_KEY: str = ""
     LLM_PROVIDER: str = "gemini"  # 'mock', 'openai', 'gemini'
+
+    # Scraping
+    FIRECRAWL_API_KEY: str = ""  # get one free at https://www.firecrawl.dev/app/api-keys
     
     # CORS
     ALLOWED_ORIGINS: str = "http://localhost:5173,http://localhost:3000,https://*.vercel.app"

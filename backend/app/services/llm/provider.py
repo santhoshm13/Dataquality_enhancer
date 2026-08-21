@@ -31,6 +31,91 @@ UNILOG_LIMITS = {
     "MARKETING_DESCRIPTION": 500,
 }
 
+
+FULL_RECORD_PROMPT = """
+Here is the raw text content of a manufacturer/distributor product page
+for {manufacturer} {mpn}:
+---
+{page_text}
+---
+
+Extract every piece of the following that is explicitly present in the text.
+Do NOT invent, guess, or infer values not stated. Leave a field as null/empty
+if it is not present — never fabricate to fill a gap.
+
+Return strict JSON with this exact structure:
+{{
+  "product_title": "",
+  "trade_name": "",
+  "alternate_part_numbers": [],
+  "raw_description": "",
+  "item_features": [],
+  "with_accessories": "",
+  "standards_approvals": "",
+  "prop_65_warning": "",
+  "application": "",
+  "includes": "",
+  "identifiers": {{
+    "upc": "",
+    "ean": "",
+    "gtin": "",
+    "unspsc": ""
+  }},
+  "commerce": {{
+    "warranty": "",
+    "list_price": "",
+    "selling_qty": "",
+    "selling_uom": "",
+    "packaging_info": ""
+  }},
+  "dimensions": {{
+    "length": "",
+    "length_uom": "",
+    "height": "",
+    "height_uom": "",
+    "width": "",
+    "width_uom": "",
+    "weight": "",
+    "weight_uom": "",
+    "volume": "",
+    "volume_uom": ""
+  }},
+  "media": {{
+    "product_image": "",
+    "alternate_images": [],
+    "sds_url": "",
+    "warranty_doc_url": "",
+    "catalog_url": "",
+    "spec_sheet_url": "",
+    "install_manual_url": "",
+    "service_manual_url": "",
+    "owners_manual_url": "",
+    "line_drawing_url": "",
+    "mtr_url": "",
+    "rohs_url": "",
+    "engineering_drawing_url": "",
+    "energy_star_url": "",
+    "technical_bulletin_url": "",
+    "submittal_url": "",
+    "compatibility_chart_url": "",
+    "size_chart_url": "",
+    "product_label_url": "",
+    "video_url": "",
+    "video_url_2": ""
+  }},
+  "country_of_origin": "",
+  "discontinued": "",
+  "raw_specs": [
+    {{
+      "label": "",
+      "value": "",
+      "unit": ""
+    }}
+  ]
+}}
+"""
+
+
 def clean_json_text(text: str) -> str:
     """Strip markdown code block fences and whitespace from raw LLM output."""
     if not text:
@@ -577,16 +662,21 @@ class GeminiProvider(BaseLLMProvider):
         if category_hint:
             hint_line = f"Product Category: {category_hint}\n"
 
+        # BUG FIX: The prompt explicitly requests JSON, but Gemini with google_search
+        # tool often returns a natural-language answer with the URL embedded in text.
+        # We now use a two-pass strategy: try JSON parse first, then regex-extract URL
+        # from raw text as a fallback so we never discard a valid URL.
         prompt = (
             f"Manufacturer: {manufacturer}\n"
             f"Manufacturer Part Number (MPN): {mpn}\n"
             f"{hint_line}\n"
-            f"Find the URL of this exact product's page on the manufacturer's official "
-            f"website. If unavailable, find a reputable distributor's product page "
-            f"instead. Only return a URL from real search results. Never construct or "
-            f"guess a URL from a pattern. If uncertain, return found=false.\n"
-            f"Return ONLY strict JSON, nothing else:\n"
-            f'{{"found": true/false, "url": "...", "source_type": "manufacturer"|"fallback"}}'
+            f"Search for the official product page URL for this exact MPN on the "
+            f"manufacturer website or a major distributor (Grainger, MSC, RS Components, "
+            f"Fastenal, Digikey, McMaster-Carr). Use only URLs from real search results. "
+            f"Never guess or construct a URL. If no confident match found, say found=false.\n"
+            f"Return ONLY valid JSON — no markdown, no explanation:\n"
+            f'{{"found": true, "url": "https://example.com/product-page", "source_type": "manufacturer"}}'
+            f'\nOR if not found: {{"found": false, "url": "", "source_type": "none"}}'
         )
 
         try:
@@ -633,8 +723,7 @@ class GeminiProvider(BaseLLMProvider):
             if not raw_text and getattr(candidate, "content", None) and getattr(candidate.content, "parts", None):
                 raw_text = candidate.content.parts[0].text or ""
 
-            cleaned = clean_json_text(raw_text)
-            parsed = json.loads(cleaned)
+            logger.info(f"[Stage 1 raw response] {manufacturer} {mpn}: {raw_text[:300]!r}")
 
             # Grounding metadata provenance trail
             grounding_sources = []
@@ -653,12 +742,37 @@ class GeminiProvider(BaseLLMProvider):
                         if uri not in grounding_sources:
                             grounding_sources.append(uri)
 
-            found = bool(parsed.get("found", False))
-            url = str(parsed.get("url") or "").strip()
-            source_type = str(parsed.get("source_type") or ("manufacturer" if found else "none")).strip()
+            found = False
+            url = ""
+            source_type = "none"
+
+            # Pass 1: Try strict JSON parse
+            try:
+                cleaned = clean_json_text(raw_text)
+                if cleaned:
+                    parsed = json.loads(cleaned)
+                    found = bool(parsed.get("found", False))
+                    url = str(parsed.get("url") or "").strip()
+                    source_type = str(parsed.get("source_type") or ("manufacturer" if found else "none")).strip()
+            except (json.JSONDecodeError, ValueError) as json_err:
+                logger.warning(f"[Stage 1 JSON parse failed] {manufacturer} {mpn}: {json_err} — trying regex URL extraction")
+
+            # Pass 2: Regex fallback — extract first https URL from raw text
+            if not url or url.lower() in ("null", "none", ""):
+                url_match = re.search(r'https?://[^\s\"\',><\]\[}{\\]+', raw_text)
+                if url_match:
+                    url = url_match.group(0).rstrip("./,;)")
+                    found = True
+                    source_type = "manufacturer"  # assume manufacturer; validate_url will confirm
+                    logger.info(f"[Stage 1 regex fallback] {manufacturer} {mpn}: extracted URL {url!r}")
 
             if not url or url.lower() in ("null", "none", ""):
                 found = False
+
+            logger.info(
+                f"[Stage 1 RESULT] {manufacturer} {mpn}: found={found} url={url!r} "
+                f"source_type={source_type} grounding_sources={len(grounding_sources)}"
+            )
 
             return {
                 "found": found,
@@ -667,7 +781,7 @@ class GeminiProvider(BaseLLMProvider):
                 "grounding_sources": list(dict.fromkeys(grounding_sources))
             }
         except Exception as e:
-            logger.warning(f"Error in find_manufacturer_url for {manufacturer} {mpn}: {e}")
+            logger.warning(f"[Stage 1 ERROR] find_manufacturer_url for {manufacturer} {mpn}: {e}")
             return {"found": False, "error": str(e), "grounding_sources": []}
 
     async def extract_specs_from_text(self, mpn: str, manufacturer: str, page_text: str, source_url: str, source_type: str = "manufacturer") -> Dict[str, Any]:
@@ -739,6 +853,90 @@ class GeminiProvider(BaseLLMProvider):
             logger.warning(f"Error in extract_specs_from_text for {manufacturer} {mpn}: {e}")
             return {"found": False, "error": str(e), "source_url": source_url, "source_type": source_type}
 
+
+    async def extract_full_record(
+        self,
+        mpn: str,
+        manufacturer: str,
+        page_text: str,
+        source_url: str
+    ) -> Dict[str, Any]:
+        """
+        Extract the complete product record from manufacturer/distributor
+        page text using Gemini 3.7 Flash.
+
+        Only values explicitly present in page_text should be returned.
+        Missing values remain empty/null and are never fabricated.
+        """
+        prompt = FULL_RECORD_PROMPT.format(
+            manufacturer=manufacturer,
+            mpn=mpn,
+            page_text=page_text[:15000]
+        )
+
+        try:
+            if not self.api_key:
+                return {
+                    "error": "Gemini API key is not configured",
+                    "source_url": source_url
+                }
+
+            if not genai:
+                return {
+                    "error": "google-genai SDK is not installed",
+                    "source_url": source_url
+                }
+
+            client = genai.Client(api_key=self.api_key)
+
+            config = types.GenerateContentConfig(
+                temperature=0.1
+            )
+
+            response = await fetch_with_retry(
+                client.aio.models.generate_content,
+                model="gemini-3.7-flash",
+                contents=prompt,
+                config=config,
+            )
+
+            if not response:
+                raise ValueError("No response returned from Gemini")
+
+            raw_text = getattr(response, "text", "") or ""
+
+            if not raw_text and getattr(response, "candidates", None):
+                candidate = response.candidates[0]
+                if (
+                    getattr(candidate, "content", None)
+                    and getattr(candidate.content, "parts", None)
+                ):
+                    raw_text = candidate.content.parts[0].text or ""
+
+            raw = clean_json_text(raw_text)
+
+            if not raw:
+                raise ValueError("Gemini returned empty response")
+
+            data = json.loads(raw)
+
+            if not isinstance(data, dict):
+                raise ValueError("Gemini response is not a JSON object")
+
+            data["source_url"] = source_url
+
+            return data
+
+        except Exception as e:
+            logger.error(
+                f"extract_full_record failed for {manufacturer} {mpn}: {e}"
+            )
+            return {
+                "error": str(e),
+                "source_url": source_url
+            }
+
+
     async def enrich_from_manufacturer(self, mpn: str, manufacturer: str, category_hint: str = None) -> Dict[str, Any]:
         """
         ORCHESTRATION: cache → Stage 1 → 1.5 → 2 → 3.
@@ -774,14 +972,29 @@ class GeminiProvider(BaseLLMProvider):
         source_type = stage1_res.get("source_type", "manufacturer")
         grounding_sources = stage1_res.get("grounding_sources", [])
 
-        # STAGE 1.5: URL Validation
+        # STAGE 1.5: URL Validation — BUG FIX: log HTTP status + rejection reason per row
         t15 = time.perf_counter()
         val_result = await validate_url(source_url)
         s15_time = time.perf_counter() - t15
         stage_timings["url_validate_s"] = s15_time
-        logger.info(f"[Stage 1.5: URL Validation] {source_url} valid={val_result.get('valid')} in {s15_time:.3f}s")
+        http_status = val_result.get("status_code", 0)
+        rejection = val_result.get("rejection_reason") or "none"
+        final_url_candidate = val_result.get("final_url", source_url)
+        redirect_chain = val_result.get("redirect_chain", [])
+        is_valid = val_result.get("valid", False)
 
-        if not val_result.get("valid"):
+        logger.info(
+            f"[Stage 1.5 URL Validation] {manufacturer} {mpn}\n"
+            f"  URL requested : {source_url}\n"
+            f"  HTTP status   : {http_status}\n"
+            f"  Final URL     : {final_url_candidate}\n"
+            f"  Redirects     : {redirect_chain}\n"
+            f"  Valid         : {is_valid}\n"
+            f"  Reject reason : {rejection}\n"
+            f"  Elapsed       : {s15_time:.3f}s"
+        )
+
+        if not is_valid:
             return {
                 "found": False,
                 "stage_failed": "url_validation",
@@ -790,11 +1003,13 @@ class GeminiProvider(BaseLLMProvider):
                 "grounding_sources": grounding_sources,
                 "stage_timings": stage_timings,
                 "review_status": "NEEDS_HUMAN_REVIEW",
-                "review_reason": f"URL validation failed ({val_result.get('rejection_reason', 'unknown')}): {source_url}"
+                "review_reason": f"URL validation failed (HTTP {http_status}, {rejection}): {source_url}"
             }
 
-        # Use validated final URL (may differ from original after redirects)
-        final_url = val_result.get("final_url", source_url)
+        # BUG FIX: use the post-redirect final_url for scraping AND as the canonical source_url
+        # Previously source_url was left as the raw Stage 1 URL even after redirects
+        source_url = final_url_candidate  # update to canonical post-redirect URL
+        final_url = final_url_candidate
 
         # STAGE 2: Scrape Page (with Playwright fallback)
         t2 = time.perf_counter()
@@ -846,9 +1061,13 @@ class GeminiProvider(BaseLLMProvider):
         stage3_res["stage_timings"] = stage_timings
         stage3_res["review_status"] = None
         stage3_res["review_reason"] = None
+        # Expose the raw page text so the pipeline layer can pass it to extract_full_record
+        # (not cached — keeps the SQLite cache lean; full_record runs fresh in the pipeline)
+        stage3_res["page_text"] = page_text or ""
 
-        # Cache the successful result
-        enrichment_cache.set_cached(mpn, manufacturer, stage3_res)
+        # Cache the successful result (without page_text to keep cache size manageable)
+        cache_copy = {k: v for k, v in stage3_res.items() if k != "page_text"}
+        enrichment_cache.set_cached(mpn, manufacturer, cache_copy)
 
         return stage3_res
 
@@ -878,6 +1097,21 @@ class LLMService:
         if hasattr(self.provider, "extract_specs_from_text"):
             return await self.provider.extract_specs_from_text(mpn, manufacturer, page_text, source_url, source_type)
         return {"found": False, "error": "Current provider does not support extract_specs_from_text"}
+
+
+    async def extract_full_record(self, mpn: str, manufacturer: str, page_text: str, source_url: str) -> Dict[str, Any]:
+        if hasattr(self.provider, "extract_full_record"):
+            return await self.provider.extract_full_record(
+                mpn,
+                manufacturer,
+                page_text,
+                source_url
+            )
+        return {
+            "error": "Current provider does not support extract_full_record",
+            "source_url": source_url
+        }
+
 
     async def enrich_from_manufacturer(self, mpn: str, manufacturer: str, category_hint: str = None) -> Dict[str, Any]:
         if hasattr(self.provider, "enrich_from_manufacturer"):

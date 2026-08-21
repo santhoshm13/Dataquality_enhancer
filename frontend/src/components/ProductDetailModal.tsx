@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, CheckCircle, XCircle, Sparkles, Database, ExternalLink, Globe, AlertTriangle, ShieldCheck, Copy, Check, Clock, Layers, FileText, ChevronDown, ChevronRight, HelpCircle, Zap, GitMerge, Eye } from 'lucide-react';
+import { X, CheckCircle, XCircle, Sparkles, Database, ExternalLink, Globe, AlertTriangle, ShieldCheck, Copy, Check, Clock, Layers, FileText, ChevronDown, ChevronRight, HelpCircle, Zap, GitMerge } from 'lucide-react';
 
 interface ProductDetailModalProps {
   product: any;
