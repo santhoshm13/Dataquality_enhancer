@@ -1,11 +1,24 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from app.services.evaluation.evaluation_service import evaluation_service
 
 router = APIRouter()
 
 @router.get("/evaluation")
 async def get_evaluation():
+    """Poll cached evaluation results (lightweight — no re-run)."""
     return evaluation_service.evaluate()
+
+@router.post("/evaluation/run")
+async def run_evaluation():
+    """
+    Trigger a fresh evaluation pass against the ground truth file.
+    Returns the complete JSON report including per-field accuracy breakdown.
+    This is the primary endpoint for the hackathon demo button.
+    """
+    result = evaluation_service.evaluate()
+    if result.get("status") == "error":
+        raise HTTPException(status_code=503, detail=result.get("message", "Ground truth file not found."))
+    return result
 
 import os
 import json
@@ -64,3 +77,4 @@ async def get_review_queue(dataset_id: int = None):
         })
         
     return {"queue": queue, "total": len(queue)}
+

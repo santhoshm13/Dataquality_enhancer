@@ -11,6 +11,9 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.config.settings import settings
 from app.api.routes import health, upload, products, dashboard, export, evaluation, chat, pipeline
+from app.api.routes.corrections import router as corrections_router
+from app.api.routes.suggestions import router as suggestions_router
+from app.api.routes.coverage import router as coverage_router
 from app.database.master_data_loader import load_master_data
 
 # Configure structured logging
@@ -43,7 +46,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Register API Routers
 app.include_router(health.router, prefix="/api", tags=["Health"])
 app.include_router(upload.router, prefix="/api", tags=["CSV Upload"])
 app.include_router(products.router, prefix="/api", tags=["Products"])
@@ -51,6 +53,9 @@ app.include_router(pipeline.router, prefix="/api", tags=["Pipeline"])
 app.include_router(dashboard.router, prefix="/api", tags=["Dashboard"])
 app.include_router(export.router, prefix="/api", tags=["Export"])
 app.include_router(evaluation.router, prefix="/api", tags=["Evaluation"])
+app.include_router(corrections_router, prefix="/api", tags=["Corrections"])
+app.include_router(suggestions_router, prefix="/api", tags=["Suggestions"])
+app.include_router(coverage_router, prefix="/api", tags=["Coverage"])
 app.include_router(chat.router, prefix="/api/chat", tags=["Chat"])
 
 # Serve static frontend files

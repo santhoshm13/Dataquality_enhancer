@@ -32,9 +32,26 @@ interface EvaluationData {
 interface EvaluationPanelProps {
   evaluation: EvaluationData | null;
   onRefresh: () => void;
+  onRunEvaluation?: () => Promise<void>;
 }
 
-export const EvaluationPanel: React.FC<EvaluationPanelProps> = ({ evaluation, onRefresh }) => {
+export const EvaluationPanel: React.FC<EvaluationPanelProps> = ({ evaluation, onRefresh, onRunEvaluation }) => {
+  const [running, setRunning] = React.useState(false);
+  const [showBreakdown, setShowBreakdown] = React.useState(false);
+
+  const handleRunEval = async () => {
+    setRunning(true);
+    try {
+      if (onRunEvaluation) {
+        await onRunEvaluation();
+      } else {
+        onRefresh();
+      }
+    } finally {
+      setRunning(false);
+    }
+  };
+
   if (!evaluation) return null;
 
   const isNoPredictions = evaluation.status === 'no_predictions' || evaluation.evaluated_rows === 0;
@@ -81,11 +98,12 @@ export const EvaluationPanel: React.FC<EvaluationPanelProps> = ({ evaluation, on
         </div>
 
         <button
-          onClick={onRefresh}
-          className="btn-secondary flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-mono font-bold text-white cursor-pointer shadow-lg self-start md:self-auto"
+          onClick={handleRunEval}
+          disabled={running}
+          className="btn-secondary flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-mono font-bold text-white cursor-pointer shadow-lg self-start md:self-auto disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          <BarChart2 className="w-4 h-4 text-purple-300" />
-          <span>Re-evaluate Precision</span>
+          <BarChart2 className={`w-4 h-4 text-purple-300 ${running ? 'animate-spin' : ''}`} />
+          <span>{running ? 'Running…' : 'Re-evaluate Precision'}</span>
         </button>
       </div>
 
@@ -193,10 +211,65 @@ export const EvaluationPanel: React.FC<EvaluationPanelProps> = ({ evaluation, on
                 <span>Exact Matches: <strong className="text-emerald-400 font-bold">{evaluation.details.exact_matches.toLocaleString()}</strong></span>
                 <span>Mismatches: <strong className="text-rose-400 font-bold">{evaluation.details.mismatches.toLocaleString()}</strong></span>
               </div>
-              <div className="text-[11px] text-cyan-300 flex items-center gap-1.5 font-bold">
-                <AlertCircle className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Deterministic Ground Truth Precision</span>
+              <div className="flex items-center gap-3">
+                <div className="text-[11px] text-cyan-300 flex items-center gap-1.5 font-bold">
+                  <AlertCircle className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>Deterministic Ground Truth Precision</span>
+                </div>
+                <button
+                  onClick={() => setShowBreakdown(b => !b)}
+                  className="text-[10px] px-3 py-1 rounded-xl bg-white/5 border border-white/15 text-slate-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer font-bold"
+                >
+                  {showBreakdown ? 'Hide Breakdown ▲' : 'Field Breakdown ▼'}
+                </button>
               </div>
+            </motion.div>
+          )}
+
+          {/* Per-field accuracy breakdown */}
+          {showBreakdown && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-3 rounded-2xl border border-white/10 overflow-hidden bg-black/60 relative z-10"
+            >
+              <div className="p-3 bg-black/40 border-b border-white/10 text-[11px] font-mono font-bold text-slate-300 uppercase tracking-wider">
+                Field Accuracy vs Ground Truth (200-Row Dataset)
+              </div>
+              <table className="w-full text-xs font-mono">
+                <thead className="bg-black/50 text-slate-500 uppercase text-[10px] tracking-wider">
+                  <tr>
+                    <th className="p-3 text-left">Field Group</th>
+                    <th className="p-3 text-center">Accuracy</th>
+                    <th className="p-3 text-left">Notes</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/[0.04]">
+                  {[
+                    { label: 'Brand Name', value: evaluation.brand_accuracy, note: 'Canonical brand vs GT BRAND_NAME' },
+                    { label: 'Manufacturer', value: evaluation.manufacturer_accuracy, note: 'Canonical mfg vs GT MANUFACTURER_NAME' },
+                    { label: 'Fine Category', value: evaluation.fine_category_accuracy, note: 'Dept / Class / Fine taxonomy path' },
+                    { label: 'Attributes', value: evaluation.attribute_accuracy, note: 'Label + Value key-value match' },
+                    { label: 'LOV Compliance', value: evaluation.lov_compliance, note: 'Values in permitted LOV list' },
+                    { label: 'UOM Compliance', value: evaluation.uom_compliance, note: 'Canonical unit of measure' },
+                    { label: 'Desc Char Limit', value: evaluation.desc_character_compliance, note: 'All 6 desc formats within limits' },
+                    { label: 'Row Completeness', value: evaluation.row_completeness, note: 'Non-empty required fields' },
+                    { label: 'Overall (252 cols)', value: evaluation.overall_field_exact_match_pct, note: 'Exact match across all schema columns' },
+                  ].map(row => {
+                    const val = row.value;
+                    const color = val === null ? 'text-slate-500' : val >= 80 ? 'text-emerald-400' : val >= 50 ? 'text-amber-400' : 'text-rose-400';
+                    return (
+                      <tr key={row.label} className="hover:bg-white/[0.02]">
+                        <td className="p-3 font-bold text-slate-200">{row.label}</td>
+                        <td className={`p-3 text-center font-black text-base ${color}`}>
+                          {val !== null && val !== undefined ? `${val}%` : 'N/A'}
+                        </td>
+                        <td className="p-3 text-slate-500">{row.note}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </motion.div>
           )}
         </>

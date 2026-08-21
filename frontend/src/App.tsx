@@ -11,7 +11,7 @@ import { EvaluationPanel } from './components/EvaluationPanel';
 import { ReviewPanel } from './components/ReviewPanel';
 import { Chatbot } from './components/Chatbot';
 import { AnimatedBackground } from './components/AnimatedBackground';
-import { ArrowRight, Terminal, Database, Play } from 'lucide-react';
+import { ArrowRight, Terminal, Database, Play, Download, Brain, Network } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { scrollZoomBox } from './lib/animations';
 
@@ -60,6 +60,8 @@ export const App: React.FC = () => {
 
   const [healthStatus, setHealthStatus] = useState<boolean>(true);
   const [evaluationData, setEvaluationData] = useState<any | null>(null);
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [approvingSuggestion, setApprovingSuggestion] = useState<string | null>(null);
 
   const checkHealth = async () => {
     try {
@@ -112,6 +114,32 @@ export const App: React.FC = () => {
     }
   };
 
+  const fetchSuggestions = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/suggestions?threshold=2`);
+      if (res.ok) {
+        const data = await res.json();
+        setSuggestions(data.suggestions || []);
+      }
+    } catch (e) { /* non-critical */ }
+  };
+
+  const approveSuggestion = async (s: any) => {
+    const key = `${s.category}::${s.field_name}::${s.suggested_value}`;
+    setApprovingSuggestion(key);
+    try {
+      await fetch(`${API_BASE}/suggestions/approve`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ category: s.category, field_name: s.field_name, suggested_value: s.suggested_value })
+      });
+      setSuggestions(prev => prev.filter(x =>
+        !(x.category === s.category && x.field_name === s.field_name && x.suggested_value === s.suggested_value)
+      ));
+    } catch (e) { console.error(e); }
+    setApprovingSuggestion(null);
+  };
+
   const fetchProducts = async () => {
     try {
       const url = new URL(`${API_BASE}/products`);
@@ -142,6 +170,7 @@ export const App: React.FC = () => {
     checkHealth();
     fetchDatasets();
     fetchEvaluation();
+    fetchSuggestions();
     const interval = setInterval(checkHealth, 30000);
     return () => clearInterval(interval);
   }, []);
@@ -165,7 +194,7 @@ export const App: React.FC = () => {
 
   const handleEnrichSingle = async (id: number) => {
     try {
-      const res = await fetch(`${API_BASE}/enrich/${id}`, { method: 'POST' });
+      const res = await fetch(`${API_BASE}/products/${id}/enrich`, { method: 'POST' });
       if (res.ok) {
         fetchProducts();
         fetchStats();
@@ -181,7 +210,7 @@ export const App: React.FC = () => {
   const handleRunBatchEnrichment = async () => {
     setIsEnriching(true);
     try {
-      const url = new URL(`${API_BASE}/enrich/batch`);
+      const url = new URL(`${API_BASE}/pipeline/run`);
       if (selectedDatasetId) url.searchParams.append("dataset_id", selectedDatasetId.toString());
       const res = await fetch(url.toString(), { method: 'POST' });
       if (res.ok) {
@@ -197,37 +226,35 @@ export const App: React.FC = () => {
   };
 
   const pollEnrichmentStatus = () => {
-    const checkStatus = async () => {
+    const interval = setInterval(async () => {
       try {
-        const res = await fetch(`${API_BASE}/dashboard/stats`);
+        const res = await fetch(`${API_BASE}/pipeline/status`);
         if (res.ok) {
           const data = await res.json();
-          setStats(data);
-          
-          const total = data.total_products || 1;
+          const total = data.total || 1;
           const processed = data.processed || 0;
           const percent = Math.round((processed / total) * 100);
+          const isDone = data.status === 'completed' || data.status === 'idle' || percent >= 100;
 
           setEnrichmentProgress({
-            status: percent >= 100 ? 'Completed' : 'Processing',
+            status: isDone ? 'Completed' : 'Processing',
             total,
             processed,
-            percent
+            percent: isDone ? 100 : percent
           });
 
-          if (percent >= 100) {
+          if (isDone) {
+            clearInterval(interval);
             setIsEnriching(false);
             fetchProducts();
+            fetchStats();
             fetchEvaluation();
-            return;
           }
         }
       } catch (e) {
-        console.error("Failed polling", e);
+        console.error("Failed polling pipeline status", e);
       }
-      setTimeout(checkStatus, 2000);
-    };
-    checkStatus();
+    }, 2000);
   };
 
   const handleExport = (format: 'csv' | 'excel') => {
@@ -410,6 +437,56 @@ export const App: React.FC = () => {
                 />
               </div>
 
+              {/* Active-Learning LOV Suggestion Cards (hidden when empty) */}
+              {suggestions.length > 0 && (
+                <div className="frame-3d rounded-2xl p-5">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 rounded-xl bg-violet-500/15 border border-violet-500/30">
+                      <Brain className="w-5 h-5 text-violet-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-bold text-white">Active-Learning: Suggested LOV Additions</h3>
+                      <p className="text-[11px] text-slate-400 font-mono mt-0.5">
+                        Reviewers have corrected these values {suggestions.length > 0 ? `${suggestions[0]?.occurrence_count}+` : ''} times — approve to add to master LOV
+                      </p>
+                    </div>
+                    <button
+                      onClick={fetchSuggestions}
+                      className="ml-auto text-[11px] text-slate-500 hover:text-slate-300 cursor-pointer transition-colors"
+                    >Refresh</button>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {suggestions.map(s => {
+                      const key = `${s.category}::${s.field_name}::${s.suggested_value}`;
+                      const isApproving = approvingSuggestion === key;
+                      return (
+                        <div key={key} className="bg-black/40 border border-violet-500/20 rounded-xl p-4 flex flex-col gap-2">
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              <p className="text-[10px] text-violet-400 font-mono uppercase tracking-wider">{s.category}</p>
+                              <p className="text-slate-300 font-bold text-sm mt-0.5">{s.field_name}</p>
+                            </div>
+                            <span className="px-2 py-0.5 rounded-full text-[10px] bg-violet-500/20 text-violet-300 border border-violet-500/30 font-bold whitespace-nowrap">
+                              {s.occurrence_count}x
+                            </span>
+                          </div>
+                          <p className="text-indigo-300 font-mono text-sm font-bold bg-indigo-950/40 rounded-lg px-3 py-1.5">
+                            &quot;{s.suggested_value}&quot;
+                          </p>
+                          <button
+                            onClick={() => approveSuggestion(s)}
+                            disabled={isApproving}
+                            className="w-full py-1.5 rounded-lg bg-emerald-600/80 hover:bg-emerald-500 text-white text-xs font-bold cursor-pointer transition-colors disabled:opacity-50"
+                          >
+                            {isApproving ? 'Approving…' : '✓ Approve & Add to LOV'}
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
               {/* Interactive Product Intelligence Explorer */}
               <div>
                 <div className="flex items-center justify-between mb-4">
@@ -421,6 +498,16 @@ export const App: React.FC = () => {
                       Explore enriched attributes, provenance grounding, and validation audit logs.
                     </p>
                   </div>
+                  <button
+                    onClick={() => {
+                      const dsParam = selectedDatasetId ? `?dataset_id=${selectedDatasetId}&format=csv` : '?format=csv';
+                      window.open(`${API_BASE}/export/audit${dsParam}`, '_blank');
+                    }}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 text-xs font-bold cursor-pointer transition-colors"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    Export Audit Trail
+                  </button>
                 </div>
 
                 <ProductTable

@@ -106,7 +106,7 @@ export const StatsOverview: React.FC<StatsProps> = ({ stats }) => {
             </div>
           </div>
           <div className="text-4xl font-black font-mono tracking-tight text-gradient-electric drop-shadow">
-            {stats.lov_pass_rate != null ? `${stats.lov_pass_rate}%` : '100%'}
+            {stats.lov_pass_rate != null ? `${stats.lov_pass_rate}%` : 'N/A'}
           </div>
           <div className="flex items-center gap-1.5 mt-2.5 text-xs text-cyan-200 font-mono font-medium">
             <span>Over {stats.total_attributes_extracted || 0} attributes</span>

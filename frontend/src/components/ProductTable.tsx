@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Filter, ChevronLeft, ChevronRight, Eye, Play, ExternalLink, AlertCircle } from 'lucide-react';
+import { Search, Filter, ChevronLeft, ChevronRight, Eye, Play, ExternalLink, AlertCircle, Download } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { scrollZoomSection, scrollZoomBox } from '../lib/animations';
 
@@ -241,6 +241,18 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                         title="Inspect Full 252-Column Record"
                       >
                         <Eye className="w-3.5 h-3.5" />
+                      </motion.button>
+                      <motion.button
+                        whileHover={{ scale: 1.15 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => {
+                          const base = (window as any).__API_BASE__ || 'http://localhost:8000/api';
+                          window.open(`${base}/export/audit/${p.id}`, '_blank');
+                        }}
+                        className="p-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 transition-all cursor-pointer shadow-md"
+                        title="Export Audit Trail JSON"
+                      >
+                        <Download className="w-3.5 h-3.5" />
                       </motion.button>
                     </div>
                   </td>

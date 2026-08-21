@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, CheckCircle, XCircle, Sparkles, Database, ExternalLink, Globe, AlertTriangle, ShieldCheck, Copy, Check, Clock, Layers, FileText } from 'lucide-react';
+import { X, CheckCircle, XCircle, Sparkles, Database, ExternalLink, Globe, AlertTriangle, ShieldCheck, Copy, Check, Clock, Layers, FileText, ChevronDown, ChevronRight, HelpCircle, Zap, GitMerge, Eye } from 'lucide-react';
 
 interface ProductDetailModalProps {
   product: any;
@@ -14,6 +14,9 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'attributes' | 'descriptions' | 'validation' | 'provenance'>('overview');
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [expandedProvenance, setExpandedProvenance] = useState<string | null>(null);
+
+  const fieldProvenance: Record<string, any> = product.field_provenance || {};
 
   if (!product) return null;
 
@@ -243,30 +246,78 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                         </td>
                       </tr>
                     ) : (
-                      attrs.map((a: any, idx: number) => (
-                        <tr key={idx} className="hover:bg-white/[0.03] transition-colors">
-                          <td className="p-3.5 font-bold text-slate-200">{a.name}</td>
-                          <td className="p-3.5 text-indigo-300 font-bold">{a.value}</td>
-                          <td className="p-3.5 text-cyan-400">{a.uom || <span className="text-slate-600">—</span>}</td>
-                          <td className="p-3.5">
-                            <span className="px-2.5 py-0.5 rounded-full text-[10px] bg-white/5 text-slate-300 border border-white/10">
-                              {a.source === 'manufacturer_site' ? 'Web Scraped' : 'AI Ingestion'}
-                            </span>
-                          </td>
-                          <td className="p-3.5 text-center text-emerald-400 font-bold">{Math.round((a.confidence || 1) * 100)}%</td>
-                          <td className="p-3.5 text-center">
-                            {a.validation_status === 'PASS' ? (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold shadow-sm">
-                                <CheckCircle className="w-3 h-3 text-emerald-400" /> PASS
-                              </span>
-                            ) : (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-500/15 text-rose-300 border border-rose-500/30 text-[10px] font-bold shadow-sm">
-                                <XCircle className="w-3 h-3 text-rose-400" /> REVIEW
-                              </span>
+                      attrs.map((a: any, idx: number) => {
+                        const attrProv = fieldProvenance?.attributes?.[a.name];
+                        const isExpanded = expandedProvenance === `attr-${idx}`;
+                        return (
+                          <React.Fragment key={idx}>
+                            <tr
+                              className="hover:bg-white/[0.03] transition-colors cursor-pointer"
+                              onClick={() => setExpandedProvenance(isExpanded ? null : `attr-${idx}`)}
+                            >
+                              <td className="p-3.5 font-bold text-slate-200 flex items-center gap-1.5">
+                                {isExpanded ? <ChevronDown className="w-3 h-3 text-cyan-400" /> : <ChevronRight className="w-3 h-3 text-slate-600" />}
+                                {a.name}
+                              </td>
+                              <td className="p-3.5 text-indigo-300 font-bold">{a.value}</td>
+                              <td className="p-3.5 text-cyan-400">{a.uom || <span className="text-slate-600">—</span>}</td>
+                              <td className="p-3.5">
+                                <span className="px-2.5 py-0.5 rounded-full text-[10px] bg-white/5 text-slate-300 border border-white/10">
+                                  {a.source === 'manufacturer_site' ? 'Web Scraped' : 'AI LOV Extraction'}
+                                </span>
+                              </td>
+                              <td className="p-3.5 text-center text-emerald-400 font-bold">{Math.round((a.confidence || 1) * 100)}%</td>
+                              <td className="p-3.5 text-center">
+                                {a.validation_status === 'PASS' ? (
+                                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold shadow-sm">
+                                    <CheckCircle className="w-3 h-3 text-emerald-400" /> PASS
+                                  </span>
+                                ) : (
+                                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-500/15 text-rose-300 border border-rose-500/30 text-[10px] font-bold shadow-sm">
+                                    <XCircle className="w-3 h-3 text-rose-400" /> REVIEW
+                                  </span>
+                                )}
+                              </td>
+                            </tr>
+                            {isExpanded && (
+                              <tr className="bg-cyan-950/20">
+                                <td colSpan={6} className="px-5 py-3 border-t border-cyan-900/40">
+                                  <div className="flex items-start gap-2">
+                                    <HelpCircle className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+                                    <div className="space-y-1.5 text-xs">
+                                      <p className="font-bold text-cyan-300">Why this value?</p>
+                                      {attrProv ? (
+                                        <>
+                                          <p className="text-slate-300 leading-relaxed">{attrProv.rationale || 'Extracted via constrained LLM from product description, validated against LOV.'}</p>
+                                          <div className="flex flex-wrap gap-3 mt-2 text-[10px] font-mono">
+                                            <span className="bg-black/60 px-2.5 py-1 rounded-lg border border-white/10">
+                                              Source: <strong className="text-indigo-300">{attrProv.source || a.source || 'ai_lov_extraction'}</strong>
+                                            </span>
+                                            <span className="bg-black/60 px-2.5 py-1 rounded-lg border border-white/10">
+                                              Method: <strong className="text-purple-300">{attrProv.method || 'llm_extraction'}</strong>
+                                            </span>
+                                            <span className="bg-black/60 px-2.5 py-1 rounded-lg border border-white/10">
+                                              Confidence: <strong className="text-emerald-400">{Math.round((attrProv.confidence || a.confidence || 1) * 100)}%</strong>
+                                            </span>
+                                            <span className="bg-black/60 px-2.5 py-1 rounded-lg border border-white/10">
+                                              LOV Status: <strong className={attrProv.validation_status === 'PASS' ? 'text-emerald-400' : 'text-amber-400'}>{attrProv.validation_status || 'UNKNOWN'}</strong>
+                                            </span>
+                                          </div>
+                                          {attrProv.evidence && (
+                                            <p className="text-slate-400 italic mt-1">Evidence: {attrProv.evidence}</p>
+                                          )}
+                                        </>
+                                      ) : (
+                                        <p className="text-slate-400">Extracted via LOV-constrained LLM inference from product description and web data. Confidence: {Math.round((a.confidence || 1) * 100)}%.</p>
+                                      )}
+                                    </div>
+                                  </div>
+                                </td>
+                              </tr>
                             )}
-                          </td>
-                        </tr>
-                      ))
+                          </React.Fragment>
+                        );
+                      })
                     )}
                   </tbody>
                 </table>
@@ -353,40 +404,140 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           {/* TAB 5: PROVENANCE & LATENCY */}
           {activeTab === 'provenance' && (
             <div className="space-y-4 font-mono">
+
+              {/* Field-Level Provenance Table */}
+              <div className="frame-3d p-5 rounded-2xl">
+                <h4 className="font-bold text-slate-200 text-sm mb-3 flex items-center gap-2">
+                  <Zap className="w-4 h-4 text-cyan-400" />
+                  Field-Level Decision Provenance
+                </h4>
+                <p className="text-[11px] text-slate-400 mb-4">Every output field carries: value · source · method · confidence · rationale</p>
+                <div className="overflow-x-auto rounded-xl border border-white/10">
+                  <table className="w-full text-xs">
+                    <thead className="bg-black/60 text-slate-400 uppercase text-[10px] tracking-wider">
+                      <tr>
+                        <th className="p-3 text-left">Field</th>
+                        <th className="p-3 text-left">Value</th>
+                        <th className="p-3 text-left">Source</th>
+                        <th className="p-3 text-left">Method</th>
+                        <th className="p-3 text-center">Confidence</th>
+                        <th className="p-3 text-left">Rationale</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/[0.04]">
+                      {['MANUFACTURER_NAME', 'BRAND_NAME', 'Dept', 'Class', 'Fine', 'Classpath'].map(field => {
+                        const prov = fieldProvenance[field];
+                        if (!prov) return null;
+                        const isBrand = field === 'BRAND_NAME';
+                        const sourceVotes: Record<string, any> = prov.source_votes || {};
+                        const sourceBadgeColor = (v: any) => {
+                          if (!v) return 'text-slate-600';
+                          if (v.is_placeholder) return 'text-slate-500';
+                          if (v.resolved_value) return 'text-emerald-400';
+                          return 'text-rose-400';
+                        };
+                        const sourceIcon = (v: any) => {
+                          if (!v || v.is_placeholder) return '—';
+                          return v.resolved_value ? '✓' : '✗';
+                        };
+                        return (
+                          <tr key={field} className="hover:bg-white/[0.03]">
+                            <td className="p-3 font-bold text-slate-300">
+                              <div className="flex items-center gap-2">
+                                {field}
+                                {isBrand && prov.sources_checked && (
+                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] bg-purple-950/60 border border-purple-700/40 font-mono" title={prov.conflict_detail}>
+                                    <GitMerge className="w-3 h-3 text-purple-400" />
+                                    {prov.sources_checked.map((s: string) => {
+                                      const short = s.replace('_Brand','').replace('_brand','');
+                                      const vote = sourceVotes[s];
+                                      return (
+                                        <span key={s} className={`${sourceBadgeColor(vote)} font-bold`}>
+                                          {sourceIcon(vote)}{short}
+                                        </span>
+                                      );
+                                    })}
+                                  </span>
+                                )}
+                              </div>
+                            </td>
+                            <td className="p-3 text-indigo-300 font-bold max-w-[120px] truncate" title={prov.value}>{prov.value || '—'}</td>
+                            <td className="p-3">
+                              <span className="px-2 py-0.5 rounded-full text-[10px] bg-indigo-950/60 text-indigo-300 border border-indigo-700/40">
+                                {isBrand ? 'multi_source' : prov.source}
+                              </span>
+                            </td>
+                            <td className="p-3">
+                              <div className="flex flex-col gap-1">
+                                <span className="px-2 py-0.5 rounded-full text-[10px] bg-purple-950/60 text-purple-300 border border-purple-700/40">
+                                  {prov.method}
+                                </span>
+                                {isBrand && prov.confidence_tier && (
+                                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
+                                    prov.confidence_tier === 'HIGH' ? 'bg-emerald-950/60 text-emerald-300 border-emerald-700/40' :
+                                    prov.confidence_tier === 'MEDIUM' ? 'bg-amber-950/60 text-amber-300 border-amber-700/40' :
+                                    prov.confidence_tier === 'CONFLICT' ? 'bg-rose-950/60 text-rose-300 border-rose-700/40' :
+                                    'bg-slate-950/60 text-slate-400 border-slate-700/40'
+                                  }`}>
+                                    {prov.confidence_tier}
+                                  </span>
+                                )}
+                              </div>
+                            </td>
+                            <td className="p-3 text-center">
+                              <span className={`font-bold ${(prov.confidence || 0) >= 0.8 ? 'text-emerald-400' : (prov.confidence || 0) >= 0.5 ? 'text-amber-400' : 'text-rose-400'}`}>
+                                {Math.round((prov.confidence || 0) * 100)}%
+                              </span>
+                            </td>
+                            <td className="p-3 text-slate-400 text-[11px] max-w-[200px]" title={prov.rationale}>
+                              {prov.rationale?.slice(0, 80)}{prov.rationale?.length > 80 ? '…' : ''}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                  {Object.keys(fieldProvenance).filter(k => k !== 'attributes').length === 0 && (
+                    <p className="text-center text-slate-500 py-6 text-xs">Run enrichment to see field provenance.</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Latency Breakdown */}
               <div className="frame-3d p-5 rounded-2xl">
                 <h4 className="font-bold text-slate-200 text-sm mb-3 flex items-center gap-2">
                   <Clock className="w-4 h-4 text-cyan-400" />
-                  Per-Stage Execution Latency Breakdown
+                  Per-Stage Execution Latency
                 </h4>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   <div className="p-3.5 bg-black/60 rounded-2xl border border-white/5 shadow-inner">
                     <span className="text-[10px] text-slate-500 block">Stage 1: URL Lookup</span>
                     <span className="text-sm font-bold text-indigo-400">
-                      {stageTimings.url_lookup_s ? `${(stageTimings.url_lookup_s * 1000).toFixed(0)} ms` : '1,120 ms'}
+                      {stageTimings.url_lookup_s ? `${(stageTimings.url_lookup_s * 1000).toFixed(0)} ms` : '—'}
                     </span>
                   </div>
                   <div className="p-3.5 bg-black/60 rounded-2xl border border-white/5 shadow-inner">
                     <span className="text-[10px] text-slate-500 block">Stage 1.5: URL Validation</span>
                     <span className="text-sm font-bold text-cyan-400">
-                      {stageTimings.url_validate_s ? `${(stageTimings.url_validate_s * 1000).toFixed(0)} ms` : '42 ms'}
+                      {stageTimings.url_validate_s ? `${(stageTimings.url_validate_s * 1000).toFixed(0)} ms` : '—'}
                     </span>
                   </div>
                   <div className="p-3.5 bg-black/60 rounded-2xl border border-white/5 shadow-inner">
                     <span className="text-[10px] text-slate-500 block">Stage 2: Page Scrape</span>
                     <span className="text-sm font-bold text-purple-400">
-                      {stageTimings.scrape_s ? `${(stageTimings.scrape_s * 1000).toFixed(0)} ms` : '180 ms'}
+                      {stageTimings.scrape_s ? `${(stageTimings.scrape_s * 1000).toFixed(0)} ms` : '—'}
                     </span>
                   </div>
                   <div className="p-3.5 bg-black/60 rounded-2xl border border-white/5 shadow-inner">
                     <span className="text-[10px] text-slate-500 block">Stage 3: Spec Extraction</span>
                     <span className="text-sm font-bold text-emerald-400">
-                      {stageTimings.spec_extraction_s ? `${(stageTimings.spec_extraction_s * 1000).toFixed(0)} ms` : '640 ms'}
+                      {stageTimings.spec_extraction_s ? `${(stageTimings.spec_extraction_s * 1000).toFixed(0)} ms` : '—'}
                     </span>
                   </div>
                 </div>
               </div>
 
-              {/* Citations List in 3D Frame */}
+              {/* Citations List */}
               <div className="frame-3d p-5 rounded-2xl space-y-2">
                 <h4 className="font-bold text-slate-200 text-xs uppercase tracking-wider">Grounding URL Citation Log</h4>
                 {groundingSources.length > 0 ? (

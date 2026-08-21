@@ -15,16 +15,33 @@ CANDIDATE_PATHS = [
 
 def get_stable_identifier(row: Dict[str, Any]) -> str:
     """
-    Generates a stable identifier for row matching:
-    1. SKU if present and non-empty.
-    2. Mfg_Part_Num + Part_Manuf fallback.
+    Generates a stable, collision-free identifier for matching product rows
+    to ground truth delivery rows.
+
+    Strategy: Use Mfg_Part_Num (stripped, lowercased) as the sole primary key.
+    Both the product repository (field: mfg_part_num) and the GT delivery format
+    (column: Mfg_Part_Num) share this field as a reliable 1:1 identifier across
+    the 200-item ground truth dataset.
+
+    The previous SKU + Part_Manuf composite caused mismatches because:
+    - Internal product records never populate 'SKU' (they use 'mfg_part_num')
+    - Part_Manuf values differ slightly between input and delivery sheets
     """
-    sku = str(row.get("SKU") or row.get("sku") or row.get("SKU_NUM") or "").strip()
-    if sku:
-        return f"SKU::{sku.lower()}"
-    part_num = str(row.get("Mfg_Part_Num") or row.get("mfg_part_num") or row.get("Part_Num") or "").strip().lower()
-    manuf = str(row.get("Part_Manuf") or row.get("part_manuf") or row.get("MANUFACTURER_NAME") or row.get("raw_manufacturer") or row.get("clean_manufacturer") or "").strip().lower()
-    return f"PART_MANUF::{part_num}||{manuf}"
+    # Primary: Mfg_Part_Num in any casing variant
+    part_num = (
+        row.get("Mfg_Part_Num") or
+        row.get("mfg_part_num") or
+        row.get("MANUFACTURER_PART_NUMBER") or
+        row.get("Part_Num") or
+        ""
+    )
+    part_num = str(part_num).strip().lower()
+    if part_num:
+        return f"MPN::{part_num}"
+
+    # Fallback: never reached for the 200-item GT dataset (all rows have Mfg_Part_Num)
+    return f"MPN::unknown"
+
 
 def load_official_ground_truth() -> Tuple[str, List[Dict[str, Any]], List[Dict[str, Any]], Dict[str, Dict[str, Any]]]:
     """
@@ -63,8 +80,10 @@ def load_official_ground_truth() -> Tuple[str, List[Dict[str, Any]], List[Dict[s
 
         for row in delivery_rows:
             key = get_stable_identifier(row)
-            if key:
+            if key and key != "MPN::unknown":
                 gt_map[key] = row
+
+        logger.info(f"Ground truth loaded: {len(delivery_rows)} delivery rows, {len(gt_map)} keyed entries.")
 
     except Exception as e:
         logger.error(f"Error reading ground truth file {target_path}: {e}")

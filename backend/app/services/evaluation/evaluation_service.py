@@ -181,15 +181,9 @@ class ComprehensiveEvaluationService:
         gt_source_path, input_rows, delivery_rows, gt_map = load_official_ground_truth()
         products = repository.get_all_products()
 
-        if input_rows and len(products) == 0:
-            import asyncio
-            from app.pipeline.enrichment_pipeline import pipeline_engine
-            repository.clear()
-            for r in input_rows:
-                p = repository.add_product(r)
-                enriched = asyncio.run(pipeline_engine.run_pipeline(p))
-                repository.update_product(p["id"], enriched)
-            products = repository.get_all_products()
+        # NOTE: evaluate() ONLY compares already-enriched products to ground truth.
+        # It does NOT trigger the pipeline. Upload + run pipeline via /api/pipeline/run.
+        # The asyncio.run() that was here caused RuntimeError inside FastAPI's event loop.
 
         gt_count = len(gt_map)
         if gt_count == 0:

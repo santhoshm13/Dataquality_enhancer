@@ -1,6 +1,6 @@
 import logging
 from typing import Dict, Any, List
-from app.services.matching.brand_matching import brand_matcher
+from app.services.matching.brand_matching import brand_matcher, resolve_brand_conflict
 from app.services.classification.category_classifier import classifier
 from app.services.llm.provider import LLMService
 from app.validators.lov_validator import lov_validator
@@ -8,6 +8,7 @@ from app.services.master_data.uom_service import uom_service
 from app.services.master_data.fraction_service import fraction_service
 from app.services.llm.description_generator import description_generator
 from app.services.confidence_engine import confidence_engine
+from app.services.llm.vision_extractor import extract_visual_attributes, cross_validate_visual_vs_text
 from app.config.settings import settings
 
 logger = logging.getLogger("app.pipeline")
@@ -31,7 +32,14 @@ class ProductEnrichmentPipeline:
 
         # Stage 1: Manufacturer & Brand Matching Engine
         mfg_match = brand_matcher.match_manufacturer(raw_mfg)
-        brand_match = brand_matcher.match_brand(raw_brands, product_desc=raw_desc)
+        # Multi-source brand conflict resolution: independently match E1, Unilog, DIB
+        # then apply precedence rules to resolve conflicts with full source traceability
+        brand_match = resolve_brand_conflict(
+            e1_brand=product.get("raw_brand_e1", ""),
+            unilog_brand=product.get("raw_brand_unilog", ""),
+            dib_brand=product.get("raw_brand_dib", ""),
+            product_desc=raw_desc
+        )
 
         # Stage 2: Category Classification Service
         class_res = classifier.classify(raw_desc, mfg_part_num=part_num, manufacturer=mfg_match["matched_value"])
@@ -95,6 +103,17 @@ class ProductEnrichmentPipeline:
         elif found is None and not source_url:
             found = False
 
+        # Stage 3.5: Vision-Assisted Attribute Extraction (optional, skips gracefully)
+        image_url = product.get("image_url") or product.get("Product_Image_URL") or product.get("Image_URL", "")
+        vision_result = await extract_visual_attributes(
+            image_url=image_url,
+            category=class_res["category"],
+            classpath=class_res.get("classpath", ""),
+            llm_service=self.llm_service
+        )
+        vision_skipped = vision_result.get("skipped", True)
+        vision_skip_reason = vision_result.get("skip_reason", "no_image_url")
+
         # Stage 4: LOV & UOM & Fraction Validation
         validated_attributes = []
         raw_attrs = extracted_data.get("attributes", [])
@@ -120,6 +139,12 @@ class ProductEnrichmentPipeline:
             val_res["source"] = "manufacturer_site" if (found and source_url) else "ai_lov_extraction"
             val_res["source_url"] = source_url
             validated_attributes.append(val_res)
+
+        # Stage 4.5: Cross-validate vision attributes against text-derived attributes
+        if not vision_skipped and vision_result.get("visual_attributes"):
+            validated_attributes = cross_validate_visual_vs_text(
+                vision_result["visual_attributes"], validated_attributes
+            )
 
         # Stage 5: Confidence Calculation & Review Routing
         overall_confidence, pipeline_status, review_reasons = confidence_engine.calculate_confidence(
@@ -147,6 +172,103 @@ class ProductEnrichmentPipeline:
             raw_description=raw_desc
         )
 
+        # ── Field Provenance: the traceability record for every output field ──
+        # Per the hackathon centerpiece: every output field carries
+        # {value, source, method, confidence, rationale}.
+        # This powers the "Why this value?" expandable panel in the frontend.
+
+        field_provenance = {
+            "MANUFACTURER_NAME": {
+                "value": mfg_match["matched_value"],
+                "source": "master_data_lookup",
+                "method": mfg_match["method"],       # exact / normalized / fuzzy / unmatched
+                "confidence": mfg_match["confidence"],
+                "rationale": (
+                    f"Raw input '{mfg_match.get('raw_value', raw_mfg)}' matched to canonical "
+                    f"'{mfg_match['matched_value']}' via {mfg_match['method']} matching "
+                    f"(confidence: {round(mfg_match['confidence'] * 100)}%)."
+                    if mfg_match["matched_value"]
+                    else f"Raw input '{raw_mfg}' did not reach confidence threshold — flagged NEEDS_REVIEW."
+                )
+            },
+            "BRAND_NAME": {
+                "value": brand_match["matched_value"],
+                "source": "multi_source_brand_resolution",
+                "method": brand_match["method"],
+                "confidence": brand_match["confidence"],
+                "confidence_tier": brand_match.get("confidence_tier", "UNKNOWN"),
+                "agreement_count": brand_match.get("agreement_count", 0),
+                "conflict": brand_match.get("conflict", False),
+                "sources_checked": brand_match.get("sources_checked", ["E1_Brand", "Unilog_Brand", "DIB_Brand"]),
+                "source_votes": brand_match.get("source_votes", {}),
+                "rationale": brand_match.get("conflict_detail") or (
+                    f"Brand candidates resolved to canonical "
+                    f"'{brand_match['matched_value']}' via {brand_match['method']} matching "
+                    f"(confidence: {round(brand_match['confidence'] * 100)}%)."
+                    if brand_match["matched_value"]
+                    else f"Brand candidates did not match any master brand — flagged NEEDS_REVIEW."
+                )
+            },
+            "Dept": {
+                "value": class_res["department"],
+                "source": "category_classifier",
+                "method": class_res.get("classification_method", "rule_based"),
+                "confidence": class_res.get("confidence", 0.0),
+                "rationale": (
+                    f"Classified to department '{class_res['department']}' via "
+                    f"{class_res.get('classification_method', 'classifier')} "
+                    f"(confidence: {round(class_res.get('confidence', 0.0) * 100)}%)."
+                )
+            },
+            "Class": {
+                "value": class_res["class"],
+                "source": "category_classifier",
+                "method": class_res.get("classification_method", "rule_based"),
+                "confidence": class_res.get("confidence", 0.0),
+                "rationale": f"Class '{class_res['class']}' assigned under dept '{class_res['department']}'."
+            },
+            "Fine": {
+                "value": class_res["category"],
+                "source": "category_classifier",
+                "method": class_res.get("classification_method", "rule_based"),
+                "confidence": class_res.get("confidence", 0.0),
+                "rationale": f"Fine category '{class_res['category']}' from classpath '{class_res['classpath']}'."
+            },
+            "Classpath": {
+                "value": class_res["classpath"],
+                "source": "category_classifier",
+                "method": class_res.get("classification_method", "rule_based"),
+                "confidence": class_res.get("confidence", 0.0),
+                "rationale": f"Full taxonomy path resolved as '{class_res['classpath']}'."
+            },
+        }
+
+        # Add provenance for each validated attribute
+        attr_provenance = {}
+        for attr in validated_attributes:
+            attr_name = attr.get("name") or attr.get("attribute_name", "")
+            if not attr_name:
+                continue
+            val_status = attr.get("validation_status", "UNKNOWN")
+            method = "llm_extraction"
+            if attr.get("source") == "manufacturer_site":
+                method = "manufacturer_site_scrape"
+            attr_provenance[attr_name] = {
+                "value": attr.get("value", ""),
+                "uom": attr.get("uom", ""),
+                "source": attr.get("source", "ai_lov_extraction"),
+                "method": method,
+                "confidence": attr.get("confidence", 0.0),
+                "validation_status": val_status,
+                "rationale": (
+                    attr.get("validation_reason") or
+                    (f"Extracted from product description via LLM; "
+                     f"validated against LOV: {val_status}.")
+                ),
+                "evidence": attr.get("evidence", "")
+            }
+        field_provenance["attributes"] = attr_provenance
+
         # Compile final enriched product object
         enriched_product = {
             **product,
@@ -159,6 +281,7 @@ class ProductEnrichmentPipeline:
             "stage_failed": stage_failed,
             "review_status": review_status,
             "review_reason": review_reason,
+            "field_provenance": field_provenance,
             "enrichment": {
                 "manufacturer": mfg_match["matched_value"],
                 "brand": brand_match["matched_value"],
@@ -179,6 +302,12 @@ class ProductEnrichmentPipeline:
                 "review_reasons": review_reasons
             },
             "attributes": validated_attributes,
+            "vision_stage": {
+                "skipped": vision_skipped,
+                "skip_reason": vision_skip_reason,
+                "image_url": vision_result.get("image_url"),
+                "visual_attributes_count": len(vision_result.get("visual_attributes", []))
+            },
             "descriptions": descriptions,
             "validation_results": [
                 {
