@@ -188,6 +188,10 @@ export const App: React.FC = () => {
   };
 
   const handleRunBatchEnrichment = async () => {
+    if (datasets.length === 0 || totalProducts === 0) {
+      setIsUploadOpen(true);
+      return;
+    }
     setIsEnriching(true);
     try {
       const activeDsId = selectedDatasetId || (datasets.length > 0 ? datasets[datasets.length - 1].id : undefined);
@@ -200,6 +204,7 @@ export const App: React.FC = () => {
     } catch (e) {
       console.error("Failed to start batch enrichment", e);
       setIsEnriching(false);
+      setEnrichmentProgress(null);
     }
   };
 
@@ -208,11 +213,18 @@ export const App: React.FC = () => {
       try {
         const res = await apiFetch('/pipeline/status');
         const data = await res.json();
-        const total = data.total_rows || 1;
+        const total = data.total_rows || 0;
         const processed = data.processed_rows || 0;
-        const percent = Math.round((processed / total) * 100);
+        const percent = total > 0 ? Math.round((processed / total) * 100) : 100;
         const statusUpper = (data.status || '').toUpperCase();
-        const isDone = statusUpper === 'COMPLETED' || (statusUpper !== 'RUNNING' && statusUpper !== 'PENDING' && processed >= total && total > 0);
+        const isDone = statusUpper === 'COMPLETED' || statusUpper === 'IDLE' || statusUpper === 'FAILED' || (processed >= total && total > 0) || total === 0;
+
+        if (statusUpper === 'IDLE' || total === 0) {
+          clearInterval(interval);
+          setIsEnriching(false);
+          setEnrichmentProgress(null);
+          return;
+        }
 
         setEnrichmentProgress({
           status: isDone ? 'Completed' : 'Processing',
@@ -235,6 +247,9 @@ export const App: React.FC = () => {
         }
       } catch (e) {
         console.error("Failed polling pipeline status", e);
+        clearInterval(interval);
+        setIsEnriching(false);
+        setEnrichmentProgress(null);
       }
     }, 1500);  // 1.5s tick for snappy live updates
   };
@@ -471,13 +486,18 @@ export const App: React.FC = () => {
                   {/* Big Execute Button */}
                   <button
                     onClick={handleRunBatchEnrichment}
-                    disabled={isEnriching || datasets.length === 0}
+                    disabled={isEnriching}
                     className="w-full flex items-center justify-center gap-2.5 py-4 px-4 rounded-xl text-sm font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:scale-[0.98] transition-all shadow-[0_0_20px_rgba(16,185,129,0.35)] border border-emerald-400/50"
                   >
                     {isEnriching ? (
                       <>
                         <RefreshCw className="w-5 h-5 animate-spin" />
                         <span>Processing Catalog...</span>
+                      </>
+                    ) : datasets.length === 0 || totalProducts === 0 ? (
+                      <>
+                        <UploadCloud className="w-5 h-5" />
+                        <span>Upload Dataset First</span>
                       </>
                     ) : (
                       <>
