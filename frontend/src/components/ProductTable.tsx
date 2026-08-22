@@ -1,6 +1,5 @@
 import React from 'react';
-import { Search, Filter, ChevronLeft, ChevronRight, Eye, Play, ExternalLink, Download } from 'lucide-react';
-import { apiUrl } from '../lib/api';
+import { Search, Filter, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
 
 interface Product {
   id: number;
@@ -28,7 +27,7 @@ interface ProductTableProps {
   onStatusFilterChange: (s: string) => void;
   onPageChange: (p: number) => void;
   onSelectProduct: (id: number) => void;
-  onEnrichSingle: (id: number) => void;
+  onEnrichSingle?: (id: number) => void;
 }
 
 export const ProductTable: React.FC<ProductTableProps> = ({
@@ -41,8 +40,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
   onSearchChange,
   onStatusFilterChange,
   onPageChange,
-  onSelectProduct,
-  onEnrichSingle
+  onSelectProduct
 }) => {
   const totalPages = Math.ceil(total / limit) || 1;
 
@@ -143,14 +141,13 @@ export const ProductTable: React.FC<ProductTableProps> = ({
               <th className="p-3.5">Manufacturer</th>
               <th className="p-3.5">Taxonomy Category</th>
               <th className="p-3.5">Source Provenance</th>
-              <th className="p-3.5 text-center">Confidence</th>
-              <th className="p-3.5 pr-5 text-right">Actions</th>
+              <th className="p-3.5 pr-5 text-center">Confidence</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/[0.04]">
             {products.length === 0 ? (
               <tr>
-                <td colSpan={8} className="p-16 text-center">
+                <td colSpan={7} className="p-16 text-center">
                   <div className="inline-flex flex-col items-center justify-center text-slate-400 font-sans">
                     <Search className="w-8 h-8 mb-2 opacity-40 text-slate-400" />
                     <p className="text-sm font-semibold text-slate-200">No catalog products match</p>
@@ -162,7 +159,9 @@ export const ProductTable: React.FC<ProductTableProps> = ({
               products.map((p) => (
                 <tr 
                   key={p.id} 
-                  className="hover:bg-white/[0.02] transition-colors group"
+                  onClick={() => onSelectProduct(p.id)}
+                  className="hover:bg-white/[0.04] transition-colors group cursor-pointer"
+                  title="Click to view complete 252-column product details"
                 >
                   <td className="p-3.5 pl-5 text-white font-bold text-xs">
                     <span className="px-2 py-0.5 rounded bg-white/5 text-white border border-white/10 inline-block font-mono font-semibold">
@@ -183,7 +182,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                   <td className="p-3.5 text-slate-300 text-[11px] max-w-[160px] truncate">{p.category || '—'}</td>
                   
                   {/* Source Provenance / Live Link Column */}
-                  <td className="p-3.5 max-w-[210px]">
+                  <td className="p-3.5 max-w-[210px]" onClick={(e) => e.stopPropagation()}>
                     {p.source_url ? (
                       <div className="flex items-center gap-1.5 flex-wrap">
                         <span className="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
@@ -209,39 +208,13 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                     )}
                   </td>
 
-                  <td className="p-3.5 text-center">{getStatusBadge(p.status, p.confidence_score)}</td>
-                  <td className="p-3.5 pr-5 text-right">
-                    <div className="flex items-center justify-end gap-1.5">
-                      <button
-                        onClick={() => onEnrichSingle(p.id)}
-                        className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 transition-all cursor-pointer"
-                        title="Run AI Enrichment"
-                      >
-                        <Play className="w-3.5 h-3.5 fill-current" />
-                      </button>
-                      <button
-                        onClick={() => onSelectProduct(p.id)}
-                        className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 transition-all cursor-pointer"
-                        title="Inspect Full 252-Column Record"
-                      >
-                        <Eye className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={() => {
-                          window.open(apiUrl(`/export/audit/${p.id}`, { format: 'json' }), '_blank');
-                        }}
-                        className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 transition-all cursor-pointer"
-                        title="Export Audit Trail JSON"
-                      >
-                        <Download className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </td>
+                  <td className="p-3.5 pr-5 text-center">{getStatusBadge(p.status, p.confidence_score)}</td>
                 </tr>
               ))
             )}
           </tbody>
         </table>
+
       </div>
 
       {/* Pagination Footer */}
