@@ -1,5 +1,6 @@
 import React from 'react';
 import { Layers, ShieldCheck, TrendingUp } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface StatsProps {
   stats: {
@@ -53,7 +54,10 @@ export const StatsOverview: React.FC<StatsProps> = ({ stats, isLoading = false }
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-4">
         
         {/* Total Ingested */}
-        <div className="enterprise-card p-5 border border-white/10">
+        <motion.div
+          whileHover={{ y: -3, transition: { duration: 0.2 } }}
+          className="enterprise-card p-5 border border-white/10"
+        >
           <div className="flex items-center justify-between mb-2">
             <span className="text-[11px] font-mono font-semibold text-slate-400 uppercase tracking-wider">Total Catalog Items</span>
             <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-300">
@@ -66,10 +70,13 @@ export const StatsOverview: React.FC<StatsProps> = ({ stats, isLoading = false }
           <div className="flex items-center gap-1.5 mt-2 text-xs text-slate-400 font-mono">
             <span>Multi-format Catalog Input</span>
           </div>
-        </div>
+        </motion.div>
 
         {/* High Confidence */}
-        <div className="enterprise-card p-5 border border-white/10">
+        <motion.div
+          whileHover={{ y: -3, transition: { duration: 0.2 } }}
+          className="enterprise-card p-5 border border-white/10"
+        >
           <div className="flex items-center justify-between mb-2">
             <span className="text-[11px] font-mono font-semibold text-slate-400 uppercase tracking-wider">High Confidence Pass</span>
             <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
@@ -82,10 +89,13 @@ export const StatsOverview: React.FC<StatsProps> = ({ stats, isLoading = false }
           <div className="flex items-center gap-1.5 mt-2 text-xs text-emerald-400 font-mono font-medium">
             <span>{highPct}% auto-approved</span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Needs Review */}
-        <div className="enterprise-card p-5 border border-white/10">
+        <motion.div
+          whileHover={{ y: -3, transition: { duration: 0.2 } }}
+          className="enterprise-card p-5 border border-white/10"
+        >
           <div className="flex items-center justify-between mb-2">
             <span className="text-[11px] font-mono font-semibold text-slate-400 uppercase tracking-wider">Needs Review</span>
             <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-300">
@@ -98,10 +108,13 @@ export const StatsOverview: React.FC<StatsProps> = ({ stats, isLoading = false }
           <div className="flex items-center gap-1.5 mt-2 text-xs text-slate-400 font-mono font-medium">
             <span>{revPct}% flagged for audit</span>
           </div>
-        </div>
+        </motion.div>
 
         {/* LOV Pass Rate */}
-        <div className="enterprise-card p-5 border border-white/10">
+        <motion.div
+          whileHover={{ y: -3, transition: { duration: 0.2 } }}
+          className="enterprise-card p-5 border border-white/10"
+        >
           <div className="flex items-center justify-between mb-2">
             <span className="text-[11px] font-mono font-semibold text-slate-400 uppercase tracking-wider">LOV Compliance Rate</span>
             <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
@@ -114,7 +127,7 @@ export const StatsOverview: React.FC<StatsProps> = ({ stats, isLoading = false }
           <div className="flex items-center gap-1.5 mt-2 text-xs text-slate-400 font-mono">
             <span>Over {stats.total_attributes_extracted || 0} attributes</span>
           </div>
-        </div>
+        </motion.div>
 
       </div>
 

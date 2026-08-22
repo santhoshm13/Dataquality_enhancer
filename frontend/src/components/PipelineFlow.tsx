@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Globe, Shield, Cpu, Layers, FileCheck } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export const PipelineFlow: React.FC = () => {
   const [activeStep, setActiveStep] = useState<number>(1);
@@ -78,8 +79,10 @@ export const PipelineFlow: React.FC = () => {
           const Icon = s.icon;
           const isActive = activeStep === s.id;
           return (
-            <div
+            <motion.div
               key={s.id}
+              whileHover={{ y: -3, scale: 1.01 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => setActiveStep(s.id)}
               className={`enterprise-card p-6 rounded-2xl cursor-pointer relative transition-all border ${
                 isActive 
@@ -103,7 +106,7 @@ export const PipelineFlow: React.FC = () => {
                 <span className="text-emerald-400 font-medium">{s.metrics}</span>
                 {isActive && <span className="text-[10px] font-bold text-emerald-400 uppercase">ACTIVE</span>}
               </div>
-            </div>
+            </motion.div>
           );
         })}
       </div>
