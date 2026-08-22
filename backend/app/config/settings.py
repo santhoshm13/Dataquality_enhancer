@@ -36,6 +36,16 @@ class Settings(BaseSettings):
     GEMINI_API_KEY_18: str = ""
     GEMINI_API_KEY_19: str = ""
     GEMINI_API_KEY_20: str = ""
+    GEMINI_API_KEY_21: str = ""
+    GEMINI_API_KEY_22: str = ""
+    GEMINI_API_KEY_23: str = ""
+    GEMINI_API_KEY_24: str = ""
+    GEMINI_API_KEY_25: str = ""
+    GEMINI_API_KEY_26: str = ""
+    GEMINI_API_KEY_27: str = ""
+    GEMINI_API_KEY_28: str = ""
+    GEMINI_API_KEY_29: str = ""
+    GEMINI_API_KEY_30: str = ""
     OPENAI_API_KEY: str = ""
     LLM_PROVIDER: str = "gemini"  # 'mock', 'openai', 'gemini'
 
@@ -86,6 +96,16 @@ class Settings(BaseSettings):
             self.GEMINI_API_KEY_18,
             self.GEMINI_API_KEY_19,
             self.GEMINI_API_KEY_20,
+            self.GEMINI_API_KEY_21,
+            self.GEMINI_API_KEY_22,
+            self.GEMINI_API_KEY_23,
+            self.GEMINI_API_KEY_24,
+            self.GEMINI_API_KEY_25,
+            self.GEMINI_API_KEY_26,
+            self.GEMINI_API_KEY_27,
+            self.GEMINI_API_KEY_28,
+            self.GEMINI_API_KEY_29,
+            self.GEMINI_API_KEY_30,
         ])
         
         # Deduplicate while preserving order, skip empty strings
