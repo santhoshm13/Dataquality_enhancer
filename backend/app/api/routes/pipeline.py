@@ -34,12 +34,11 @@ class PipelineStatusResponse(BaseModel):
     current_product: Optional[str] = None
     errors: List[Dict[str, Any]] = []
 
-async def execute_batch_enrichment(job_id: str, dataset_id: Optional[int] = None, concurrency: int = 5):
+async def execute_batch_enrichment(job_id: str, dataset_id: Optional[int] = None, concurrency: int = 8):
     """
     Asynchronously processes all rows in the dataset, updating progress and capturing errors.
     """
-    global _gemini_rate_limited_ref
-    # Import and reset the rate-limit flag so each job starts fresh
+    # Reset the Gemini rate-limit flag so each new job starts fresh (not sticky across jobs)
     import app.pipeline.enrichment_pipeline as _ep_module
     _ep_module._gemini_rate_limited = False
     logger.info(f"[Job {job_id}] Reset Gemini rate-limit flag for fresh run.")
@@ -103,7 +102,7 @@ async def execute_batch_enrichment(job_id: str, dataset_id: Optional[int] = None
 async def run_pipeline_batch(
     background_tasks: BackgroundTasks,
     dataset_id: Optional[int] = Query(None, description="Dataset ID to process"),
-    concurrency: int = Query(5, ge=1, le=20, description="Concurrent enrichment workers")
+    concurrency: int = Query(8, ge=1, le=20, description="Concurrent enrichment workers")
 ):
     products = repository.get_all_products(dataset_id=dataset_id)
     total = len(products)
