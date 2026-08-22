@@ -148,13 +148,25 @@ export const App: React.FC = () => {
     }
   };
 
+  // Startup: load everything immediately
   useEffect(() => {
     checkHealth();
     fetchDatasets();
+    fetchProducts();
+    fetchStats();
     fetchEvaluation();
     fetchSuggestions();
-    const interval = setInterval(checkHealth, 30000);
-    return () => clearInterval(interval);
+    const healthInterval = setInterval(checkHealth, 30000);
+    // Auto-refresh products every 3s on the working page so the table
+    // stays live without needing to manually click
+    const refreshInterval = setInterval(() => {
+      fetchProducts();
+      fetchStats();
+    }, 3000);
+    return () => {
+      clearInterval(healthInterval);
+      clearInterval(refreshInterval);
+    };
   }, []);
 
   useEffect(() => {
