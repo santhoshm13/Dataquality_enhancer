@@ -51,11 +51,12 @@ export const Navbar: React.FC<NavbarProps> = ({
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
         
-        {/* Brand Logo & Switcher */}
+        {/* Brand Logo & Title (Click to return to Landing Page) */}
         <div className="flex items-center gap-6 flex-wrap justify-center sm:justify-start">
           <div 
-            onClick={() => onChangePage('working')} 
-            className="flex items-center gap-3 cursor-pointer group"
+            onClick={() => onChangePage('intro')} 
+            className="flex items-center gap-3 cursor-pointer group select-none"
+            title="Go to Landing Page"
           >
             {/* Cognivue Pure Emblem Icon */}
             <div className="w-10 h-10 rounded-xl bg-black/70 border border-emerald-500/40 flex items-center justify-center p-1 group-hover:border-emerald-400/80 transition-all shadow-[0_0_12px_rgba(16,185,129,0.35)] overflow-hidden">
