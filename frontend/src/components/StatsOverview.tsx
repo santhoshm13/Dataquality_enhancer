@@ -1,7 +1,5 @@
 import React from 'react';
-import { Layers, CheckCircle2, AlertTriangle, ShieldCheck, TrendingUp } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { scrollZoomSection, scrollZoomBox, hoverScale } from '../lib/animations';
+import { Layers, ShieldCheck, TrendingUp } from 'lucide-react';
 
 interface StatsProps {
   stats: {
@@ -50,142 +48,117 @@ export const StatsOverview: React.FC<StatsProps> = ({ stats, isLoading = false }
   }
 
   return (
-    <motion.div
-      variants={scrollZoomSection}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: false, amount: 0.2 }}
-      className="mb-12"
-    >
-      {/* 4 Metric Cards with 3D Frames, Scroll Zoom, and High-Contrast Text */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 mb-6">
+    <div className="mb-6">
+      {/* 4 Metric Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-4">
         
         {/* Total Ingested */}
-        <motion.div 
-          variants={scrollZoomBox} 
-          whileHover={hoverScale.hover} 
-          className="frame-3d rounded-3xl p-6 relative overflow-hidden group shadow-2xl"
-        >
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-[11px] font-mono font-bold text-slate-200 uppercase tracking-wider">Total Catalog Items</span>
-            <div className="w-10 h-10 rounded-2xl bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center text-indigo-300 shadow-md">
-              <Layers className="w-5 h-5" />
+        <div className="enterprise-card p-5 border border-white/10">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] font-mono font-semibold text-slate-400 uppercase tracking-wider">Total Catalog Items</span>
+            <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-300">
+              <Layers className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-4xl font-black font-mono tracking-tight text-gradient-cyan-indigo drop-shadow">
+          <div className="text-3xl font-bold font-mono tracking-tight text-white">
             {stats.total_products.toLocaleString()}
           </div>
-          <div className="flex items-center gap-1.5 mt-2.5 text-xs text-slate-300 font-mono font-medium">
-            <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
-            <span>Multi-format Ingestion</span>
+          <div className="flex items-center gap-1.5 mt-2 text-xs text-slate-400 font-mono">
+            <span>Multi-format Catalog Input</span>
           </div>
-        </motion.div>
+        </div>
 
         {/* High Confidence */}
-        <motion.div 
-          variants={scrollZoomBox} 
-          whileHover={hoverScale.hover} 
-          className="frame-3d rounded-3xl p-6 border-l-4 border-emerald-400 relative overflow-hidden group shadow-2xl bg-emerald-950/[0.08]"
-        >
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-[11px] font-mono font-bold text-emerald-300 uppercase tracking-wider">High Confidence Pass</span>
-            <div className="w-10 h-10 rounded-2xl bg-emerald-500/25 border border-emerald-500/40 flex items-center justify-center text-emerald-300 shadow-md">
-              <CheckCircle2 className="w-5 h-5" />
+        <div className="enterprise-card p-5 border border-white/10">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] font-mono font-semibold text-slate-400 uppercase tracking-wider">High Confidence Pass</span>
+            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+              <ShieldCheck className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-4xl font-black font-mono tracking-tight text-gradient-emerald-cyan drop-shadow">
+          <div className="text-3xl font-bold font-mono tracking-tight text-emerald-400">
             {stats.high_confidence.toLocaleString()}
           </div>
-          <div className="flex items-center gap-1.5 mt-2.5 text-xs text-emerald-300 font-mono font-bold">
+          <div className="flex items-center gap-1.5 mt-2 text-xs text-emerald-400 font-mono font-medium">
             <span>{highPct}% auto-approved</span>
           </div>
-        </motion.div>
+        </div>
 
         {/* Needs Review */}
-        <motion.div 
-          variants={scrollZoomBox} 
-          whileHover={hoverScale.hover} 
-          className="frame-3d rounded-3xl p-6 border-l-4 border-rose-400 relative overflow-hidden group shadow-2xl bg-rose-950/[0.08]"
-        >
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-[11px] font-mono font-bold text-rose-300 uppercase tracking-wider">Needs Review</span>
-            <div className="w-10 h-10 rounded-2xl bg-rose-500/25 border border-rose-500/40 flex items-center justify-center text-rose-300 shadow-md">
-              <AlertTriangle className="w-5 h-5" />
+        <div className="enterprise-card p-5 border border-white/10">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] font-mono font-semibold text-slate-400 uppercase tracking-wider">Needs Review</span>
+            <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-300">
+              <span className="text-xs font-mono font-bold">!</span>
             </div>
           </div>
-          <div className="text-4xl font-black font-mono tracking-tight text-gradient-amber-rose drop-shadow">
+          <div className="text-3xl font-bold font-mono tracking-tight text-white">
             {stats.needs_review.toLocaleString()}
           </div>
-          <div className="flex items-center gap-1.5 mt-2.5 text-xs text-rose-300 font-mono font-bold">
+          <div className="flex items-center gap-1.5 mt-2 text-xs text-slate-400 font-mono font-medium">
             <span>{revPct}% flagged for audit</span>
           </div>
-        </motion.div>
+        </div>
 
         {/* LOV Pass Rate */}
-        <motion.div 
-          variants={scrollZoomBox} 
-          whileHover={hoverScale.hover} 
-          className="frame-3d rounded-3xl p-6 border-l-4 border-cyan-400 relative overflow-hidden group shadow-2xl bg-cyan-950/[0.08]"
-        >
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-[11px] font-mono font-bold text-cyan-300 uppercase tracking-wider">LOV Compliance Rate</span>
-            <div className="w-10 h-10 rounded-2xl bg-cyan-500/25 border border-cyan-500/40 flex items-center justify-center text-cyan-300 shadow-md">
-              <ShieldCheck className="w-5 h-5" />
+        <div className="enterprise-card p-5 border border-white/10">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] font-mono font-semibold text-slate-400 uppercase tracking-wider">LOV Compliance Rate</span>
+            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+              <ShieldCheck className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-4xl font-black font-mono tracking-tight text-gradient-electric drop-shadow">
+          <div className="text-3xl font-bold font-mono tracking-tight text-emerald-400">
             {stats.lov_pass_rate != null ? `${stats.lov_pass_rate}%` : 'N/A'}
           </div>
-          <div className="flex items-center gap-1.5 mt-2.5 text-xs text-cyan-200 font-mono font-medium">
+          <div className="flex items-center gap-1.5 mt-2 text-xs text-slate-400 font-mono">
             <span>Over {stats.total_attributes_extracted || 0} attributes</span>
           </div>
-        </motion.div>
+        </div>
 
       </div>
 
-      {/* Confidence Distribution Bar with 3D Frame */}
-      <motion.div 
-        variants={scrollZoomBox} 
-        whileHover={hoverScale.hover}
-        className="frame-3d p-6 rounded-3xl shadow-2xl"
-      >
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-          <div className="flex items-center gap-2 text-xs font-mono font-extrabold text-white tracking-wide">
-            <TrendingUp className="w-4 h-4 text-indigo-400" />
-            <span className="text-gradient-aurora text-sm font-bold">PIPELINE QUALITY & CONFIDENCE TIERS</span>
+      {/* Confidence Distribution Bar */}
+      <div className="enterprise-card p-4 rounded-xl border border-white/10">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2.5">
+          <div className="flex items-center gap-2 text-xs font-mono font-semibold text-slate-300">
+            <TrendingUp className="w-4 h-4 text-emerald-400" />
+            <span>CONFIDENCE DISTRIBUTION</span>
           </div>
-          <div className="flex items-center gap-5 text-xs font-mono">
-            <div className="flex items-center gap-1.5 text-emerald-300 font-bold">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400"></span>
+          <div className="flex items-center gap-4 text-xs font-mono">
+            <div className="flex items-center gap-1.5 text-emerald-400 font-medium">
+              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
               High: {stats.high_confidence} ({highPct}%)
             </div>
-            <div className="flex items-center gap-1.5 text-amber-300 font-bold">
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-sm shadow-amber-400"></span>
+            <div className="flex items-center gap-1.5 text-slate-300">
+              <span className="w-2 h-2 rounded-full bg-slate-500"></span>
               Medium: {stats.medium_confidence} ({medPct}%)
             </div>
-            <div className="flex items-center gap-1.5 text-rose-300 font-bold">
-              <span className="w-2.5 h-2.5 rounded-full bg-rose-400 shadow-sm shadow-rose-400"></span>
+            <div className="flex items-center gap-1.5 text-slate-400">
+              <span className="w-2 h-2 rounded-full bg-slate-700"></span>
               Review: {stats.needs_review} ({revPct}%)
             </div>
           </div>
         </div>
 
-        {/* Multi-Stop Rainbow Progress Bar */}
-        <div className="w-full h-4 bg-black/80 rounded-full overflow-hidden flex p-0.5 border border-white/10 shadow-inner">
+        {/* Clean Progress Track */}
+        <div className="w-full h-2 bg-black/60 rounded-full overflow-hidden flex border border-white/5">
           <div 
-            className="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-l-full transition-all duration-1000 ease-out shadow-sm"
+            className="bg-emerald-500 h-full rounded-l-full transition-all duration-700 ease-out"
             style={{ width: `${total > 0 ? (stats.high_confidence / total) * 100 : 0}%` }}
           />
           <div 
-            className="bg-gradient-to-r from-amber-400 to-orange-400 h-full transition-all duration-1000 ease-out shadow-sm"
+            className="bg-slate-500 h-full transition-all duration-700 ease-out"
             style={{ width: `${total > 0 ? (stats.medium_confidence / total) * 100 : 0}%` }}
           />
           <div 
-            className="bg-gradient-to-r from-rose-500 to-pink-500 h-full rounded-r-full transition-all duration-1000 ease-out shadow-sm"
+            className="bg-slate-700 h-full rounded-r-full transition-all duration-700 ease-out"
             style={{ width: `${total > 0 ? (stats.needs_review / total) * 100 : 0}%` }}
           />
         </div>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 };
+
+export default StatsOverview;

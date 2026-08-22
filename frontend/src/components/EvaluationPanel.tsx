@@ -1,7 +1,5 @@
-import React from 'react';
-import { Award, BarChart2, AlertCircle } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { scrollZoomSection, scrollZoomBox, hoverScale } from '../lib/animations';
+import React, { useState } from 'react';
+import { Award, BarChart2, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface EvaluationData {
   status: string;
@@ -36,8 +34,8 @@ interface EvaluationPanelProps {
 }
 
 export const EvaluationPanel: React.FC<EvaluationPanelProps> = ({ evaluation, onRefresh, onRunEvaluation }) => {
-  const [running, setRunning] = React.useState(false);
-  const [showBreakdown, setShowBreakdown] = React.useState(false);
+  const [running, setRunning] = useState(false);
+  const [showBreakdown, setShowBreakdown] = useState(false);
 
   const handleRunEval = async () => {
     setRunning(true);
@@ -57,42 +55,34 @@ export const EvaluationPanel: React.FC<EvaluationPanelProps> = ({ evaluation, on
   const isNoPredictions = evaluation.status === 'no_predictions' || evaluation.evaluated_rows === 0;
 
   const formatVal = (val: number | null | undefined): string => {
-    if (val === null || val === undefined) return "Not evaluated";
+    if (val === null || val === undefined) return "N/A";
     return `${val}%`;
   };
 
   return (
-    <motion.div 
-      variants={scrollZoomSection}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: false, amount: 0.2 }}
-      className="frame-3d p-6 sm:p-8 rounded-3xl mb-10 shadow-2xl relative overflow-hidden bg-purple-950/[0.08]"
-    >
-      <div className="absolute top-0 right-0 w-80 h-80 bg-purple-500/15 blur-[100px] rounded-full pointer-events-none -z-10"></div>
-      <div className="absolute bottom-0 left-0 w-80 h-80 bg-cyan-500/10 blur-[100px] rounded-full pointer-events-none -z-10"></div>
+    <div className="enterprise-card p-6 sm:p-7 rounded-2xl mb-7 border border-white/10">
       
-      {/* Header with High-Contrast Text */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 relative z-10">
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-purple-600 via-pink-500 to-indigo-600 flex items-center justify-center text-white shadow-xl shadow-purple-600/30 border border-white/20">
-            <Award className="w-7 h-7" />
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <div className="flex items-center gap-3.5">
+          <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-emerald-400">
+            <Award className="w-5 h-5" />
           </div>
           <div>
-            <div className="flex items-center gap-3 mb-1.5 flex-wrap">
-              <h3 className="text-xl sm:text-2xl font-extrabold font-heading text-white tracking-tight drop-shadow">
-                <span className="text-gradient-aurora">Ground Truth Benchmark</span>
+            <div className="flex items-center gap-2.5 mb-1 flex-wrap">
+              <h3 className="text-lg font-bold font-heading text-white tracking-tight">
+                Ground Truth Benchmark Scorecard
               </h3>
-              <span className={`px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest font-extrabold ${
+              <span className={`px-2.5 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider font-semibold ${
                 evaluation.total_ground_truth_rows > 0 
-                  ? 'bg-purple-500/25 text-purple-200 border border-purple-500/50 shadow-sm' 
-                  : 'bg-slate-800 text-slate-300 border border-slate-700'
+                  ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
+                  : 'bg-white/5 text-slate-400 border border-white/10'
               }`}>
-                {evaluation.total_ground_truth_rows > 0 ? `${evaluation.total_ground_truth_rows} GT Rows Loaded` : 'Awaiting GT Data'}
+                {evaluation.total_ground_truth_rows > 0 ? `${evaluation.total_ground_truth_rows} Ground Truth Rows Loaded` : 'Awaiting GT Data'}
               </span>
             </div>
-            <p className="text-xs text-slate-200 font-mono">
-              Live Precision Benchmark against <span className="text-cyan-300 bg-cyan-950/70 px-2 py-0.5 rounded-md border border-cyan-500/30 font-bold">Unilog-Sample_200_Items.xlsx</span>
+            <p className="text-xs text-slate-400 font-mono">
+              Evaluated against reference standard <span className="text-white font-semibold">Unilog-Sample_200_Items.xlsx</span>
             </p>
           </div>
         </div>
@@ -100,144 +90,103 @@ export const EvaluationPanel: React.FC<EvaluationPanelProps> = ({ evaluation, on
         <button
           onClick={handleRunEval}
           disabled={running}
-          className="btn-secondary flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-mono font-bold text-white cursor-pointer shadow-lg self-start md:self-auto disabled:opacity-60 disabled:cursor-not-allowed"
+          className="btn-secondary flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer self-start md:self-auto disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          <BarChart2 className={`w-4 h-4 text-purple-300 ${running ? 'animate-spin' : ''}`} />
-          <span>{running ? 'Running…' : 'Re-evaluate Precision'}</span>
+          <BarChart2 className={`w-3.5 h-3.5 text-emerald-400 ${running ? 'animate-spin' : ''}`} />
+          <span>{running ? 'Evaluating…' : 'Re-evaluate Precision'}</span>
         </button>
       </div>
 
       {isNoPredictions ? (
-        <motion.div 
-          variants={scrollZoomBox}
-          className="p-5 rounded-2xl bg-amber-950/50 border border-amber-500/40 text-amber-200 text-xs flex flex-col sm:flex-row items-center justify-between gap-3 backdrop-blur-sm shadow-md"
-        >
-          <div className="flex items-center gap-3">
-            <AlertCircle className="w-5 h-5 text-amber-300 shrink-0" />
-            <span className="font-semibold">{evaluation.message || "Upload the 200-item input dataset and run enrichment to evaluate accuracy."}</span>
+        <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-slate-300 text-xs flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <AlertCircle className="w-4 h-4 text-slate-400 shrink-0" />
+            <span>{evaluation.message || "Upload the 200-item input dataset and run enrichment to evaluate precision against ground truth."}</span>
           </div>
-          <span className="font-mono text-white font-extrabold bg-black/70 px-3.5 py-1.5 rounded-xl border border-white/10">
+          <span className="font-mono text-white font-semibold bg-black/60 px-3 py-1 rounded-lg border border-white/10 text-[11px]">
             Evaluated: {evaluation.evaluated_rows}/{evaluation.total_ground_truth_rows}
           </span>
-        </motion.div>
+        </div>
       ) : (
         <>
-          {/* Detailed Accuracy Metrics Grid in 3D Frames */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-5 mb-6 relative z-10 font-mono">
+          {/* Detailed Accuracy Metrics Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5 mb-5 font-mono">
             
-            <motion.div 
-              variants={scrollZoomBox} 
-              whileHover={hoverScale.hover} 
-              className="frame-3d p-4 sm:p-5 rounded-2xl hover:border-emerald-500/50 transition-all text-left bg-black/60 shadow-lg"
-            >
-              <p className="text-[10px] text-slate-200 font-extrabold uppercase tracking-wider mb-1">Field Match</p>
-              <p className="font-black text-3xl text-gradient-emerald-cyan drop-shadow">
+            <div className="p-4 rounded-xl bg-black/50 border border-white/5 text-left">
+              <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mb-1">Field Match</p>
+              <p className="font-bold text-2xl text-emerald-400">
                 {formatVal(evaluation.overall_field_exact_match_pct)}
               </p>
-              <p className="text-[10px] text-slate-300 mt-1 font-medium">252 Schema Cols</p>
-            </motion.div>
+              <p className="text-[10px] text-slate-500 mt-0.5">252 Schema Cols</p>
+            </div>
 
-            <motion.div 
-              variants={scrollZoomBox} 
-              whileHover={hoverScale.hover} 
-              className="frame-3d p-4 sm:p-5 rounded-2xl hover:border-indigo-500/50 transition-all text-left bg-black/60 shadow-lg"
-            >
-              <p className="text-[10px] text-slate-200 font-extrabold uppercase tracking-wider mb-1">Manufacturer</p>
-              <p className="font-black text-3xl text-gradient-cyan-indigo drop-shadow">
+            <div className="p-4 rounded-xl bg-black/50 border border-white/5 text-left">
+              <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mb-1">Manufacturer</p>
+              <p className="font-bold text-2xl text-white">
                 {formatVal(evaluation.manufacturer_accuracy)}
               </p>
-              <p className="text-[10px] text-slate-300 mt-1 font-medium">Canonical Match</p>
-            </motion.div>
+              <p className="text-[10px] text-slate-500 mt-0.5">Canonical Match</p>
+            </div>
 
-            <motion.div 
-              variants={scrollZoomBox} 
-              whileHover={hoverScale.hover} 
-              className="frame-3d p-4 sm:p-5 rounded-2xl hover:border-purple-500/50 transition-all text-left bg-black/60 shadow-lg"
-            >
-              <p className="text-[10px] text-slate-200 font-extrabold uppercase tracking-wider mb-1">Brand</p>
-              <p className="font-black text-3xl text-gradient-aurora drop-shadow">
+            <div className="p-4 rounded-xl bg-black/50 border border-white/5 text-left">
+              <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mb-1">Brand Name</p>
+              <p className="font-bold text-2xl text-white">
                 {formatVal(evaluation.brand_accuracy)}
               </p>
-              <p className="text-[10px] text-slate-300 mt-1 font-medium">Multi-Source Brand</p>
-            </motion.div>
+              <p className="text-[10px] text-slate-500 mt-0.5">Multi-Source Brand</p>
+            </div>
 
-            <motion.div 
-              variants={scrollZoomBox} 
-              whileHover={hoverScale.hover} 
-              className="frame-3d p-4 sm:p-5 rounded-2xl hover:border-pink-500/50 transition-all text-left bg-black/60 shadow-lg"
-            >
-              <p className="text-[10px] text-slate-200 font-extrabold uppercase tracking-wider mb-1">Category / Fine</p>
-              <p className="font-black text-3xl text-gradient-amber-rose drop-shadow">
+            <div className="p-4 rounded-xl bg-black/50 border border-white/5 text-left">
+              <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mb-1">Fine Category</p>
+              <p className="font-bold text-2xl text-white">
                 {formatVal(evaluation.fine_category_accuracy)}
               </p>
-              <p className="text-[10px] text-slate-300 mt-1 font-medium">Taxonomy Path</p>
-            </motion.div>
+              <p className="text-[10px] text-slate-500 mt-0.5">Taxonomy Path</p>
+            </div>
 
-            <motion.div 
-              variants={scrollZoomBox} 
-              whileHover={hoverScale.hover} 
-              className="frame-3d p-4 sm:p-5 rounded-2xl hover:border-teal-500/50 transition-all text-left bg-black/60 shadow-lg"
-            >
-              <p className="text-[10px] text-slate-200 font-extrabold uppercase tracking-wider mb-1">Attributes</p>
-              <p className="font-black text-3xl text-gradient-electric drop-shadow">
+            <div className="p-4 rounded-xl bg-black/50 border border-white/5 text-left">
+              <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mb-1">Attributes</p>
+              <p className="font-bold text-2xl text-emerald-400">
                 {formatVal(evaluation.attribute_accuracy)}
               </p>
-              <p className="text-[10px] text-slate-300 mt-1 font-medium">Key-Value Pairs</p>
-            </motion.div>
+              <p className="text-[10px] text-slate-500 mt-0.5">Key-Value Pairs</p>
+            </div>
 
-            <motion.div 
-              variants={scrollZoomBox} 
-              whileHover={hoverScale.hover} 
-              className="frame-3d p-4 sm:p-5 rounded-2xl hover:border-amber-500/50 transition-all text-left bg-black/60 shadow-lg"
-            >
-              <p className="text-[10px] text-slate-200 font-extrabold uppercase tracking-wider mb-1">LOV Compliance</p>
-              <p className="font-black text-3xl text-gradient-emerald-cyan drop-shadow">
+            <div className="p-4 rounded-xl bg-black/50 border border-white/5 text-left">
+              <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mb-1">LOV Compliance</p>
+              <p className="font-bold text-2xl text-emerald-400">
                 {formatVal(evaluation.lov_compliance)}
               </p>
-              <p className="text-[10px] text-slate-300 mt-1 font-medium">Master LOV Pass</p>
-            </motion.div>
+              <p className="text-[10px] text-slate-500 mt-0.5">Master Permitted List</p>
+            </div>
 
           </div>
 
-          {/* Evaluation Details Footer */}
-          {evaluation.details && (
-            <motion.div 
-              variants={scrollZoomBox}
-              className="p-4 rounded-2xl bg-black/70 border border-white/15 flex flex-wrap items-center justify-between text-xs font-mono text-slate-200 gap-3 relative z-10 shadow-inner"
+          {/* Evaluation Details Summary Bar */}
+          <div className="p-3.5 rounded-xl bg-black/50 border border-white/5 flex flex-wrap items-center justify-between text-xs font-mono text-slate-300 gap-3">
+            <div className="flex items-center gap-5 flex-wrap">
+              <span>Evaluated: <strong className="text-white font-bold">{evaluation.evaluated_rows} / {evaluation.total_ground_truth_rows}</strong></span>
+              <span>Comparisons: <strong className="text-slate-200">{evaluation.details?.total_comparisons?.toLocaleString() || '0'}</strong></span>
+              <span>Exact Matches: <strong className="text-emerald-400 font-bold">{evaluation.details?.exact_matches?.toLocaleString() || '0'}</strong></span>
+              <span>Mismatches: <strong className="text-slate-400 font-bold">{evaluation.details?.mismatches?.toLocaleString() || '0'}</strong></span>
+            </div>
+            <button
+              onClick={() => setShowBreakdown(b => !b)}
+              className="text-[11px] px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer flex items-center gap-1.5 font-medium"
             >
-              <div className="flex items-center gap-6 flex-wrap font-medium">
-                <span>Matched: <strong className="text-white font-bold">{evaluation.evaluated_rows} / {evaluation.total_ground_truth_rows}</strong></span>
-                <span>Comparisons: <strong className="text-indigo-300 font-bold">{evaluation.details.total_comparisons.toLocaleString()}</strong></span>
-                <span>Exact Matches: <strong className="text-emerald-400 font-bold">{evaluation.details.exact_matches.toLocaleString()}</strong></span>
-                <span>Mismatches: <strong className="text-rose-400 font-bold">{evaluation.details.mismatches.toLocaleString()}</strong></span>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="text-[11px] text-cyan-300 flex items-center gap-1.5 font-bold">
-                  <AlertCircle className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>Deterministic Ground Truth Precision</span>
-                </div>
-                <button
-                  onClick={() => setShowBreakdown(b => !b)}
-                  className="text-[10px] px-3 py-1 rounded-xl bg-white/5 border border-white/15 text-slate-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer font-bold"
-                >
-                  {showBreakdown ? 'Hide Breakdown ▲' : 'Field Breakdown ▼'}
-                </button>
-              </div>
-            </motion.div>
-          )}
+              <span>{showBreakdown ? 'Hide Breakdown' : 'Field Breakdown'}</span>
+              {showBreakdown ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3 text-slate-400" />}
+            </button>
+          </div>
 
           {/* Per-field accuracy breakdown */}
           {showBreakdown && (
-            <motion.div
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-3 rounded-2xl border border-white/10 overflow-hidden bg-black/60 relative z-10"
-            >
-              <div className="p-3 bg-black/40 border-b border-white/10 text-[11px] font-mono font-bold text-slate-300 uppercase tracking-wider">
-                Field Accuracy vs Ground Truth (200-Row Dataset)
+            <div className="mt-3 rounded-xl border border-white/10 overflow-hidden bg-black/60">
+              <div className="p-3 bg-black/80 border-b border-white/5 text-[11px] font-mono font-semibold text-slate-400 uppercase tracking-wider">
+                Field Accuracy Breakdown vs Ground Truth (200 Rows)
               </div>
               <table className="w-full text-xs font-mono">
-                <thead className="bg-black/50 text-slate-500 uppercase text-[10px] tracking-wider">
+                <thead className="bg-black/90 text-slate-400 uppercase text-[10px] tracking-wider">
                   <tr>
                     <th className="p-3 text-left">Field Group</th>
                     <th className="p-3 text-center">Accuracy</th>
@@ -250,31 +199,33 @@ export const EvaluationPanel: React.FC<EvaluationPanelProps> = ({ evaluation, on
                     { label: 'Manufacturer', value: evaluation.manufacturer_accuracy, note: 'Canonical mfg vs GT MANUFACTURER_NAME' },
                     { label: 'Fine Category', value: evaluation.fine_category_accuracy, note: 'Dept / Class / Fine taxonomy path' },
                     { label: 'Attributes', value: evaluation.attribute_accuracy, note: 'Label + Value key-value match' },
-                    { label: 'LOV Compliance', value: evaluation.lov_compliance, note: 'Values in permitted LOV list' },
+                    { label: 'LOV Compliance', value: evaluation.lov_compliance, note: 'Values in permitted master list' },
                     { label: 'UOM Compliance', value: evaluation.uom_compliance, note: 'Canonical unit of measure' },
-                    { label: 'Desc Char Limit', value: evaluation.desc_character_compliance, note: 'All 6 desc formats within limits' },
-                    { label: 'Row Completeness', value: evaluation.row_completeness, note: 'Non-empty required fields' },
+                    { label: 'Desc Char Limits', value: evaluation.desc_character_compliance, note: 'All 6 desc formats within limits' },
+                    { label: 'Row Completeness', value: evaluation.row_completeness, note: 'Non-empty required delivery fields' },
                     { label: 'Overall (252 cols)', value: evaluation.overall_field_exact_match_pct, note: 'Exact match across all schema columns' },
                   ].map(row => {
                     const val = row.value;
-                    const color = val === null ? 'text-slate-500' : val >= 80 ? 'text-emerald-400' : val >= 50 ? 'text-amber-400' : 'text-rose-400';
+                    const color = val !== null && val >= 75 ? 'text-emerald-400' : 'text-slate-300';
                     return (
                       <tr key={row.label} className="hover:bg-white/[0.02]">
-                        <td className="p-3 font-bold text-slate-200">{row.label}</td>
-                        <td className={`p-3 text-center font-black text-base ${color}`}>
+                        <td className="p-3 font-semibold text-slate-200">{row.label}</td>
+                        <td className={`p-3 text-center font-bold text-sm ${color}`}>
                           {val !== null && val !== undefined ? `${val}%` : 'N/A'}
                         </td>
-                        <td className="p-3 text-slate-500">{row.note}</td>
+                        <td className="p-3 text-slate-400">{row.note}</td>
                       </tr>
                     );
                   })}
                 </tbody>
               </table>
-            </motion.div>
+            </div>
           )}
         </>
       )}
 
-    </motion.div>
+    </div>
   );
 };
+
+export default EvaluationPanel;

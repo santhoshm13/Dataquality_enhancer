@@ -1,7 +1,5 @@
 import React from 'react';
-import { Search, Filter, ChevronLeft, ChevronRight, Eye, Play, ExternalLink, AlertCircle, Download } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { scrollZoomSection, scrollZoomBox } from '../lib/animations';
+import { Search, Filter, ChevronLeft, ChevronRight, Eye, Play, ExternalLink, Download } from 'lucide-react';
 import { apiUrl } from '../lib/api';
 
 interface Product {
@@ -56,7 +54,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
       case 'ENRICHED':
       case 'HIGH':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
             HIGH {confPct}%
           </span>
@@ -64,22 +62,22 @@ export const ProductTable: React.FC<ProductTableProps> = ({
       case 'MEDIUM_CONFIDENCE':
       case 'MEDIUM':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[10px] font-mono font-semibold bg-white/5 text-slate-300 border border-white/10">
+            <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
             MED {confPct}%
           </span>
         );
       case 'NEEDS_REVIEW':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 shadow-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[10px] font-mono font-semibold bg-white/5 text-slate-400 border border-white/10">
+            <span className="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
             REVIEW {confPct}%
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold bg-slate-800 text-slate-300 border border-slate-700">
-            <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[10px] font-mono font-semibold bg-white/5 text-slate-500 border border-white/10">
+            <span className="w-1.5 h-1.5 rounded-full bg-slate-600"></span>
             RAW INGEST
           </span>
         );
@@ -96,38 +94,32 @@ export const ProductTable: React.FC<ProductTableProps> = ({
   };
 
   return (
-    <motion.div 
-      variants={scrollZoomSection}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: false, amount: 0.15 }}
-      className="frame-3d rounded-3xl overflow-hidden shadow-2xl mb-14"
-    >
+    <div className="enterprise-card rounded-2xl overflow-hidden mb-12 border border-white/10">
       
-      {/* Search & Filter Header with 3D Bevel Line */}
-      <div className="p-5 sm:p-6 border-b border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 bg-black/40">
+      {/* Search & Filter Header */}
+      <div className="p-4 sm:p-5 border-b border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3.5 bg-black/40">
         
-        {/* Search Input with Gradient Focus */}
-        <div className="relative w-full sm:w-96 group">
-          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-cyan-300 transition-colors" />
+        {/* Search Input */}
+        <div className="relative w-full sm:w-80 group">
+          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-white transition-colors" />
           <input
             type="text"
             placeholder="Search MPN, description, manufacturer..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-black/70 border border-white/15 rounded-2xl text-xs text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all font-mono shadow-inner"
+            className="w-full pl-9 pr-4 py-2 bg-black/60 border border-white/10 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-white/30 transition-all font-mono"
           />
         </div>
 
-        {/* Filter & Total Counter */}
+        {/* Filter & Counter */}
         <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
-          <div className="flex items-center gap-2 text-xs text-slate-200 font-mono">
-            <Filter className="w-3.5 h-3.5 text-indigo-400" />
-            <span className="font-bold">Filter Status:</span>
+          <div className="flex items-center gap-2 text-xs text-slate-300 font-mono">
+            <Filter className="w-3.5 h-3.5 text-slate-400" />
+            <span className="font-medium">Filter Status:</span>
             <select
               value={statusFilter}
               onChange={(e) => onStatusFilterChange(e.target.value)}
-              className="bg-black/80 border border-white/15 text-white text-xs font-bold rounded-xl px-3.5 py-2 focus:outline-none focus:border-indigo-400 cursor-pointer transition-colors shadow-inner"
+              className="bg-[#0A0A0A] border border-white/10 text-white text-xs font-semibold rounded-lg px-3 py-1.5 focus:outline-none focus:border-white/30 cursor-pointer transition-colors"
             >
               <option value="ALL">All Statuses</option>
               <option value="RAW">Raw Ingest</option>
@@ -141,122 +133,111 @@ export const ProductTable: React.FC<ProductTableProps> = ({
       </div>
 
       {/* Product Table */}
-      <div className="overflow-x-auto min-h-[360px]">
+      <div className="overflow-x-auto min-h-[340px]">
         <table className="w-full text-left border-collapse text-xs font-mono">
           <thead>
-            <tr className="bg-black/70 text-slate-200 font-extrabold uppercase tracking-wider text-[10px] border-b border-white/10">
-              <th className="p-4 pl-6">Part Number (MPN)</th>
-              <th className="p-4">Raw Description</th>
-              <th className="p-4">Canonical Brand</th>
-              <th className="p-4">Manufacturer</th>
-              <th className="p-4">Taxonomy Category</th>
-              <th className="p-4">Source Provenance</th>
-              <th className="p-4 text-center">Confidence</th>
-              <th className="p-4 pr-6 text-right">Actions</th>
+            <tr className="bg-black/80 text-slate-400 font-semibold uppercase tracking-wider text-[10px] border-b border-white/10">
+              <th className="p-3.5 pl-5">Part Number (MPN)</th>
+              <th className="p-3.5">Raw Description</th>
+              <th className="p-3.5">Canonical Brand</th>
+              <th className="p-3.5">Manufacturer</th>
+              <th className="p-3.5">Taxonomy Category</th>
+              <th className="p-3.5">Source Provenance</th>
+              <th className="p-3.5 text-center">Confidence</th>
+              <th className="p-3.5 pr-5 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/[0.06] bg-black/40">
+          <tbody className="divide-y divide-white/[0.04]">
             {products.length === 0 ? (
               <tr>
                 <td colSpan={8} className="p-16 text-center">
                   <div className="inline-flex flex-col items-center justify-center text-slate-400 font-sans">
-                    <Search className="w-10 h-10 mb-3 opacity-40 text-cyan-400" />
-                    <p className="text-sm font-bold text-slate-200">No catalog products match</p>
-                    <p className="text-xs text-slate-400 mt-1 font-mono">Upload a dataset or clear filters to view items.</p>
+                    <Search className="w-8 h-8 mb-2 opacity-40 text-slate-400" />
+                    <p className="text-sm font-semibold text-slate-200">No catalog products match</p>
+                    <p className="text-xs text-slate-500 mt-0.5 font-mono">Upload a dataset or adjust search filters.</p>
                   </div>
                 </td>
               </tr>
             ) : (
               products.map((p) => (
-                <motion.tr 
-                  variants={scrollZoomBox}
-                  whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.06)", scale: 1.003 }}
+                <tr 
                   key={p.id} 
-                  className="transition-all group"
+                  className="hover:bg-white/[0.02] transition-colors group"
                 >
-                  <td className="p-4 pl-6 text-white font-extrabold text-xs">
-                    <span className="px-2.5 py-1 rounded-xl bg-indigo-500/20 text-indigo-200 border border-indigo-500/40 inline-block font-mono shadow-sm font-bold">
+                  <td className="p-3.5 pl-5 text-white font-bold text-xs">
+                    <span className="px-2 py-0.5 rounded bg-white/5 text-white border border-white/10 inline-block font-mono font-semibold">
                       {p.mfg_part_num}
                     </span>
                   </td>
-                  <td className="p-4 text-slate-100 max-w-xs truncate font-sans text-xs font-medium" title={p.raw_description}>
+                  <td className="p-3.5 text-slate-200 max-w-xs truncate font-sans text-xs font-normal" title={p.raw_description}>
                     {p.raw_description}
                   </td>
-                  <td className="p-4 font-bold text-white">
+                  <td className="p-3.5 font-semibold text-white">
                     {p.brand ? (
-                      <span className="text-cyan-300 font-bold drop-shadow-sm">{p.brand}</span>
-                    ) : '—'}
+                      <span className="text-slate-100">{p.brand}</span>
+                    ) : (
+                      <span className="text-slate-600">—</span>
+                    )}
                   </td>
-                  <td className="p-4 text-slate-200 font-medium">{p.manufacturer || '—'}</td>
-                  <td className="p-4 text-cyan-200 font-semibold text-[11px] max-w-[170px] truncate">{p.category || '—'}</td>
+                  <td className="p-3.5 text-slate-300">{p.manufacturer || '—'}</td>
+                  <td className="p-3.5 text-slate-300 text-[11px] max-w-[160px] truncate">{p.category || '—'}</td>
                   
                   {/* Source Provenance Column */}
-                  <td className="p-4 max-w-[200px]">
+                  <td className="p-3.5 max-w-[190px]">
                     {p.source_url ? (
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${
-                          p.source_type === 'fallback' 
-                            ? 'bg-cyan-500/20 text-cyan-200 border border-cyan-500/40' 
-                            : 'bg-emerald-500/20 text-emerald-200 border border-emerald-500/40'
-                        }`}>
-                          {p.source_type === 'fallback' ? 'distributor' : 'manufacturer'}
+                        <span className="px-1.5 py-0.2 rounded text-[9px] font-bold uppercase tracking-wider bg-white/5 text-slate-300 border border-white/10">
+                          {p.source_type === 'fallback' ? 'distributor' : 'mfg'}
                         </span>
                         <a
                           href={p.source_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-slate-200 hover:text-white transition-colors text-[11px] font-mono truncate max-w-[120px] font-medium"
+                          className="inline-flex items-center gap-1 text-slate-300 hover:text-white transition-colors text-[11px] font-mono truncate max-w-[110px]"
                           title={`Verified Grounding: ${p.source_url}`}
                         >
                           <span className="truncate">{formatHostname(p.source_url)}</span>
-                          <ExternalLink className="w-3 h-3 shrink-0 text-cyan-400 opacity-90" />
+                          <ExternalLink className="w-3 h-3 shrink-0 text-slate-400 opacity-80" />
                         </a>
                       </div>
                     ) : p.found === false ? (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] text-amber-300 bg-amber-500/20 border border-amber-500/30 font-mono font-semibold">
-                        <AlertCircle className="w-3 h-3 text-amber-400 shrink-0" />
-                        No URL found
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] text-slate-400 bg-white/5 border border-white/10 font-mono font-medium">
+                        No URL
                       </span>
                     ) : (
-                      <span className="text-slate-400 text-[10px] font-mono italic">Pending enrichment</span>
+                      <span className="text-slate-500 text-[10px] font-mono italic">Pending enrichment</span>
                     )}
                   </td>
 
-                  <td className="p-4 text-center">{getStatusBadge(p.status, p.confidence_score)}</td>
-                  <td className="p-4 pr-6 text-right">
-                    <div className="flex items-center justify-end gap-2 opacity-80 group-hover:opacity-100 transition-opacity">
-                      <motion.button
-                        whileHover={{ scale: 1.15 }}
-                        whileTap={{ scale: 0.95 }}
+                  <td className="p-3.5 text-center">{getStatusBadge(p.status, p.confidence_score)}</td>
+                  <td className="p-3.5 pr-5 text-right">
+                    <div className="flex items-center justify-end gap-1.5">
+                      <button
                         onClick={() => onEnrichSingle(p.id)}
-                        className="p-2 rounded-xl bg-indigo-500/20 hover:bg-indigo-500/40 text-indigo-200 border border-indigo-500/40 transition-all cursor-pointer shadow-md"
+                        className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 transition-all cursor-pointer"
                         title="Run AI Enrichment"
                       >
                         <Play className="w-3.5 h-3.5 fill-current" />
-                      </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.15 }}
-                        whileTap={{ scale: 0.95 }}
+                      </button>
+                      <button
                         onClick={() => onSelectProduct(p.id)}
-                        className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-all cursor-pointer shadow-md"
+                        className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 transition-all cursor-pointer"
                         title="Inspect Full 252-Column Record"
                       >
                         <Eye className="w-3.5 h-3.5" />
-                      </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.15 }}
-                        whileTap={{ scale: 0.95 }}
+                      </button>
+                      <button
                         onClick={() => {
                           window.open(apiUrl(`/export/audit/${p.id}`, { format: 'json' }), '_blank');
                         }}
-                        className="p-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 transition-all cursor-pointer shadow-md"
+                        className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 transition-all cursor-pointer"
                         title="Export Audit Trail JSON"
                       >
                         <Download className="w-3.5 h-3.5" />
-                      </motion.button>
+                      </button>
                     </div>
                   </td>
-                </motion.tr>
+                </tr>
               ))
             )}
           </tbody>
@@ -264,31 +245,33 @@ export const ProductTable: React.FC<ProductTableProps> = ({
       </div>
 
       {/* Pagination Footer */}
-      <div className="p-4 sm:p-5 border-t border-white/10 bg-black/60 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-200 font-mono">
+      <div className="p-4 border-t border-white/10 bg-black/60 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-300 font-mono">
         <div>
-          Showing <span className="text-cyan-300 font-bold">{products.length > 0 ? (page - 1) * limit + 1 : 0}</span> to <span className="text-cyan-300 font-bold">{Math.min(page * limit, total)}</span> of <span className="text-white font-bold">{total}</span> items
+          Showing <span className="text-emerald-400 font-semibold">{products.length > 0 ? (page - 1) * limit + 1 : 0}</span> to <span className="text-emerald-400 font-semibold">{Math.min(page * limit, total)}</span> of <span className="text-white font-semibold">{total}</span> items
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <button
             onClick={() => onPageChange(page - 1)}
             disabled={page <= 1}
-            className="p-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 disabled:opacity-30 transition-colors cursor-pointer text-white"
+            className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 disabled:opacity-30 transition-colors cursor-pointer text-white"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
-          <span className="px-3.5 py-1.5 text-white font-bold bg-white/10 border border-white/15 rounded-xl shadow-inner">
+          <span className="px-3 py-1 text-white font-semibold bg-white/5 border border-white/10 rounded-lg">
             Page {page} / {totalPages}
           </span>
           <button
             onClick={() => onPageChange(page + 1)}
             disabled={page >= totalPages}
-            className="p-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 disabled:opacity-30 transition-colors cursor-pointer text-white"
+            className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 disabled:opacity-30 transition-colors cursor-pointer text-white"
           >
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
       </div>
 
-    </motion.div>
+    </div>
   );
 };
+
+export default ProductTable;

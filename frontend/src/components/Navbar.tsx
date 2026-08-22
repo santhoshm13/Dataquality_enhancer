@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { UploadCloud, Download, RefreshCw, FileSpreadsheet, ChevronDown, Activity, Database, Sparkles, Layers, Terminal, ArrowRight } from 'lucide-react';
+import { UploadCloud, Download, RefreshCw, FileSpreadsheet, ChevronDown, Activity, Layers, Terminal } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { hoverScale } from '../lib/animations';
 
 interface NavbarProps {
   activePage: 'intro' | 'working';
@@ -51,125 +50,100 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header 
-      className={`sticky top-0 z-50 transition-all duration-300 border-b ${
+      className={`sticky top-0 z-50 transition-all duration-200 border-b ${
         isScrolled 
-          ? 'bg-slate-950/80 backdrop-blur-2xl border-white/10 shadow-2xl py-3' 
-          : 'bg-slate-950/50 backdrop-blur-xl border-white/5 py-4'
+          ? 'bg-black/95 backdrop-blur-xl border-emerald-500/30 shadow-lg py-3' 
+          : 'bg-black/85 backdrop-blur-md border-emerald-500/20 py-3.5'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
         
         {/* Brand Logo & Switcher */}
-        <div className="flex items-center gap-5 sm:gap-6 flex-wrap justify-center sm:justify-start">
+        <div className="flex items-center gap-6 flex-wrap justify-center sm:justify-start">
           <div 
             onClick={() => onChangePage('intro')} 
             className="flex items-center gap-3 cursor-pointer group"
           >
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-500 via-pink-500 to-cyan-400 p-0.5 flex items-center justify-center shadow-lg shadow-indigo-500/25 group-hover:scale-105 transition-transform">
-              <div className="w-full h-full bg-[#030712] rounded-[14px] flex items-center justify-center">
-                <Database className="w-5 h-5 text-cyan-400" />
-              </div>
+            {/* Cognivue Pure Emblem Icon */}
+            <div className="w-10 h-10 rounded-xl bg-black/70 border border-emerald-500/40 flex items-center justify-center p-1 group-hover:border-emerald-400/80 transition-all shadow-[0_0_12px_rgba(16,185,129,0.35)] overflow-hidden">
+              <img 
+                src="/cognivue-icon.png" 
+                alt="Cognivue Emblem" 
+                className="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]" 
+              />
             </div>
             <div>
-              <h1 className="text-xl font-extrabold font-heading tracking-tight leading-tight flex items-center gap-1.5">
-                <span className="text-white">Aura</span>
-                <span className="text-gradient-aurora">Intelligence</span>
-              </h1>
-              <p className="text-[10px] text-slate-400 font-mono font-bold uppercase tracking-widest flex items-center gap-1">
-                <span>Product Data Quality</span>
-                <Sparkles className="w-3 h-3 text-pink-400 inline" />
+              <div className="flex items-center gap-1.5">
+                <span className="text-xl font-extrabold text-white tracking-tight font-heading">Cognivue</span>
+              </div>
+              <p className="text-[10px] text-slate-400 font-medium tracking-wide">
+                Product Data Intelligence
               </p>
             </div>
           </div>
 
-          {/* Segmented Page Switcher (Intro vs Working) */}
-          <div className="inline-flex p-1 rounded-2xl bg-black/60 border border-white/10 font-mono text-xs shadow-inner">
+          {/* Segmented Page Switcher (Overview vs Studio) */}
+          <div className="inline-flex p-1 rounded-xl bg-[#0D0D0D] border border-emerald-500/30 text-xs shadow-inner">
             <button
               onClick={() => onChangePage('intro')}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-bold transition-all cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg font-medium transition-all cursor-pointer ${
                 activePage === 'intro'
-                  ? 'bg-gradient-to-r from-indigo-600 to-cyan-600 text-white shadow-md shadow-indigo-600/30'
-                  : 'text-slate-300 hover:text-white hover:bg-white/5'
+                  ? 'bg-emerald-500/20 text-emerald-300 shadow-sm font-semibold border border-emerald-500/40'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
               }`}
             >
-              <Layers className="w-3.5 h-3.5" />
-              <span>Overview & Intro</span>
+              <Layers className="w-3.5 h-3.5 text-slate-400" />
+              <span>System Overview</span>
             </button>
 
             <button
               onClick={() => onChangePage('working')}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-bold transition-all cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg font-medium transition-all cursor-pointer ${
                 activePage === 'working'
-                  ? 'bg-gradient-to-r from-indigo-600 to-pink-600 text-white shadow-md shadow-pink-600/30'
-                  : 'text-slate-300 hover:text-white hover:bg-white/5'
+                  ? 'bg-emerald-500/20 text-emerald-300 shadow-sm font-semibold border border-emerald-500/40'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
               }`}
             >
-              <Terminal className="w-3.5 h-3.5" />
-              <span>Working Studio</span>
+              <Terminal className="w-3.5 h-3.5 text-slate-400" />
+              <span>Operations Studio</span>
             </button>
           </div>
         </div>
 
-        {/* Right Nav Options (Conditional based on active page) */}
+        {/* Right Nav Options */}
         <div className="flex items-center gap-3 flex-wrap justify-center">
           
           {/* API Health Status */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs font-mono">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0D0D0D] border border-emerald-500/30 text-xs font-mono shadow-[0_0_8px_rgba(16,185,129,0.15)]">
             <div className="relative flex h-2 w-2">
-              {healthStatus && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>}
-              <span className={`relative inline-flex rounded-full h-2 w-2 ${healthStatus ? 'bg-emerald-500' : 'bg-rose-500'}`}></span>
+              <span className={`relative inline-flex rounded-full h-2 w-2 ${healthStatus ? 'bg-emerald-400' : 'bg-rose-500'}`}></span>
             </div>
-            <span className="text-slate-300 font-bold">{healthStatus ? 'API Online' : 'Connecting...'}</span>
+            <span className="text-slate-200 font-medium">{healthStatus ? 'API Online' : 'Connecting...'}</span>
           </div>
 
-          {/* =========================================================================
-              IF ON INTRO PAGE: Clean "Open Studio" CTA only
-             ========================================================================= */}
-          {activePage === 'intro' && (
-            <motion.button
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => onChangePage('working')}
-              className="btn-primary inline-flex items-center gap-2 px-4 py-2 rounded-xl text-white font-mono font-bold text-xs cursor-pointer shadow-lg"
-            >
-              <span>Launch Working Studio</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </motion.button>
-          )}
-
-          {/* =========================================================================
-              IF ON WORKING PAGE ONLY: Operational Controls (Dataset, Run, Upload, Export)
-             ========================================================================= */}
+          {/* Operational Controls (Working Page) */}
           {activePage === 'working' && (
-            <motion.div 
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-3 flex-wrap"
-            >
+            <div className="flex items-center gap-2.5 flex-wrap">
               {/* Dataset Selector */}
               <div className="relative">
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                <button
                   onClick={() => setDatasetDropdownOpen(!datasetDropdownOpen)}
-                  className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 font-mono text-xs border border-white/10 transition-all cursor-pointer min-w-[160px] justify-between shadow-md"
+                  className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#0D0D0D] hover:bg-[#1A1A1A] text-slate-200 font-mono text-xs border border-emerald-500/30 transition-all cursor-pointer min-w-[150px] justify-between shadow-sm"
                 >
-                  <div className="truncate text-left flex-1 max-w-[120px] font-bold text-cyan-300">
+                  <div className="truncate text-left flex-1 max-w-[120px] font-semibold text-white">
                     {selectedDataset ? selectedDataset.name : 'Select Dataset'}
                   </div>
-                  <ChevronDown className={`w-3.5 h-3.5 opacity-70 shrink-0 transition-transform ${datasetDropdownOpen ? 'rotate-180' : ''}`} />
-                </motion.button>
+                  <ChevronDown className={`w-3.5 h-3.5 text-slate-400 shrink-0 transition-transform ${datasetDropdownOpen ? 'rotate-180' : ''}`} />
+                </button>
 
                 <AnimatePresence>
                   {datasetDropdownOpen && (
                     <motion.div 
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      initial={{ opacity: 0, y: 6, scale: 0.98 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      transition={{ duration: 0.2 }}
-                      className="absolute right-0 mt-2 w-64 rounded-2xl bg-[#0a0e1a] border border-white/15 shadow-2xl z-50 py-1.5 max-h-64 overflow-y-auto font-mono backdrop-blur-xl"
+                      exit={{ opacity: 0, y: 6, scale: 0.98 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-0 mt-2 w-64 rounded-xl bg-[#0A0A0A] border border-emerald-500/40 shadow-2xl z-50 py-1.5 max-h-64 overflow-y-auto font-mono backdrop-blur-xl"
                     >
                       {datasets.length === 0 ? (
                         <div className="px-4 py-3 text-xs text-slate-400 flex items-center justify-center">No datasets uploaded</div>
@@ -181,12 +155,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                               onSelectDataset(d.id);
                               setDatasetDropdownOpen(false);
                             }}
-                            className={`w-full text-left px-4 py-2.5 text-xs font-semibold flex justify-between items-center transition-colors cursor-pointer ${
-                              selectedDatasetId === d.id ? 'bg-indigo-500/20 text-indigo-300 font-bold' : 'text-slate-300 hover:bg-white/5'
+                            className={`w-full text-left px-4 py-2.5 text-xs flex justify-between items-center transition-colors cursor-pointer ${
+                              selectedDatasetId === d.id ? 'bg-emerald-500/20 text-emerald-300 font-semibold' : 'text-slate-300 hover:bg-white/5'
                             }`}
                           >
                             <span className="truncate max-w-[150px]">{d.name}</span>
-                            <span className="text-cyan-400 shrink-0 text-[10px] bg-black/60 px-2 py-0.5 rounded-md border border-white/10">{d.total_rows} rows</span>
+                            <span className="text-slate-400 shrink-0 text-[10px] bg-black/80 px-2 py-0.5 rounded border border-emerald-500/20 font-medium">{d.total_rows} rows</span>
                           </button>
                         ))
                       )}
@@ -196,15 +170,13 @@ export const Navbar: React.FC<NavbarProps> = ({
               </div>
 
               {/* Batch Enrich Button */}
-              <motion.button
-                whileHover={!isEnriching ? hoverScale.hover : {}}
-                whileTap={!isEnriching ? { scale: 0.98 } : {}}
+              <button
                 onClick={onRunBatchEnrichment}
                 disabled={isEnriching || datasets.length === 0}
-                className="btn-primary relative flex items-center gap-2 px-4 py-2 rounded-xl text-white font-bold text-xs font-mono cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                className="btn-primary flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isEnriching ? (
-                  <RefreshCw className="w-3.5 h-3.5 animate-spin text-white" />
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
                 ) : (
                   <Activity className="w-3.5 h-3.5" />
                 )}
@@ -217,49 +189,45 @@ export const Navbar: React.FC<NavbarProps> = ({
                 ) : (
                   'Run Pipeline'
                 )}
-              </motion.button>
+              </button>
 
               {/* Upload File Button */}
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+              <button
                 onClick={onOpenUpload}
-                className="btn-secondary flex items-center gap-2 px-3.5 py-2 rounded-xl text-slate-100 font-mono font-bold text-xs cursor-pointer"
+                className="btn-secondary flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold cursor-pointer"
               >
-                <UploadCloud className="w-4 h-4 text-cyan-400" />
+                <UploadCloud className="w-4 h-4 text-emerald-400" />
                 <span className="hidden sm:inline">Upload</span>
-              </motion.button>
+              </button>
 
               {/* Export Dropdown Menu */}
               <div className="relative">
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                <button
                   onClick={() => setExportDropdownOpen(!exportDropdownOpen)}
-                  className="btn-secondary flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-slate-100 font-mono font-bold text-xs cursor-pointer"
+                  className="btn-secondary flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold cursor-pointer"
                 >
-                  <Download className="w-3.5 h-3.5 text-pink-400" />
+                  <Download className="w-3.5 h-3.5 text-slate-300" />
                   <span className="hidden sm:inline">Export</span>
-                  <ChevronDown className={`w-3.5 h-3.5 opacity-70 transition-transform ${exportDropdownOpen ? 'rotate-180' : ''}`} />
-                </motion.button>
+                  <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${exportDropdownOpen ? 'rotate-180' : ''}`} />
+                </button>
 
                 <AnimatePresence>
                   {exportDropdownOpen && (
                     <motion.div 
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      initial={{ opacity: 0, y: 6, scale: 0.98 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      transition={{ duration: 0.2 }}
-                      className="absolute right-0 mt-2 w-52 rounded-2xl bg-[#0a0e1a] border border-white/15 shadow-2xl z-50 py-1.5 overflow-hidden font-mono backdrop-blur-xl"
+                      exit={{ opacity: 0, y: 6, scale: 0.98 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-0 mt-2 w-52 rounded-xl bg-[#0A0A0A] border border-emerald-500/40 shadow-2xl z-50 py-1.5 overflow-hidden font-mono backdrop-blur-xl"
                     >
                       <button
                         onClick={() => {
                           onExport('csv');
                           setExportDropdownOpen(false);
                         }}
-                        className="w-full text-left px-4 py-2.5 text-xs font-semibold text-slate-200 hover:bg-white/5 flex items-center gap-2 transition-colors cursor-pointer"
+                        className="w-full text-left px-4 py-2.5 text-xs text-slate-200 hover:bg-emerald-500/10 flex items-center gap-2 transition-colors cursor-pointer"
                       >
-                        <Download className="w-3.5 h-3.5 text-cyan-400" />
+                        <Download className="w-3.5 h-3.5 text-emerald-400" />
                         Export CSV (252 Cols)
                       </button>
                       <button
@@ -267,7 +235,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                           onExport('excel');
                           setExportDropdownOpen(false);
                         }}
-                        className="w-full text-left px-4 py-2.5 text-xs font-semibold text-slate-200 hover:bg-white/5 flex items-center gap-2 transition-colors cursor-pointer"
+                        className="w-full text-left px-4 py-2.5 text-xs text-slate-200 hover:bg-emerald-500/10 flex items-center gap-2 transition-colors cursor-pointer"
                       >
                         <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-400" />
                         Export Excel (252 Cols)
@@ -276,7 +244,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   )}
                 </AnimatePresence>
               </div>
-            </motion.div>
+            </div>
           )}
 
         </div>
@@ -284,3 +252,5 @@ export const Navbar: React.FC<NavbarProps> = ({
     </header>
   );
 };
+
+export default Navbar;
