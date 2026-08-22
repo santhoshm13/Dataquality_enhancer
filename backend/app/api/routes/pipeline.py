@@ -38,6 +38,12 @@ async def execute_batch_enrichment(job_id: str, dataset_id: Optional[int] = None
     """
     Asynchronously processes all rows in the dataset, updating progress and capturing errors.
     """
+    global _gemini_rate_limited_ref
+    # Import and reset the rate-limit flag so each job starts fresh
+    import app.pipeline.enrichment_pipeline as _ep_module
+    _ep_module._gemini_rate_limited = False
+    logger.info(f"[Job {job_id}] Reset Gemini rate-limit flag for fresh run.")
+
     job = jobs_store.get(job_id)
     if not job:
         return

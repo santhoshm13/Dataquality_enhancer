@@ -33,15 +33,28 @@ except ImportError:
     _FIRECRAWL_AVAILABLE = False
 
 
+# In-memory URL search cache — avoids repeating costly Firecrawl searches
+# for the same MPN+manufacturer in a single server session.
+_url_search_cache: Dict[str, Any] = {}
+
+
 async def _firecrawl_search_url(mpn: str, manufacturer: str) -> Dict[str, Any]:
     """
     Fallback URL discovery using Firecrawl /search endpoint.
     Runs when Gemini is unavailable or rate-limited.
+    Results are cached in-memory so each unique MPN+manufacturer is only
+    searched once per server session (avoids 3-5s round-trips per duplicate).
     Returns same shape as find_manufacturer_url so the pipeline continues.
     """
     api_key = getattr(_app_settings, "FIRECRAWL_API_KEY", None) or ""
     if not _FIRECRAWL_AVAILABLE or not _FirecrawlApp or not api_key:
         return {"found": False, "error": "Firecrawl not configured", "grounding_sources": []}
+
+    # Check in-memory cache first
+    cache_key = f"{mpn.strip().lower()}|{manufacturer.strip().lower()}"
+    if cache_key in _url_search_cache:
+        logger.info(f"[Firecrawl URL Cache HIT] {manufacturer} {mpn}")
+        return _url_search_cache[cache_key]
 
     query = f"{manufacturer} {mpn} product page"
     try:
@@ -55,7 +68,6 @@ async def _firecrawl_search_url(mpn: str, manufacturer: str) -> Dict[str, Any]:
         grounding_sources = []
         best_url = ""
         for doc in docs:
-            # doc is a dict with 'url' key
             if isinstance(doc, dict):
                 url = doc.get("url", "")
             else:
@@ -69,14 +81,18 @@ async def _firecrawl_search_url(mpn: str, manufacturer: str) -> Dict[str, Any]:
             best_url = grounding_sources[0]
         if best_url:
             logger.info(f"[Firecrawl Search Fallback] {manufacturer} {mpn}: found URL {best_url!r}")
-            return {
+            found_result = {
                 "found": True,
                 "url": best_url,
                 "source_type": "distributor",
                 "grounding_sources": grounding_sources
             }
+            _url_search_cache[cache_key] = found_result
+            return found_result
         logger.warning(f"[Firecrawl Search Fallback] {manufacturer} {mpn}: no results")
-        return {"found": False, "error": "No results from Firecrawl search", "grounding_sources": []}
+        not_found = {"found": False, "error": "No results from Firecrawl search", "grounding_sources": []}
+        _url_search_cache[cache_key] = not_found  # cache misses too to avoid re-searching
+        return not_found
     except Exception as e:
         logger.warning(f"[Firecrawl Search Fallback] {manufacturer} {mpn}: exception {e}")
         return {"found": False, "error": str(e), "grounding_sources": []}
