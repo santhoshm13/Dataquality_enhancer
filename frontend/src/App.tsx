@@ -7,7 +7,6 @@ import { StatsOverview } from './components/StatsOverview';
 import { ProductTable } from './components/ProductTable';
 import { UploadModal } from './components/UploadModal';
 import { ProductDetailModal } from './components/ProductDetailModal';
-import { EvaluationPanel } from './components/EvaluationPanel';
 import { ReviewPanel } from './components/ReviewPanel';
 import { Chatbot } from './components/Chatbot';
 import { AnimatedBackground } from './components/AnimatedBackground';
@@ -57,7 +56,6 @@ export const App: React.FC = () => {
     percent: number;
   } | null>(null);
 
-  const [evaluationData, setEvaluationData] = useState<any | null>(null);
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [approvingSuggestion, setApprovingSuggestion] = useState<string | null>(null);
 
@@ -85,16 +83,6 @@ export const App: React.FC = () => {
     } catch (e) {
       console.error("Failed to fetch datasets", e);
       return null;
-    }
-  };
-
-  const fetchEvaluation = async () => {
-    try {
-      const res = await apiFetch('/evaluation');
-      const data = await res.json();
-      setEvaluationData(data);
-    } catch (e) {
-      console.error("Failed to fetch evaluation", e);
     }
   };
 
@@ -146,7 +134,6 @@ export const App: React.FC = () => {
     fetchDatasets();
     fetchProducts();
     fetchStats();
-    fetchEvaluation();
     fetchSuggestions();
     // Auto-refresh products every 3s on the working page so the table
     // stays live without needing to manually click
@@ -243,7 +230,6 @@ export const App: React.FC = () => {
           setIsEnriching(false);
           fetchProducts();
           fetchStats();
-          fetchEvaluation();
         }
       } catch (e) {
         console.error("Failed polling pipeline status", e);
@@ -574,11 +560,6 @@ export const App: React.FC = () => {
                 <StatsOverview stats={stats} />
               </div>
 
-              {/* Ground Truth Precision Benchmark Panel */}
-              <div>
-                <EvaluationPanel evaluation={evaluationData} onRefresh={fetchEvaluation} />
-              </div>
-
               {/* Needs Human Review Queue */}
               <div>
                 <ReviewPanel
@@ -710,7 +691,6 @@ export const App: React.FC = () => {
             } catch (_) { /* fallback to normal fetch */ }
           }
           fetchStats();
-          fetchEvaluation();
           setActivePage('working');
         }}
       />
