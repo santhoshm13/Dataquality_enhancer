@@ -184,21 +184,16 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                   {/* Source Provenance / Live Link Column */}
                   <td className="p-3.5 max-w-[210px]" onClick={(e) => e.stopPropagation()}>
                     {p.source_url ? (
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                          {p.source_type === 'fallback' || p.source_type === 'distributor' ? 'DIST' : 'MFR'}
-                        </span>
-                        <a
-                          href={p.source_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 hover:text-emerald-200 border border-emerald-500/30 transition-all text-[11px] font-mono font-semibold group/link shadow-sm"
-                          title={`Live Link: ${p.source_url}`}
-                        >
-                          <span className="truncate max-w-[120px]">{formatHostname(p.source_url)}</span>
-                          <ExternalLink className="w-3 h-3 shrink-0 text-emerald-400 group-hover/link:translate-x-0.5 transition-transform" />
-                        </a>
-                      </div>
+                      <a
+                        href={p.source_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 hover:text-emerald-200 border border-emerald-500/30 transition-all text-[11px] font-mono font-semibold group/link shadow-sm"
+                        title={`Live Link: ${p.source_url}`}
+                      >
+                        <span className="truncate max-w-[140px]">{formatHostname(p.source_url)}</span>
+                        <ExternalLink className="w-3 h-3 shrink-0 text-emerald-400 group-hover/link:translate-x-0.5 transition-transform" />
+                      </a>
                     ) : p.found === false ? (
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] text-slate-400 bg-white/5 border border-white/10 font-mono font-medium">
                         No URL Found
