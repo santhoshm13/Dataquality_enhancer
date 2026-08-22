@@ -26,6 +26,22 @@ logger = logging.getLogger("app.main")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info(f"Starting {settings.PROJECT_NAME} backend in {settings.ENV} mode...")
+
+    # Fail fast in production if DATABASE_URL still points to localhost (the default)
+    if settings.ENV == "production" and "localhost" in settings.DATABASE_URL:
+        raise RuntimeError(
+            "DATABASE_URL still points to localhost in production mode. "
+            "Set DATABASE_URL to your real Supabase/Postgres connection string in Render env vars."
+        )
+
+    # Warn loudly if LLM_PROVIDER is gemini/openai but the key is missing
+    if settings.LLM_PROVIDER != "mock" and not settings.get_api_key():
+        logger.warning(
+            f"LLM_PROVIDER={settings.LLM_PROVIDER!r} but no API key found "
+            f"(GEMINI_API_KEY / OPENAI_API_KEY). Falling back to mock provider — "
+            f"enrichment accuracy will be degraded."
+        )
+
     load_master_data()
     yield
     logger.info("Shutting down backend...")
@@ -37,11 +53,12 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# Configure CORS for Live Vercel Frontend and Local Dev
+# Configure CORS — use explicit allow_origins from settings (comma-separated ALLOWED_ORIGINS env var)
+# Never combine allow_origins=["*"] with allow_credentials=True (browsers reject this)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Permits Vercel deployment & local dev connections
-    allow_credentials=True,
+    allow_origins=settings.origins_list,
+    allow_credentials=False,  # No cookies/JWT used; set True only if you add auth
     allow_methods=["*"],
     allow_headers=["*"],
 )

@@ -8,7 +8,7 @@ interface ChatMessage {
   timestamp: Date;
 }
 
-const API_BASE = "http://127.0.0.1:8000/api";
+import { apiFetch } from '../lib/api';
 
 export const Chatbot: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -47,30 +47,23 @@ export const Chatbot: React.FC = () => {
     setIsTyping(true);
 
     try {
-      const response = await fetch(`${API_BASE}/chat`, {
+      const response = await apiFetch('/chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: userMsg.text }),
       });
-
-      if (response.ok) {
-        const data = await response.json();
-        const botMsg: ChatMessage = {
-          id: (Date.now() + 1).toString(),
-          text: data.reply,
-          sender: 'bot',
-          timestamp: new Date()
-        };
-        // Artificial delay for better UX
-        setTimeout(() => {
-          setMessages(prev => [...prev, botMsg]);
-          setIsTyping(false);
-        }, 600);
-      } else {
-        throw new Error("Failed to communicate with chat API");
-      }
+      const data = await response.json();
+      const botMsg: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        text: data.reply || 'Sorry, I could not process your request.',
+        sender: 'bot',
+        timestamp: new Date()
+      };
+      // Artificial delay for better UX
+      setTimeout(() => {
+        setMessages(prev => [...prev, botMsg]);
+        setIsTyping(false);
+      }, 600);
     } catch (error) {
       console.error(error);
       const errorMsg: ChatMessage = {

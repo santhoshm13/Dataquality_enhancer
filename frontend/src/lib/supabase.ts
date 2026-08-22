@@ -1,13 +1,25 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl =
-  import.meta.env.VITE_SUPABASE_URL ||
-  import.meta.env.NEXT_PUBLIC_SUPABASE_URL ||
-  'https://rirztcyeaojcpfmyokwd.supabase.co';
+// These values MUST be set as env vars in Vercel project settings:
+//   VITE_SUPABASE_URL  → https://your-project.supabase.co
+//   VITE_SUPABASE_ANON_KEY → your-anon-key
+//
+// No hardcoded fallback values — rotating keys requires only an env var update,
+// and the repo doesn't leak project-specific identifiers.
 
-const supabaseAnonKey =
-  import.meta.env.VITE_SUPABASE_ANON_KEY ||
-  import.meta.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-  'sb_publishable_TG6_bJbK8jD74f8PoSFl4Q_1B97Pd2S';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+if (!supabaseUrl || !supabaseAnonKey) {
+  // In dev mode, warn but don't crash — Supabase features will simply not work
+  // until the developer adds the env vars to their local .env file.
+  console.warn(
+    '[Supabase] VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY is not set. ' +
+    'Copy frontend/.env.example to frontend/.env and fill in your Supabase credentials.'
+  );
+}
+
+export const supabase = createClient(
+  supabaseUrl ?? 'https://placeholder.supabase.co',
+  supabaseAnonKey ?? 'placeholder-key'
+);

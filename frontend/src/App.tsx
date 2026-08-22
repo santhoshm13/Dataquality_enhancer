@@ -15,7 +15,7 @@ import { ArrowRight, Terminal, Database, Play, Download, Brain } from 'lucide-re
 import { motion, AnimatePresence } from 'framer-motion';
 import { scrollZoomBox } from './lib/animations';
 
-const API_BASE = "http://127.0.0.1:8000/api";
+import { apiFetch, apiUrl } from './lib/api';
 
 export const App: React.FC = () => {
   const [activePage, setActivePage] = useState<'intro' | 'working'>('intro');
@@ -58,77 +58,75 @@ export const App: React.FC = () => {
     percent: number;
   } | null>(null);
 
-  const [healthStatus, setHealthStatus] = useState<boolean>(true);
+  const [healthStatus, setHealthStatus] = useState<boolean | null>(null); // null = checking
+  const [backendUnreachable, setBackendUnreachable] = useState<boolean>(false);
   const [evaluationData, setEvaluationData] = useState<any | null>(null);
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [approvingSuggestion, setApprovingSuggestion] = useState<string | null>(null);
+  const [statsLoading, setStatsLoading] = useState<boolean>(true);
 
   const checkHealth = async () => {
     try {
-      const res = await fetch(`${API_BASE}/health`);
-      if (res.ok) setHealthStatus(true);
-      else setHealthStatus(false);
+      await apiFetch('/health');
+      setHealthStatus(true);
+      setBackendUnreachable(false);
     } catch {
       setHealthStatus(false);
+      setBackendUnreachable(true);
     }
   };
 
   const fetchStats = async () => {
+    setStatsLoading(true);
     try {
-      const url = new URL(`${API_BASE}/dashboard/stats`);
-      if (selectedDatasetId) url.searchParams.append("dataset_id", selectedDatasetId.toString());
-      const res = await fetch(url.toString());
-      if (res.ok) {
-        const data = await res.json();
-        setStats(data);
-      }
+      // Build query string manually so apiFetch gets a clean relative path
+      const qs = selectedDatasetId ? `?dataset_id=${selectedDatasetId}` : '';
+      const res = await apiFetch(`/dashboard/stats${qs}`);
+      const data = await res.json();
+      setStats(data);
     } catch (e) {
-      console.error("Failed to fetch stats", e);
+      console.error('Failed to fetch stats', e);
+    } finally {
+      setStatsLoading(false);
     }
   };
 
   const fetchDatasets = async () => {
     try {
-      const res = await fetch(`${API_BASE}/datasets`);
-      if (res.ok) {
-        const data = await res.json();
-        setDatasets(data);
-        if (data.length > 0 && !selectedDatasetId) {
-          setSelectedDatasetId(data[data.length - 1].id);
-        }
+      const res = await apiFetch('/datasets');
+      const data = await res.json();
+      setDatasets(data);
+      if (data.length > 0 && !selectedDatasetId) {
+        setSelectedDatasetId(data[data.length - 1].id);
       }
     } catch (e) {
-      console.error("Failed to fetch datasets", e);
+      console.error('Failed to fetch datasets', e);
     }
   };
 
   const fetchEvaluation = async () => {
     try {
-      const res = await fetch(`${API_BASE}/evaluation`);
-      if (res.ok) {
-        const data = await res.json();
-        setEvaluationData(data);
-      }
+      const res = await apiFetch('/evaluation');
+      const data = await res.json();
+      setEvaluationData(data);
     } catch (e) {
-      console.error("Failed to fetch evaluation", e);
+      console.error('Failed to fetch evaluation', e);
     }
   };
 
   const fetchSuggestions = async () => {
     try {
-      const res = await fetch(`${API_BASE}/suggestions?threshold=2`);
-      if (res.ok) {
-        const data = await res.json();
-        setSuggestions(data.suggestions || []);
-      }
-    } catch (e) { /* non-critical */ }
+      const res = await apiFetch('/suggestions?threshold=2');
+      const data = await res.json();
+      setSuggestions(data.suggestions || []);
+    } catch { /* non-critical */ }
   };
 
   const approveSuggestion = async (s: any) => {
     const key = `${s.category}::${s.field_name}::${s.suggested_value}`;
     setApprovingSuggestion(key);
     try {
-      await fetch(`${API_BASE}/suggestions/approve`, {
+      await apiFetch('/suggestions/approve', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ category: s.category, field_name: s.field_name, suggested_value: s.suggested_value })
@@ -142,27 +140,18 @@ export const App: React.FC = () => {
 
   const fetchProducts = async () => {
     try {
-      const url = new URL(`${API_BASE}/products`);
-      url.searchParams.append("page", page.toString());
-      url.searchParams.append("limit", limit.toString());
-      if (statusFilter !== "ALL") {
-        url.searchParams.append("status", statusFilter);
-      }
-      if (searchQuery.trim()) {
-        url.searchParams.append("search", searchQuery.trim());
-      }
-      if (selectedDatasetId) {
-        url.searchParams.append("dataset_id", selectedDatasetId.toString());
-      }
-
-      const res = await fetch(url.toString());
-      if (res.ok) {
-        const data = await res.json();
-        setProducts(data.items || []);
-        setTotalProducts(data.total || 0);
-      }
+      const params = new URLSearchParams();
+      params.set('page', String(page));
+      params.set('limit', String(limit));
+      if (statusFilter !== 'ALL') params.set('status', statusFilter);
+      if (searchQuery.trim()) params.set('search', searchQuery.trim());
+      if (selectedDatasetId) params.set('dataset_id', String(selectedDatasetId));
+      const res = await apiFetch(`/products?${params.toString()}`);
+      const data = await res.json();
+      setProducts(data.items || []);
+      setTotalProducts(data.total || 0);
     } catch (e) {
-      console.error("Failed to fetch products", e);
+      console.error('Failed to fetch products', e);
     }
   };
 
@@ -182,45 +171,36 @@ export const App: React.FC = () => {
 
   const handleSelectProduct = async (id: number) => {
     try {
-      const res = await fetch(`${API_BASE}/products/${id}`);
-      if (res.ok) {
-        const fullProduct = await res.json();
-        setSelectedProduct(fullProduct);
-      }
+      const res = await apiFetch(`/products/${id}`);
+      const fullProduct = await res.json();
+      setSelectedProduct(fullProduct);
     } catch (e) {
-      console.error("Failed to fetch product details", e);
+      console.error('Failed to fetch product details', e);
     }
   };
 
   const handleEnrichSingle = async (id: number) => {
     try {
-      const res = await fetch(`${API_BASE}/products/${id}/enrich`, { method: 'POST' });
-      if (res.ok) {
-        fetchProducts();
-        fetchStats();
-        if (selectedProduct && selectedProduct.id === id) {
-          handleSelectProduct(id);
-        }
-      }
+      await apiFetch(`/products/${id}/enrich`, { method: 'POST' });
+      fetchProducts();
+      fetchStats();
+      if (selectedProduct && selectedProduct.id === id) handleSelectProduct(id);
     } catch (e) {
-      console.error("Failed to single enrich", e);
+      console.error('Failed to single enrich', e);
     }
   };
 
   const handleRunBatchEnrichment = async () => {
     setIsEnriching(true);
     try {
-      const url = new URL(`${API_BASE}/pipeline/run`);
-      if (selectedDatasetId) url.searchParams.append("dataset_id", selectedDatasetId.toString());
-      const res = await fetch(url.toString(), { method: 'POST' });
-      if (res.ok) {
-        pollEnrichmentStatus();
-        setActivePage('working'); // Navigate to working studio to see live output!
-      } else {
-        setIsEnriching(false);
-      }
+      await apiFetch(
+        apiUrl('/pipeline/run', { dataset_id: selectedDatasetId }),
+        { method: 'POST' }
+      );
+      pollEnrichmentStatus();
+      setActivePage('working');
     } catch (e) {
-      console.error("Failed to start batch enrichment", e);
+      console.error('Failed to start batch enrichment', e);
       setIsEnriching(false);
     }
   };
@@ -228,33 +208,31 @@ export const App: React.FC = () => {
   const pollEnrichmentStatus = () => {
     const interval = setInterval(async () => {
       try {
-        const res = await fetch(`${API_BASE}/pipeline/status`);
-        if (res.ok) {
-          const data = await res.json();
-          // pipeline/status returns: total_rows, processed_rows, status (PENDING/RUNNING/COMPLETED/IDLE)
-          const total = data.total_rows || 1;
-          const processed = data.processed_rows || 0;
-          const percent = Math.round((processed / total) * 100);
-          const statusUpper = (data.status || '').toUpperCase();
-          const isDone = statusUpper === 'COMPLETED' || statusUpper === 'IDLE' || percent >= 100;
+        const res = await apiFetch('/pipeline/status');
+        const data = await res.json();
+        // pipeline/status returns: total_rows, processed_rows, status (PENDING/RUNNING/COMPLETED/IDLE)
+        const total = data.total_rows || 1;
+        const processed = data.processed_rows || 0;
+        const percent = Math.round((processed / total) * 100);
+        const statusUpper = (data.status || '').toUpperCase();
+        const isDone = statusUpper === 'COMPLETED' || statusUpper === 'IDLE' || percent >= 100;
 
-          setEnrichmentProgress({
-            status: isDone ? 'Completed' : 'Processing',
-            total,
-            processed,
-            percent: isDone ? 100 : percent
-          });
+        setEnrichmentProgress({
+          status: isDone ? 'Completed' : 'Processing',
+          total,
+          processed,
+          percent: isDone ? 100 : percent
+        });
 
-          if (isDone) {
-            clearInterval(interval);
-            setIsEnriching(false);
-            fetchProducts();
-            fetchStats();
-            fetchEvaluation();
-          }
+        if (isDone) {
+          clearInterval(interval);
+          setIsEnriching(false);
+          fetchProducts();
+          fetchStats();
+          fetchEvaluation();
         }
       } catch (e) {
-        console.error("Failed polling pipeline status", e);
+        console.error('Failed polling pipeline status', e);
       }
     }, 2000);
   };
@@ -290,17 +268,17 @@ export const App: React.FC = () => {
   };
 
   const handleExport = async (format: 'csv' | 'excel') => {
-    const url = new URL(`${API_BASE}/export`);
-    url.searchParams.append("format", format);
-    if (selectedDatasetId) url.searchParams.append("dataset_id", selectedDatasetId.toString());
-
     const isExcel = format === 'excel';
     const ext = isExcel ? 'xlsx' : 'csv';
     const mime = isExcel
       ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       : 'text/csv;charset=utf-8';
     const date = new Date().toISOString().slice(0, 10);
-    await downloadFile(url.toString(), `Enriched_Delivery_Format_${date}.${ext}`, mime);
+    await downloadFile(
+      apiUrl('/export', { format, dataset_id: selectedDatasetId }),
+      `Enriched_Delivery_Format_${date}.${ext}`,
+      mime
+    );
   };
 
 
@@ -329,8 +307,17 @@ export const App: React.FC = () => {
         onRunBatchEnrichment={handleRunBatchEnrichment}
         isEnriching={isEnriching}
         enrichmentProgress={enrichmentProgress}
-        healthStatus={healthStatus}
+        healthStatus={healthStatus !== false}
       />
+
+      {/* Backend Unreachable Banner */}
+      {backendUnreachable && (
+        <div className="sticky top-0 z-50 bg-rose-600/95 backdrop-blur-sm text-white text-sm font-mono font-bold px-4 py-3 flex items-center justify-center gap-3 shadow-lg border-b border-rose-400">
+          <span className="animate-pulse">⚠</span>
+          <span>Backend not reachable — check <code className="bg-rose-800/50 px-1 rounded">VITE_API_URL</code> or ensure the backend server is running.</span>
+          <button onClick={checkHealth} className="ml-4 px-3 py-1 rounded-lg bg-rose-800/60 hover:bg-rose-800 text-xs font-bold transition-colors cursor-pointer">Retry</button>
+        </div>
+      )}
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">
@@ -462,7 +449,7 @@ export const App: React.FC = () => {
 
               {/* Executive KPI Stats Overview */}
               <div>
-                <StatsOverview stats={stats} />
+                <StatsOverview stats={stats} isLoading={statsLoading} />
               </div>
 
               {/* Ground Truth Precision Benchmark Panel */}
@@ -541,11 +528,12 @@ export const App: React.FC = () => {
                   </div>
                   <button
                     onClick={() => {
-                      const url = new URL(`${API_BASE}/export/audit`);
-                      url.searchParams.append('format', 'csv');
-                      if (selectedDatasetId) url.searchParams.append('dataset_id', selectedDatasetId.toString());
                       const date = new Date().toISOString().slice(0, 10);
-                      downloadFile(url.toString(), `Audit_Trail_${date}.csv`, 'text/csv;charset=utf-8');
+                      downloadFile(
+                        apiUrl('/export/audit', { format: 'csv', dataset_id: selectedDatasetId }),
+                        `Audit_Trail_${date}.csv`,
+                        'text/csv;charset=utf-8'
+                      );
                     }}
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 text-xs font-bold cursor-pointer transition-colors"
                   >

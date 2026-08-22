@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { X, UploadCloud, FileText, CheckCircle, AlertCircle, Loader2, ArrowRight } from 'lucide-react';
+import { apiFetch } from '../lib/api';
 
 interface UploadModalProps {
   isOpen: boolean;
@@ -50,16 +51,11 @@ export const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose, onUpl
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/upload", {
+      const response = await apiFetch('/upload', {
         method: "POST",
         body: formData,
       });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.detail || "Upload failed");
-      }
-
+      // apiFetch throws on non-2xx, so we don't need to check response.ok
       const data = await response.json();
       setUploadResult(data);
       onUploadSuccess();

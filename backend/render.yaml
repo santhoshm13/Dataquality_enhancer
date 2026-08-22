@@ -2,12 +2,26 @@ services:
   - type: web
     name: ai-product-enrichment-backend
     env: python
+    rootDir: backend
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.0
+        value: "3.11.0"
       - key: ENV
         value: production
       - key: LLM_PROVIDER
-        value: mock
+        value: gemini
+      # GEMINI_API_KEY must be set in Render dashboard → Environment → Secret Files / Env Vars
+      # Never commit the actual key to source control.
+      # - key: GEMINI_API_KEY
+      #   value: YOUR_KEY_HERE
+      #
+      # DATABASE_URL must be set in Render dashboard to your real Supabase/Postgres connection string.
+      # Never use the localhost default in production.
+      # - key: DATABASE_URL
+      #   value: postgresql://user:pass@db.supabase.co:5432/postgres
+      #
+      # ALLOWED_ORIGINS should include your deployed Vercel frontend URL:
+      # - key: ALLOWED_ORIGINS
+      #   value: https://your-project.vercel.app,https://your-custom-domain.com

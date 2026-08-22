@@ -2,6 +2,7 @@ import React from 'react';
 import { Search, Filter, ChevronLeft, ChevronRight, Eye, Play, ExternalLink, AlertCircle, Download } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { scrollZoomSection, scrollZoomBox } from '../lib/animations';
+import { apiUrl } from '../lib/api';
 
 interface Product {
   id: number;
@@ -246,8 +247,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                         whileHover={{ scale: 1.15 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => {
-                          const base = (window as any).__API_BASE__ || 'http://localhost:8000/api';
-                          window.open(`${base}/export/audit/${p.id}`, '_blank');
+                          window.open(apiUrl(`/export/audit/${p.id}`, { format: 'json' }), '_blank');
                         }}
                         className="p-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 transition-all cursor-pointer shadow-md"
                         title="Export Audit Trail JSON"

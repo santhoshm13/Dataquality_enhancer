@@ -3,7 +3,7 @@ import { AlertTriangle, RefreshCw, Search, Globe, Cpu, Sparkles, Filter, ShieldA
 import { motion } from 'framer-motion';
 import { scrollZoomSection, scrollZoomBox, hoverScale } from '../lib/animations';
 
-const API_BASE = "http://127.0.0.1:8000/api";
+import { apiFetch } from '../lib/api';
 
 interface ReviewProduct {
   id: number;
@@ -48,7 +48,7 @@ export const ReviewPanel: React.FC<ReviewPanelProps> = ({ datasetId, onReEnrich 
   const submitCorrection = async (productId: number, originalValue: string) => {
     if (!correctionValue.trim()) return;
     try {
-      const res = await fetch(`${API_BASE}/products/${productId}/correct`, {
+      await apiFetch(`/products/${productId}/correct`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -58,11 +58,9 @@ export const ReviewPanel: React.FC<ReviewPanelProps> = ({ datasetId, onReEnrich 
           corrected_by: 'human_reviewer'
         })
       });
-      if (res.ok) {
-        setCorrectionSaved(prev => new Set([...prev, productId]));
-        setCorrecting(null);
-        setCorrectionValue('');
-      }
+      setCorrectionSaved(prev => new Set([...prev, productId]));
+      setCorrecting(null);
+      setCorrectionValue('');
     } catch (e) {
       console.error('Correction failed', e);
     }
@@ -70,35 +68,33 @@ export const ReviewPanel: React.FC<ReviewPanelProps> = ({ datasetId, onReEnrich 
   const fetchReviewProducts = async () => {
     setLoading(true);
     try {
-      const url = new URL(`${API_BASE}/products`);
-      url.searchParams.append("page", page.toString());
-      url.searchParams.append("limit", limit.toString());
-      url.searchParams.append("review_status", "NEEDS_HUMAN_REVIEW");
-      if (datasetId) url.searchParams.append("dataset_id", datasetId.toString());
+      const params = new URLSearchParams();
+      params.set('page', page.toString());
+      params.set('limit', limit.toString());
+      params.set('review_status', 'NEEDS_HUMAN_REVIEW');
+      if (datasetId) params.set('dataset_id', datasetId.toString());
 
-      const res = await fetch(url.toString());
-      if (res.ok) {
-        const data = await res.json();
-        let items = data.items || [];
+      const res = await apiFetch(`/products?${params.toString()}`);
+      const data = await res.json();
+      let items = data.items || [];
 
-        // Client-side filter by review category
-        if (activeCategory !== "all") {
-          items = items.filter((p: ReviewProduct) => {
-            const reason = (p.review_reason || "").toLowerCase();
-            if (activeCategory === "url_lookup") return reason.includes("url lookup");
-            if (activeCategory === "url_validation") return reason.includes("url validation");
-            if (activeCategory === "scrape") return reason.includes("scrape");
-            if (activeCategory === "spec_extraction") return reason.includes("spec extraction");
-            if (activeCategory === "exception") return reason.includes("exception");
-            return true;
-          });
-        }
-
-        setProducts(items);
-        setTotal(data.total || 0);
+      // Client-side filter by review category
+      if (activeCategory !== 'all') {
+        items = items.filter((p: ReviewProduct) => {
+          const reason = (p.review_reason || '').toLowerCase();
+          if (activeCategory === 'url_lookup') return reason.includes('url lookup');
+          if (activeCategory === 'url_validation') return reason.includes('url validation');
+          if (activeCategory === 'scrape') return reason.includes('scrape');
+          if (activeCategory === 'spec_extraction') return reason.includes('spec extraction');
+          if (activeCategory === 'exception') return reason.includes('exception');
+          return true;
+        });
       }
+
+      setProducts(items);
+      setTotal(data.total || 0);
     } catch (e) {
-      console.error("Failed to fetch review products", e);
+      console.error('Failed to fetch review products', e);
     } finally {
       setLoading(false);
     }

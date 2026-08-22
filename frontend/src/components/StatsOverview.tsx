@@ -13,13 +13,41 @@ interface StatsProps {
     total_attributes_extracted?: number;
     lov_pass_rate?: number | null;
   };
+  isLoading?: boolean;
 }
 
-export const StatsOverview: React.FC<StatsProps> = ({ stats }) => {
+/** Reusable animated shimmer skeleton block */
+const Skeleton: React.FC<{ className?: string }> = ({ className = '' }) => (
+  <div className={`animate-pulse rounded-lg bg-slate-700/50 ${className}`} />
+);
+
+export const StatsOverview: React.FC<StatsProps> = ({ stats, isLoading = false }) => {
   const total = stats.total_products || 0;
   const highPct = total > 0 ? ((stats.high_confidence / total) * 100).toFixed(1) : '0';
   const medPct = total > 0 ? ((stats.medium_confidence / total) * 100).toFixed(1) : '0';
   const revPct = total > 0 ? ((stats.needs_review / total) * 100).toFixed(1) : '0';
+
+  if (isLoading) {
+    return (
+      <div className="mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 mb-6">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="frame-3d rounded-3xl p-6 shadow-2xl">
+              <div className="flex items-center justify-between mb-3">
+                <Skeleton className="h-3 w-28" />
+                <Skeleton className="h-10 w-10 rounded-2xl" />
+              </div>
+              <Skeleton className="h-10 w-24 mb-2" />
+              <Skeleton className="h-3 w-32" />
+            </div>
+          ))}
+        </div>
+        <div className="frame-3d p-6 rounded-3xl shadow-2xl">
+          <Skeleton className="h-4 w-full rounded-full" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <motion.div
