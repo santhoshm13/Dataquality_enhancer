@@ -639,10 +639,62 @@ class OpenAIProvider(BaseLLMProvider):
             return await MockLLMProvider().generate_descriptions(attributes, raw_desc)
 
 
+# ---------------------------------------------------------------------------
+# Gemini API Key Rotator — automatically shifts to next key on 429 / quota limit
+# ---------------------------------------------------------------------------
+class GeminiKeyRotator:
+    """Thread-safe and async-safe key rotator for Gemini API keys."""
+    def __init__(self):
+        self._keys: List[str] = []
+        self._index: int = 0
+        self.reload_keys()
+
+    def reload_keys(self):
+        from app.config.settings import settings as _app_settings
+        self._keys = _app_settings.get_api_keys()
+        self._index = 0
+        if self._keys:
+            logger.info(f"[API Key Rotator] Initialized with {len(self._keys)} active Gemini key(s).")
+        else:
+            logger.warning("[API Key Rotator] No Gemini API keys configured.")
+
+    def get_current_key(self) -> str:
+        if not self._keys:
+            self.reload_keys()
+        if not self._keys:
+            return ""
+        return self._keys[self._index % len(self._keys)]
+
+    def rotate_key(self, failed_key: str = "") -> str:
+        if not self._keys:
+            return ""
+        old_key = self.get_current_key()
+        if len(self._keys) > 1:
+            self._index = (self._index + 1) % len(self._keys)
+            new_key = self.get_current_key()
+            logger.warning(
+                f"[API Key Rotator] ⚠️ Rate limit on key (...{old_key[-6:] if len(old_key) > 6 else 'xxx'}). "
+                f"Automatically switched to Key #{self._index + 1}/{len(self._keys)} (...{new_key[-6:] if len(new_key) > 6 else 'xxx'})."
+            )
+            return new_key
+        else:
+            logger.warning(f"[API Key Rotator] Only 1 Gemini key configured (...{old_key[-6:] if len(old_key) > 6 else 'xxx'}).")
+            return self._keys[0]
+
+    def get_key_count(self) -> int:
+        return len(self._keys)
+
+
+gemini_key_rotator = GeminiKeyRotator()
+
+
 class GeminiProvider(BaseLLMProvider):
-    def __init__(self, api_key: str):
-        self.api_key = api_key
-        self.api_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={self.api_key}"
+    def __init__(self, api_key: str = ""):
+        self.api_key = api_key or gemini_key_rotator.get_current_key()
+
+    def _get_api_url(self) -> str:
+        key = gemini_key_rotator.get_current_key() or self.api_key
+        return f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={key}"
 
     async def extract_attributes(self, product_desc: str, category: str, part_num: str, classpath: str = "", manufacturer: str = "", brand: str = "") -> Dict[str, Any]:
         lov_entries = get_lov_for_classpath(classpath)
@@ -666,36 +718,48 @@ class GeminiProvider(BaseLLMProvider):
             }
         }
 
-        try:
-            response = await fetch_with_retry(self.api_url, json_payload=payload, headers=headers)
-            if response is None:
-                logger.warning("Gemini API returned None. Falling back to MockLLMProvider.")
+        num_keys = max(1, gemini_key_rotator.get_key_count())
+        for key_attempt in range(num_keys):
+            try:
+                api_url = self._get_api_url()
+                response = await fetch_with_retry(api_url, json_payload=payload, headers=headers)
+                if response is None:
+                    if key_attempt < num_keys - 1:
+                        gemini_key_rotator.rotate_key()
+                        continue
+                    logger.warning("Gemini API returned None. Falling back to MockLLMProvider.")
+                    return await MockLLMProvider().extract_attributes(product_desc, category, part_num, classpath, manufacturer, brand)
+
+                candidates = response.get("candidates", [])
+                if not candidates:
+                    if key_attempt < num_keys - 1:
+                        gemini_key_rotator.rotate_key()
+                        continue
+                    raise ValueError("No candidates returned from Gemini API")
+
+                content = candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "")
+                cleaned = clean_json_text(content)
+                parsed = json.loads(cleaned)
+
+                department = parsed.get("department", "")
+                class_ = parsed.get("class", "")
+                category_out = parsed.get("category", "")
+                raw_attributes = parsed.get("attributes", parsed)
+
+                validated_attributes = validate_attributes_against_lov(raw_attributes, lov_entries)
+
+                return {
+                    "department": department,
+                    "class": class_,
+                    "category": category_out or category,
+                    "attributes": validated_attributes
+                }
+            except Exception as e:
+                if ("429" in str(e) or "RESOURCE_EXHAUSTED" in str(e)) and key_attempt < num_keys - 1:
+                    gemini_key_rotator.rotate_key()
+                    continue
+                logger.warning(f"Gemini extraction failed: {e}. Falling back to MockLLMProvider.")
                 return await MockLLMProvider().extract_attributes(product_desc, category, part_num, classpath, manufacturer, brand)
-
-            candidates = response.get("candidates", [])
-            if not candidates:
-                raise ValueError("No candidates returned from Gemini API")
-
-            content = candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "")
-            cleaned = clean_json_text(content)
-            parsed = json.loads(cleaned)
-
-            department = parsed.get("department", "")
-            class_ = parsed.get("class", "")
-            category_out = parsed.get("category", "")
-            raw_attributes = parsed.get("attributes", parsed)
-
-            validated_attributes = validate_attributes_against_lov(raw_attributes, lov_entries)
-
-            return {
-                "department": department,
-                "class": class_,
-                "category": category_out or category,
-                "attributes": validated_attributes
-            }
-        except Exception as e:
-            logger.warning(f"Gemini extraction failed: {e}. Falling back to MockLLMProvider.")
-            return await MockLLMProvider().extract_attributes(product_desc, category, part_num, classpath, manufacturer, brand)
 
     async def generate_descriptions(self, attributes: Dict[str, Any], raw_desc: str) -> Dict[str, str]:
         context = attributes
@@ -715,39 +779,47 @@ class GeminiProvider(BaseLLMProvider):
             }
         }
 
-        try:
-            response = await fetch_with_retry(self.api_url, json_payload=payload, headers=headers)
-            if response is None:
-                logger.warning("Gemini API returned None for descriptions. Falling back to MockLLMProvider.")
+        num_keys = max(1, gemini_key_rotator.get_key_count())
+        for key_attempt in range(num_keys):
+            try:
+                api_url = self._get_api_url()
+                response = await fetch_with_retry(api_url, json_payload=payload, headers=headers)
+                if response is None:
+                    if key_attempt < num_keys - 1:
+                        gemini_key_rotator.rotate_key()
+                        continue
+                    logger.warning("Gemini API returned None for descriptions. Falling back to MockLLMProvider.")
+                    return await MockLLMProvider().generate_descriptions(attributes, raw_desc)
+
+                candidates = response.get("candidates", [])
+                if not candidates:
+                    if key_attempt < num_keys - 1:
+                        gemini_key_rotator.rotate_key()
+                        continue
+                    raise ValueError("No candidates returned from Gemini API")
+
+                content = candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "")
+                cleaned = clean_json_text(content)
+                parsed = json.loads(cleaned)
+
+                return enforce_description_limits(parsed, context)
+            except Exception as e:
+                if ("429" in str(e) or "RESOURCE_EXHAUSTED" in str(e)) and key_attempt < num_keys - 1:
+                    gemini_key_rotator.rotate_key()
+                    continue
+                logger.warning(f"Gemini description generation failed: {e}. Falling back to MockLLMProvider.")
                 return await MockLLMProvider().generate_descriptions(attributes, raw_desc)
-
-            candidates = response.get("candidates", [])
-            if not candidates:
-                raise ValueError("No candidates returned from Gemini API")
-
-            content = candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "")
-            cleaned = clean_json_text(content)
-            parsed = json.loads(cleaned)
-
-            return enforce_description_limits(parsed, context)
-        except Exception as e:
-            logger.warning(f"Gemini description generation failed: {e}. Falling back to MockLLMProvider.")
-            return await MockLLMProvider().generate_descriptions(attributes, raw_desc)
 
     async def find_manufacturer_url(self, mpn: str, manufacturer: str, category_hint: str = None) -> Dict[str, Any]:
         """
         STAGE 1: Find the product's official or fallback distributor URL using
         gemini-3.7-flash with ONLY google_search tool enabled.
-        category_hint biases search towards the right product category.
+        Automatically rotates keys if rate limit is reached.
         """
         hint_line = ""
         if category_hint:
             hint_line = f"Product Category: {category_hint}\n"
 
-        # BUG FIX: The prompt explicitly requests JSON, but Gemini with google_search
-        # tool often returns a natural-language answer with the URL embedded in text.
-        # We now use a two-pass strategy: try JSON parse first, then regex-extract URL
-        # from raw text as a fallback so we never discard a valid URL.
         prompt = (
             f"Manufacturer: {manufacturer}\n"
             f"Manufacturer Part Number (MPN): {mpn}\n"
@@ -761,116 +833,141 @@ class GeminiProvider(BaseLLMProvider):
             f'\nOR if not found: {{"found": false, "url": "", "source_type": "none"}}'
         )
 
-        try:
-            if not self.api_key:
-                return {"found": False, "error": "Gemini API key is not configured"}
-
-            if not genai:
-                return {"found": False, "error": "google-genai SDK is not installed"}
-
-            client = genai.Client(api_key=self.api_key)
-            tools = [
-                types.Tool(google_search=types.GoogleSearch())
-            ]
-            config = types.GenerateContentConfig(
-                tools=tools,
-                temperature=0.1,
-            )
-
-            max_retries = 2
-            response = None
-
-            for attempt in range(max_retries):
-                try:
-                    response = await client.aio.models.generate_content(
-                        model="gemini-3.7-flash",
-                        contents=prompt,
-                        config=config
-                    )
-                    if response:
-                        break
-                except Exception as exc:
-                    if "RESOURCE_EXHAUSTED" in str(exc) or "429" in str(exc):
-                        logger.warning(f"Gemini quota/rate limit reached during URL lookup for {manufacturer} {mpn}: {exc} — trying Firecrawl search fallback")
-                        # Firecrawl search fallback: find URL without Gemini
-                        return await _firecrawl_search_url(mpn, manufacturer)
-                    if attempt == max_retries - 1:
-                        raise exc
-                    await asyncio.sleep(0.5 * (2 ** attempt))
-
-            if not response or not getattr(response, "candidates", None):
-                return {"found": False, "error": "No candidates returned from Gemini"}
-
-            candidate = response.candidates[0]
-            raw_text = getattr(response, "text", "") or ""
-            if not raw_text and getattr(candidate, "content", None) and getattr(candidate.content, "parts", None):
-                raw_text = candidate.content.parts[0].text or ""
-
-            logger.info(f"[Stage 1 raw response] {manufacturer} {mpn}: {raw_text[:300]!r}")
-
-            # Grounding metadata provenance trail
-            grounding_sources = []
-            if hasattr(candidate, "grounding_metadata") and candidate.grounding_metadata:
-                gm = candidate.grounding_metadata
-                chunks = getattr(gm, "grounding_chunks", []) or []
-                for chunk in chunks:
-                    web = getattr(chunk, "web", None)
-                    if web and getattr(web, "uri", None):
-                        grounding_sources.append(web.uri)
-                    elif isinstance(chunk, dict) and "web" in chunk and isinstance(chunk["web"], dict) and "uri" in chunk["web"]:
-                        grounding_sources.append(chunk["web"]["uri"])
-
-                if hasattr(gm, "source_flagging_uris") and gm.source_flagging_uris:
-                    for uri in gm.source_flagging_uris:
-                        if uri not in grounding_sources:
-                            grounding_sources.append(uri)
-
-            found = False
-            url = ""
-            source_type = "none"
-
-            # Pass 1: Try strict JSON parse
+        num_keys = max(1, gemini_key_rotator.get_key_count())
+        for key_attempt in range(num_keys):
+            active_key = gemini_key_rotator.get_current_key() or self.api_key
             try:
-                cleaned = clean_json_text(raw_text)
-                if cleaned:
-                    parsed = json.loads(cleaned)
-                    found = bool(parsed.get("found", False))
-                    url = str(parsed.get("url") or "").strip()
-                    source_type = str(parsed.get("source_type") or ("manufacturer" if found else "none")).strip()
-            except (json.JSONDecodeError, ValueError) as json_err:
-                logger.warning(f"[Stage 1 JSON parse failed] {manufacturer} {mpn}: {json_err} — trying regex URL extraction")
+                if not active_key:
+                    return {"found": False, "error": "Gemini API key is not configured"}
 
-            # Pass 2: Regex fallback — extract first https URL from raw text
-            if not url or url.lower() in ("null", "none", ""):
-                url_match = re.search(r'https?://[^\s\"\',><\]\[}{\\]+', raw_text)
-                if url_match:
-                    url = url_match.group(0).rstrip("./,;)")
-                    found = True
-                    source_type = "manufacturer"  # assume manufacturer; validate_url will confirm
-                    logger.info(f"[Stage 1 regex fallback] {manufacturer} {mpn}: extracted URL {url!r}")
+                if not genai:
+                    return {"found": False, "error": "google-genai SDK is not installed"}
 
-            if not url or url.lower() in ("null", "none", ""):
+                client = genai.Client(api_key=active_key)
+                tools = [
+                    types.Tool(google_search=types.GoogleSearch())
+                ]
+                config = types.GenerateContentConfig(
+                    tools=tools,
+                    temperature=0.1,
+                )
+
+                max_retries = 2
+                response = None
+
+                for attempt in range(max_retries):
+                    try:
+                        response = await client.aio.models.generate_content(
+                            model="gemini-3.7-flash",
+                            contents=prompt,
+                            config=config
+                        )
+                        if response:
+                            break
+                    except Exception as exc:
+                        if "RESOURCE_EXHAUSTED" in str(exc) or "429" in str(exc):
+                            if key_attempt < num_keys - 1:
+                                gemini_key_rotator.rotate_key(active_key)
+                                break  # Break inner loop to try next key in outer loop
+                            logger.warning(f"All Gemini keys exhausted during URL lookup for {manufacturer} {mpn}: {exc} — trying Firecrawl search fallback")
+                            return await _firecrawl_search_url(mpn, manufacturer)
+                        if attempt == max_retries - 1:
+                            raise exc
+                        await asyncio.sleep(0.5 * (2 ** attempt))
+
+                if not response or not getattr(response, "candidates", None):
+                    if key_attempt < num_keys - 1:
+                        continue  # Try next key
+                    # Fallback to Firecrawl if Gemini returned empty
+                    fc_res = await _firecrawl_search_url(mpn, manufacturer)
+                    if fc_res.get("found"):
+                        return fc_res
+                    return {"found": False, "error": "No candidates returned from Gemini"}
+
+                candidate = response.candidates[0]
+                raw_text = getattr(response, "text", "") or ""
+                if not raw_text and getattr(candidate, "content", None) and getattr(candidate.content, "parts", None):
+                    raw_text = candidate.content.parts[0].text or ""
+
+                logger.info(f"[Stage 1 raw response] {manufacturer} {mpn}: {raw_text[:300]!r}")
+
+                # Grounding metadata provenance trail
+                grounding_sources = []
+                if hasattr(candidate, "grounding_metadata") and candidate.grounding_metadata:
+                    gm = candidate.grounding_metadata
+                    chunks = getattr(gm, "grounding_chunks", []) or []
+                    for chunk in chunks:
+                        web = getattr(chunk, "web", None)
+                        if web and getattr(web, "uri", None):
+                            grounding_sources.append(web.uri)
+                        elif isinstance(chunk, dict) and "web" in chunk and isinstance(chunk["web"], dict) and "uri" in chunk["web"]:
+                            grounding_sources.append(chunk["web"]["uri"])
+
+                    if hasattr(gm, "source_flagging_uris") and gm.source_flagging_uris:
+                        for uri in gm.source_flagging_uris:
+                            if uri not in grounding_sources:
+                                grounding_sources.append(uri)
+
                 found = False
+                url = ""
+                source_type = "none"
 
-            logger.info(
-                f"[Stage 1 RESULT] {manufacturer} {mpn}: found={found} url={url!r} "
-                f"source_type={source_type} grounding_sources={len(grounding_sources)}"
-            )
+                # Pass 1: Try strict JSON parse
+                try:
+                    cleaned = clean_json_text(raw_text)
+                    if cleaned:
+                        parsed = json.loads(cleaned)
+                        found = bool(parsed.get("found", False))
+                        url = str(parsed.get("url") or "").strip()
+                        source_type = str(parsed.get("source_type") or ("manufacturer" if found else "none")).strip()
+                except (json.JSONDecodeError, ValueError) as json_err:
+                    logger.warning(f"[Stage 1 JSON parse failed] {manufacturer} {mpn}: {json_err} — trying regex URL extraction")
 
-            return {
-                "found": found,
-                "url": url,
-                "source_type": source_type,
-                "grounding_sources": list(dict.fromkeys(grounding_sources))
-            }
-        except Exception as e:
-            logger.warning(f"[Stage 1 ERROR] find_manufacturer_url for {manufacturer} {mpn}: {e}")
-            return {"found": False, "error": str(e), "grounding_sources": []}
+                # Pass 2: Regex fallback — extract first https URL from raw text
+                if not url or url.lower() in ("null", "none", ""):
+                    url_match = re.search(r'https?://[^\s\"\',><\]\[}{\\]+', raw_text)
+                    if url_match:
+                        url = url_match.group(0).rstrip("./,;)")
+                        found = True
+                        source_type = "manufacturer"
+                        logger.info(f"[Stage 1 regex fallback] {manufacturer} {mpn}: extracted URL {url!r}")
+
+                if not url or url.lower() in ("null", "none", ""):
+                    found = False
+
+                logger.info(
+                    f"[Stage 1 RESULT] {manufacturer} {mpn}: found={found} url={url!r} "
+                    f"source_type={source_type} grounding_sources={len(grounding_sources)}"
+                )
+
+                return {
+                    "found": found,
+                    "url": url,
+                    "source_type": source_type,
+                    "grounding_sources": list(dict.fromkeys(grounding_sources))
+                }
+            except Exception as e:
+                if ("429" in str(e) or "RESOURCE_EXHAUSTED" in str(e)) and key_attempt < num_keys - 1:
+                    gemini_key_rotator.rotate_key(active_key)
+                    continue
+                logger.warning(f"[Stage 1 ERROR] find_manufacturer_url for {manufacturer} {mpn}: {e}")
+                if key_attempt == num_keys - 1:
+                    fc_res = await _firecrawl_search_url(mpn, manufacturer)
+                    if fc_res.get("found"):
+                        return fc_res
+                    return {"found": False, "error": str(e), "grounding_sources": []}
+
+        fc_res = await _firecrawl_search_url(mpn, manufacturer)
+        if fc_res.get("found"):
+            return fc_res
+        return {"found": False, "error": "All Gemini keys exhausted", "grounding_sources": []}
+
 
     async def extract_specs_from_text(self, mpn: str, manufacturer: str, page_text: str, source_url: str, source_type: str = "manufacturer") -> Dict[str, Any]:
         """
         STAGE 3: Extract technical specs, product title, description, and image URLs
         from scraped page text using plain gemini-3.7-flash with NO tools for maximum speed.
+        Automatically rotates keys if rate limit is reached.
         """
         prompt = (
             f"Here is the raw text content of a manufacturer/distributor product page "
@@ -884,57 +981,70 @@ class GeminiProvider(BaseLLMProvider):
             f"Return strict JSON: {{product_title, raw_specs, raw_description, image_urls}}"
         )
 
-        try:
-            if not self.api_key:
-                return {"found": False, "error": "Gemini API key is not configured"}
+        num_keys = max(1, gemini_key_rotator.get_key_count())
+        for key_attempt in range(num_keys):
+            active_key = gemini_key_rotator.get_current_key() or self.api_key
+            try:
+                if not active_key:
+                    return {"found": False, "error": "Gemini API key is not configured"}
 
-            if not genai:
-                return {"found": False, "error": "google-genai SDK is not installed"}
+                if not genai:
+                    return {"found": False, "error": "google-genai SDK is not installed"}
 
-            client = genai.Client(api_key=self.api_key)
-            config = types.GenerateContentConfig(
-                temperature=0.1,
-            )
+                client = genai.Client(api_key=active_key)
+                config = types.GenerateContentConfig(
+                    temperature=0.1,
+                )
 
-            max_retries = 2
-            response = None
+                max_retries = 2
+                response = None
 
-            for attempt in range(max_retries):
-                try:
-                    response = await client.aio.models.generate_content(
-                        model="gemini-3.7-flash",
-                        contents=prompt,
-                        config=config
-                    )
-                    if response:
-                        break
-                except Exception as exc:
-                    if "RESOURCE_EXHAUSTED" in str(exc) or "429" in str(exc):
-                        logger.warning(f"Gemini quota/rate limit reached during spec extraction for {manufacturer} {mpn}: {exc}")
-                        return {"found": False, "error": str(exc)}
-                    if attempt == max_retries - 1:
-                        raise exc
-                    await asyncio.sleep(0.5 * (2 ** attempt))
+                for attempt in range(max_retries):
+                    try:
+                        response = await client.aio.models.generate_content(
+                            model="gemini-3.7-flash",
+                            contents=prompt,
+                            config=config
+                        )
+                        if response:
+                            break
+                    except Exception as exc:
+                        if "RESOURCE_EXHAUSTED" in str(exc) or "429" in str(exc):
+                            if key_attempt < num_keys - 1:
+                                gemini_key_rotator.rotate_key(active_key)
+                                break  # Break inner loop to try next key in outer loop
+                            logger.warning(f"All Gemini keys exhausted during spec extraction for {manufacturer} {mpn}: {exc}")
+                            return {"found": False, "error": str(exc)}
+                        if attempt == max_retries - 1:
+                            raise exc
+                        await asyncio.sleep(0.5 * (2 ** attempt))
 
-            if not response or not getattr(response, "candidates", None):
-                return {"found": False, "error": "No candidates returned from Gemini"}
+                if not response or not getattr(response, "candidates", None):
+                    if key_attempt < num_keys - 1:
+                        continue
+                    return {"found": False, "error": "No candidates returned from Gemini"}
 
-            candidate = response.candidates[0]
-            raw_text = getattr(response, "text", "") or ""
-            if not raw_text and getattr(candidate, "content", None) and getattr(candidate.content, "parts", None):
-                raw_text = candidate.content.parts[0].text or ""
+                candidate = response.candidates[0]
+                raw_text = getattr(response, "text", "") or ""
+                if not raw_text and getattr(candidate, "content", None) and getattr(candidate.content, "parts", None):
+                    raw_text = candidate.content.parts[0].text or ""
 
-            cleaned = clean_json_text(raw_text)
-            parsed = json.loads(cleaned)
+                cleaned = clean_json_text(raw_text)
+                parsed = json.loads(cleaned)
 
-            parsed["source_url"] = source_url
-            parsed["source_type"] = source_type
-            parsed["found"] = True
-            return parsed
+                parsed["source_url"] = source_url
+                parsed["source_type"] = source_type
+                parsed["found"] = True
+                return parsed
 
-        except Exception as e:
-            logger.warning(f"Error in extract_specs_from_text for {manufacturer} {mpn}: {e}")
-            return {"found": False, "error": str(e), "source_url": source_url, "source_type": source_type}
+            except Exception as e:
+                if ("429" in str(e) or "RESOURCE_EXHAUSTED" in str(e)) and key_attempt < num_keys - 1:
+                    gemini_key_rotator.rotate_key(active_key)
+                    continue
+                logger.warning(f"Error in extract_specs_from_text for {manufacturer} {mpn}: {e}")
+                return {"found": False, "error": str(e), "source_url": source_url, "source_type": source_type}
+
+        return {"found": False, "error": "All Gemini keys exhausted", "source_url": source_url, "source_type": source_type}
 
 
     async def extract_full_record(
@@ -947,9 +1057,6 @@ class GeminiProvider(BaseLLMProvider):
         """
         Extract the complete product record from manufacturer/distributor
         page text using Gemini 3.7 Flash.
-
-        Only values explicitly present in page_text should be returned.
-        Missing values remain empty/null and are never fabricated.
         """
         prompt = FULL_RECORD_PROMPT.format(
             manufacturer=manufacturer,
@@ -957,67 +1064,78 @@ class GeminiProvider(BaseLLMProvider):
             page_text=page_text[:15000]
         )
 
-        try:
-            if not self.api_key:
+        num_keys = max(1, gemini_key_rotator.get_key_count())
+        for key_attempt in range(num_keys):
+            active_key = gemini_key_rotator.get_current_key() or self.api_key
+            try:
+                if not active_key:
+                    return {
+                        "error": "Gemini API key is not configured",
+                        "source_url": source_url
+                    }
+
+                if not genai:
+                    return {
+                        "error": "google-genai SDK is not installed",
+                        "source_url": source_url
+                    }
+
+                client = genai.Client(api_key=active_key)
+
+                config = types.GenerateContentConfig(
+                    temperature=0.1
+                )
+
+                response = await fetch_with_retry(
+                    client.aio.models.generate_content,
+                    model="gemini-3.7-flash",
+                    contents=prompt,
+                    config=config,
+                )
+
+                if not response:
+                    raise ValueError("No response returned from Gemini")
+
+                raw_text = getattr(response, "text", "") or ""
+
+                if not raw_text and getattr(response, "candidates", None):
+                    candidate = response.candidates[0]
+                    if (
+                        getattr(candidate, "content", None)
+                        and getattr(candidate.content, "parts", None)
+                    ):
+                        raw_text = candidate.content.parts[0].text or ""
+
+                raw = clean_json_text(raw_text)
+
+                if not raw:
+                    raise ValueError("Gemini returned empty response")
+
+                data = json.loads(raw)
+
+                if not isinstance(data, dict):
+                    raise ValueError("Gemini response is not a JSON object")
+
+                data["source_url"] = source_url
+
+                return data
+
+            except Exception as e:
+                if ("429" in str(e) or "RESOURCE_EXHAUSTED" in str(e)) and key_attempt < num_keys - 1:
+                    gemini_key_rotator.rotate_key(active_key)
+                    continue
+                logger.error(
+                    f"extract_full_record failed for {manufacturer} {mpn}: {e}"
+                )
                 return {
-                    "error": "Gemini API key is not configured",
+                    "error": str(e),
                     "source_url": source_url
                 }
 
-            if not genai:
-                return {
-                    "error": "google-genai SDK is not installed",
-                    "source_url": source_url
-                }
-
-            client = genai.Client(api_key=self.api_key)
-
-            config = types.GenerateContentConfig(
-                temperature=0.1
-            )
-
-            response = await fetch_with_retry(
-                client.aio.models.generate_content,
-                model="gemini-3.7-flash",
-                contents=prompt,
-                config=config,
-            )
-
-            if not response:
-                raise ValueError("No response returned from Gemini")
-
-            raw_text = getattr(response, "text", "") or ""
-
-            if not raw_text and getattr(response, "candidates", None):
-                candidate = response.candidates[0]
-                if (
-                    getattr(candidate, "content", None)
-                    and getattr(candidate.content, "parts", None)
-                ):
-                    raw_text = candidate.content.parts[0].text or ""
-
-            raw = clean_json_text(raw_text)
-
-            if not raw:
-                raise ValueError("Gemini returned empty response")
-
-            data = json.loads(raw)
-
-            if not isinstance(data, dict):
-                raise ValueError("Gemini response is not a JSON object")
-
-            data["source_url"] = source_url
-
-            return data
-
-        except Exception as e:
-            logger.error(
-                f"extract_full_record failed for {manufacturer} {mpn}: {e}"
-            )
-            return {
-                "error": str(e),
-                "source_url": source_url
-            }
+        return {
+            "error": "All Gemini keys exhausted",
+            "source_url": source_url
+        }
 
 
     async def enrich_from_manufacturer(self, mpn: str, manufacturer: str, category_hint: str = None) -> Dict[str, Any]:

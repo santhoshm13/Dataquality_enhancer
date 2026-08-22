@@ -13,9 +13,19 @@ class Settings(BaseSettings):
     SUPABASE_URL: str = ""
     SUPABASE_KEY: str = ""
     
-    # LLM
+    # LLM - Primary key + multiple rotation keys
     LLM_API_KEY: str = ""
     GEMINI_API_KEY: str = ""
+    GEMINI_API_KEYS: str = ""  # Comma-separated list of Gemini API keys
+    GEMINI_API_KEY_2: str = ""
+    GEMINI_API_KEY_3: str = ""
+    GEMINI_API_KEY_4: str = ""
+    GEMINI_API_KEY_5: str = ""
+    GEMINI_API_KEY_6: str = ""
+    GEMINI_API_KEY_7: str = ""
+    GEMINI_API_KEY_8: str = ""
+    GEMINI_API_KEY_9: str = ""
+    GEMINI_API_KEY_10: str = ""
     OPENAI_API_KEY: str = ""
     LLM_PROVIDER: str = "gemini"  # 'mock', 'openai', 'gemini'
 
@@ -32,7 +42,40 @@ class Settings(BaseSettings):
     )
 
     def get_api_key(self) -> str:
-        return self.GEMINI_API_KEY or self.LLM_API_KEY or os.environ.get("GEMINI_API_KEY", "") or os.environ.get("GOOGLE_API_KEY", "")
+        """Return the primary Gemini API key."""
+        keys = self.get_api_keys()
+        return keys[0] if keys else ""
+
+    def get_api_keys(self) -> List[str]:
+        """Return all configured Gemini API keys for round-robin automatic rotation."""
+        candidates = []
+        if self.GEMINI_API_KEYS:
+            candidates.extend([k.strip() for k in self.GEMINI_API_KEYS.split(",") if k.strip()])
+            
+        candidates.extend([
+            self.GEMINI_API_KEY,
+            self.LLM_API_KEY,
+            os.environ.get("GEMINI_API_KEY", ""),
+            os.environ.get("GOOGLE_API_KEY", ""),
+            self.GEMINI_API_KEY_2,
+            self.GEMINI_API_KEY_3,
+            self.GEMINI_API_KEY_4,
+            self.GEMINI_API_KEY_5,
+            self.GEMINI_API_KEY_6,
+            self.GEMINI_API_KEY_7,
+            self.GEMINI_API_KEY_8,
+            self.GEMINI_API_KEY_9,
+            self.GEMINI_API_KEY_10,
+        ])
+        
+        # Deduplicate while preserving order, skip empty strings
+        seen = set()
+        keys = []
+        for k in candidates:
+            if k and k.strip() and k not in seen:
+                seen.add(k.strip())
+                keys.append(k.strip())
+        return keys
 
     @property
     def origins_list(self) -> List[str]:
