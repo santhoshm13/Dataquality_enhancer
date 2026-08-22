@@ -11,19 +11,14 @@
  */
 
 function resolveApiBase(): string {
-  // 1. Build-time env var set in Vercel (or a local .env file)
+  // 1. Build-time env var (set in Vercel or local .env for remote backend)
   const envUrl = import.meta.env.VITE_API_URL as string | undefined;
   if (envUrl && envUrl.trim()) return envUrl.trim().replace(/\/$/, '');
 
-  // 2. Running on localhost — use the local backend dev server
-  const isLocal =
-    typeof window !== 'undefined' &&
-    (window.location.hostname === 'localhost' ||
-      window.location.hostname === '127.0.0.1');
-  if (isLocal) return 'http://127.0.0.1:8000/api';
-
-  // 3. Deployed but no env var set → relative path (avoids CORS, works if backend
-  //    is served at the same origin or via a reverse proxy).
+  // 2. Always use relative /api — the frontend is served by the same FastAPI
+  //    backend at port 8000, so relative paths work in both dev and production.
+  //    Using 127.0.0.1:8000 explicitly caused "Failed to fetch" when browser
+  //    opened localhost:8000 (different origin in some browsers).
   return '/api';
 }
 
