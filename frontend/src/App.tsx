@@ -218,17 +218,20 @@ export const App: React.FC = () => {
           percent: isDone ? 100 : percent
         });
 
+        // ── Live streaming: refresh the product table on every tick
+        // so rows appear one-by-one as they are enriched
+        fetchProducts();
+        fetchStats();
+
         if (isDone) {
           clearInterval(interval);
           setIsEnriching(false);
-          fetchProducts();
-          fetchStats();
           fetchEvaluation();
         }
       } catch (e) {
         console.error("Failed polling pipeline status", e);
       }
-    }, 2000);
+    }, 1500);  // 1.5s tick for snappy live updates
   };
 
   const downloadFile = async (
