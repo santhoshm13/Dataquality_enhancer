@@ -87,11 +87,15 @@ export const App: React.FC = () => {
       const res = await apiFetch('/datasets');
       const data = await res.json();
       setDatasets(data);
-      if (data.length > 0 && !selectedDatasetId) {
-        setSelectedDatasetId(data[data.length - 1].id);
+      if (data.length > 0) {
+        const latestId = data[data.length - 1].id;
+        setSelectedDatasetId(latestId);
+        return latestId;  // return so callers can use the new ID immediately
       }
+      return null;
     } catch (e) {
       console.error("Failed to fetch datasets", e);
+      return null;
     }
   };
 
@@ -682,9 +686,21 @@ export const App: React.FC = () => {
       <UploadModal
         isOpen={isUploadOpen}
         onClose={() => setIsUploadOpen(false)}
-        onUploadSuccess={() => {
-          fetchDatasets();
-          fetchProducts();
+        onUploadSuccess={async () => {
+          setIsUploadOpen(false);  // auto-close modal
+          // fetchDatasets returns the new dataset ID immediately
+          const newDatasetId = await fetchDatasets();
+          // Fetch products for the NEW dataset right away (no race condition)
+          if (newDatasetId) {
+            try {
+              const res = await apiFetch(
+                apiUrl('/products', { page: 1, limit: 200, dataset_id: newDatasetId })
+              );
+              const data = await res.json();
+              setProducts(data.items || []);
+              setTotalProducts(data.total || 0);
+            } catch (_) { /* fallback to normal fetch */ }
+          }
           fetchStats();
           fetchEvaluation();
           setActivePage('working');
