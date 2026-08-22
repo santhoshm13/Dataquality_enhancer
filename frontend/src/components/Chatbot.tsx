@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { X, Send, Bot, User } from 'lucide-react';
+import { MessageSquare, X, Send, Bot, User } from 'lucide-react';
 import { apiFetch } from '../lib/api';
 
 interface ChatMessage {
@@ -83,20 +83,18 @@ export const Chatbot: React.FC = () => {
 
   return (
     <>
-      {/* Floating Toggle Button (Balanced Medium Pill) */}
+      {/* Floating Toggle Button (Circular Animated Jump with Message Icon) */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-5 right-5 flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-[#0D0D0D] hover:bg-[#1A1A1A] text-white border border-emerald-500/40 shadow-[0_0_15px_rgba(16,185,129,0.2)] hover:shadow-[0_0_22px_rgba(16,185,129,0.35)] z-50 transition-all cursor-pointer group active:scale-[0.98]"
-          title="AI Quality Copilot - Ask anything"
+          className="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white border border-emerald-300/40 shadow-[0_0_20px_rgba(16,185,129,0.45)] hover:shadow-[0_0_30px_rgba(16,185,129,0.65)] flex items-center justify-center z-50 transition-all cursor-pointer animate-bounce hover:animate-none active:scale-95 group"
+          title="AI Quality Copilot - Click to chat"
         >
-          <div className="w-6 h-6 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
-            <Bot className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
-          </div>
-          <div className="text-left pr-1">
-            <div className="text-xs font-bold text-white leading-tight font-heading">AI Quality Copilot</div>
-            <div className="text-[10px] text-emerald-400 font-mono leading-tight">Ask anything</div>
-          </div>
+          <MessageSquare className="w-5 h-5 group-hover:scale-110 transition-transform fill-white/10" />
+          <span className="absolute -top-0.5 -right-0.5 flex h-3 w-3">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-300 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-300 border-2 border-[#0A0A0A]"></span>
+          </span>
         </button>
       )}
 
