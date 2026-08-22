@@ -25,14 +25,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           Eliminate catalog discrepancies and manual curation. Ingest multi-format legacy datasets, ground technical specifications against <span className="text-emerald-400 font-medium">official manufacturer provenance</span>, and export <span className="text-emerald-400 font-medium">252-column industrial delivery schemas</span> with complete auditability.
         </p>
 
-        {/* Primary CTA: Get Started Button (Clean & Minimal) */}
+        {/* Primary CTA: Get Started Button (Executive Black & White) */}
         <div className="mb-10 flex items-center justify-center">
           <button
             onClick={onGetStarted}
-            className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-500 border border-emerald-400/50 transition-all duration-200 cursor-pointer active:scale-[0.98] group"
+            className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl text-sm font-extrabold text-black bg-white hover:bg-slate-200 shadow-md transition-all duration-200 cursor-pointer active:scale-[0.98] group"
           >
             <span>Get Started</span>
-            <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform duration-200" />
+            <ArrowRight className="w-4 h-4 text-black group-hover:translate-x-1 transition-transform duration-200" />
           </button>
         </div>
 
