@@ -53,7 +53,7 @@ class Settings(BaseSettings):
     FIRECRAWL_API_KEY: str = ""  # get one free at https://www.firecrawl.dev/app/api-keys
     
     # CORS
-    ALLOWED_ORIGINS: str = "http://localhost:5173,http://localhost:3000,https://*.vercel.app"
+    ALLOWED_ORIGINS: str = "*"
 
     model_config = SettingsConfigDict(
         env_file=(".env", "backend/.env"),
