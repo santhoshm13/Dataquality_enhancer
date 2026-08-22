@@ -810,7 +810,7 @@ class GeminiProvider(BaseLLMProvider):
                 logger.warning(f"Gemini description generation failed: {e}. Falling back to MockLLMProvider.")
                 return await MockLLMProvider().generate_descriptions(attributes, raw_desc)
 
-    async def find_manufacturer_url(self, mpn: str, manufacturer: str, category_hint: str = None) -> Dict[str, Any]:
+    async def find_manufacturer_url(self, mpn: str, manufacturer: str, category_hint: str = None, product_desc: str = "") -> Dict[str, Any]:
         """
         STAGE 1: Find the product's official or fallback distributor URL using
         gemini-3.7-flash with ONLY google_search tool enabled.
@@ -819,15 +819,19 @@ class GeminiProvider(BaseLLMProvider):
         hint_line = ""
         if category_hint:
             hint_line = f"Product Category: {category_hint}\n"
+        
+        desc_line = ""
+        if product_desc:
+            desc_line = f"Product Description / Title: {product_desc}\n"
 
         prompt = (
-            f"Manufacturer: {manufacturer}\n"
+            f"Manufacturer / Brand: {manufacturer}\n"
             f"Manufacturer Part Number (MPN): {mpn}\n"
+            f"{desc_line}"
             f"{hint_line}\n"
-            f"Search for the official product page URL for this exact MPN on the "
-            f"manufacturer website or a major distributor (Grainger, MSC, RS Components, "
-            f"Fastenal, Digikey, McMaster-Carr). Use only URLs from real search results. "
-            f"Never guess or construct a URL. If no confident match found, say found=false.\n"
+            f"Search Google for the real official product page URL for this item on the manufacturer's official website "
+            f"or authorized industrial distributors (e.g., 3M, Freud, Diablo, Mirka, Bosch, Grainger, MSC Direct, Fastenal, Digikey, McMaster-Carr, Home Depot). "
+            f"Use ONLY real, valid URLs from live Google search results. Never guess or fabricate links.\n"
             f"Return ONLY valid JSON — no markdown, no explanation:\n"
             f'{{"found": true, "url": "https://example.com/product-page", "source_type": "manufacturer"}}'
             f'\nOR if not found: {{"found": false, "url": "", "source_type": "none"}}'
@@ -1138,7 +1142,7 @@ class GeminiProvider(BaseLLMProvider):
         }
 
 
-    async def enrich_from_manufacturer(self, mpn: str, manufacturer: str, category_hint: str = None) -> Dict[str, Any]:
+    async def enrich_from_manufacturer(self, mpn: str, manufacturer: str, category_hint: str = None, product_desc: str = "") -> Dict[str, Any]:
         """
         ORCHESTRATION: cache → Stage 1 → 1.5 → 2 → 3.
         Short-circuits on failure with review_status=NEEDS_HUMAN_REVIEW.
@@ -1154,7 +1158,7 @@ class GeminiProvider(BaseLLMProvider):
 
         # STAGE 1: URL Lookup
         t0 = time.perf_counter()
-        stage1_res = await self.find_manufacturer_url(mpn=mpn, manufacturer=manufacturer, category_hint=category_hint)
+        stage1_res = await self.find_manufacturer_url(mpn=mpn, manufacturer=manufacturer, category_hint=category_hint, product_desc=product_desc)
         s1_time = time.perf_counter() - t0
         stage_timings["url_lookup_s"] = s1_time
         logger.info(f"[Stage 1: URL Lookup] {manufacturer} {mpn} completed in {s1_time:.3f}s (found={stage1_res.get('found')})")
@@ -1289,9 +1293,9 @@ class LLMService:
     async def generate_descriptions(self, attributes: Dict[str, Any], raw_desc: str) -> Dict[str, str]:
         return await self.provider.generate_descriptions(attributes, raw_desc)
 
-    async def find_manufacturer_url(self, mpn: str, manufacturer: str) -> Dict[str, Any]:
+    async def find_manufacturer_url(self, mpn: str, manufacturer: str, category_hint: str = None, product_desc: str = "") -> Dict[str, Any]:
         if hasattr(self.provider, "find_manufacturer_url"):
-            return await self.provider.find_manufacturer_url(mpn, manufacturer)
+            return await self.provider.find_manufacturer_url(mpn, manufacturer, category_hint=category_hint, product_desc=product_desc)
         return {"found": False, "error": "Current provider does not support find_manufacturer_url"}
 
     async def extract_specs_from_text(self, mpn: str, manufacturer: str, page_text: str, source_url: str, source_type: str = "manufacturer") -> Dict[str, Any]:
@@ -1314,7 +1318,7 @@ class LLMService:
         }
 
 
-    async def enrich_from_manufacturer(self, mpn: str, manufacturer: str, category_hint: str = None) -> Dict[str, Any]:
+    async def enrich_from_manufacturer(self, mpn: str, manufacturer: str, category_hint: str = None, product_desc: str = "") -> Dict[str, Any]:
         if hasattr(self.provider, "enrich_from_manufacturer"):
-            return await self.provider.enrich_from_manufacturer(mpn, manufacturer, category_hint=category_hint)
+            return await self.provider.enrich_from_manufacturer(mpn, manufacturer, category_hint=category_hint, product_desc=product_desc)
         return {"found": False, "error": "Current provider does not support manufacturer enrichment"}

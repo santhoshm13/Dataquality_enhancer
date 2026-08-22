@@ -78,14 +78,28 @@ class ProductEnrichmentPipeline:
         # Always query manufacturer provenance for every product (rotates keys or uses Firecrawl search)
         if not source_url and hasattr(self.llm_service, "enrich_from_manufacturer"):
             try:
-                mfg_for_search = mfg_match["matched_value"] or raw_mfg
-                if part_num and mfg_for_search:
-                    # Pass category_hint from classification to bias URL search
+                mfg_for_search = (
+                    mfg_match.get("matched_value")
+                    or raw_mfg
+                    or brand_match.get("matched_value")
+                    or ""
+                )
+                if not mfg_for_search and raw_desc:
+                    for candidate in ["3M", "Freud", "Diablo", "Mirka", "Norton", "Bosch", "DeWalt", "Milwaukee", "Whirlpool", "GE", "Frigidaire"]:
+                        if candidate.lower() in raw_desc.lower() or candidate.lower() in part_num.lower():
+                            mfg_for_search = candidate
+                            break
+                if not mfg_for_search:
+                    mfg_for_search = raw_desc.split()[0] if raw_desc else "Manufacturer"
+
+                if part_num:
+                    # Pass category_hint and raw_desc to ground URL search with live results
                     category_hint = class_res.get("category") or class_res.get("class")
                     mfg_enrich = await self.llm_service.enrich_from_manufacturer(
                         mpn=part_num,
                         manufacturer=mfg_for_search,
-                        category_hint=category_hint
+                        category_hint=category_hint,
+                        product_desc=raw_desc
                     )
                     found = mfg_enrich.get("found", False)
                     source_url = mfg_enrich.get("source_url") or mfg_enrich.get("url")
