@@ -15,8 +15,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { apiFetch, apiUrl } from './lib/api';
 
 export const App: React.FC = () => {
-  // Working page comes first as the default primary workspace
-  const [activePage, setActivePage] = useState<'working' | 'intro'>('working');
+  // Intro/Landing page with Get Started comes first
+  const [activePage, setActivePage] = useState<'working' | 'intro'>('intro');
 
   const [stats, setStats] = useState<{
     total_products: number;
@@ -317,16 +317,17 @@ export const App: React.FC = () => {
           {activePage === 'intro' && (
             <motion.div
               key="intro-page"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.25 }}
+              initial={{ opacity: 0, scale: 0.98, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.98, y: -16 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               className="space-y-6"
             >
               {/* Hero Section */}
               <HeroSection
                 totalProducts={stats.total_products}
                 highConfidenceRate={highConfRate}
+                onGetStarted={() => setActivePage('working')}
               />
 
               {/* Transformation Showcase */}
@@ -343,10 +344,10 @@ export const App: React.FC = () => {
           {activePage === 'working' && (
             <motion.div
               key="working-page"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.25 }}
+              initial={{ opacity: 0, scale: 0.98, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.98, y: -16 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               className="space-y-7"
             >
               {/* Header Title */}

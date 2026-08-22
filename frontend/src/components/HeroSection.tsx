@@ -1,27 +1,42 @@
 import React from 'react';
-import { Cpu, Layers, ShieldCheck } from 'lucide-react';
+import { Cpu, Layers, ShieldCheck, ArrowRight, Sparkles } from 'lucide-react';
 
 interface HeroSectionProps {
   totalProducts: number;
   highConfidenceRate: number;
+  onGetStarted: () => void;
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
-  highConfidenceRate
+  highConfidenceRate,
+  onGetStarted
 }) => {
   return (
-    <section className="relative pt-12 pb-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
+    <section className="relative pt-10 pb-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
       <div className="max-w-5xl mx-auto text-center flex flex-col items-center">
         
         {/* Executive Headline */}
-        <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white max-w-4xl leading-[1.12] mb-6">
+        <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white max-w-4xl leading-[1.12] mb-5">
           Automated Product Data Normalization & Quality Governance
         </h1>
 
         {/* Clear Subtitle with Only Green Accent */}
-        <p className="text-base sm:text-lg text-slate-300 max-w-3xl font-normal leading-relaxed mb-12">
+        <p className="text-base sm:text-lg text-slate-300 max-w-3xl font-normal leading-relaxed mb-8">
           Eliminate catalog discrepancies and manual curation. Ingest multi-format legacy datasets, ground technical specifications against <span className="text-emerald-400 font-medium">official manufacturer provenance</span>, and export <span className="text-emerald-400 font-medium">252-column industrial delivery schemas</span> with complete auditability.
         </p>
+
+        {/* Prominent Primary CTA: Get Started Button (Visible Above The Fold) */}
+        <div className="mb-10 flex items-center justify-center gap-4">
+          <button
+            onClick={onGetStarted}
+            className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-2xl text-base font-bold text-white bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-500 hover:from-emerald-500 hover:to-teal-400 shadow-[0_0_28px_rgba(16,185,129,0.45)] hover:shadow-[0_0_40px_rgba(16,185,129,0.7)] transition-all duration-300 cursor-pointer active:scale-[0.98] border border-emerald-300/40"
+          >
+            <Sparkles className="w-5 h-5 text-emerald-200 animate-pulse" />
+            <span>Get Started</span>
+            <ArrowRight className="w-5 h-5 text-white group-hover:translate-x-1.5 transition-transform duration-300" />
+            <div className="absolute inset-0 rounded-2xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+          </button>
+        </div>
 
         {/* 4 Metric Cards Grid with Small Green Frame Effect */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-5 w-full">
