@@ -57,20 +57,9 @@ export const App: React.FC = () => {
     percent: number;
   } | null>(null);
 
-  const [healthStatus, setHealthStatus] = useState<boolean>(true);
   const [evaluationData, setEvaluationData] = useState<any | null>(null);
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [approvingSuggestion, setApprovingSuggestion] = useState<string | null>(null);
-
-  const checkHealth = async () => {
-    try {
-      const res = await apiFetch('/health');
-      if (res.ok) setHealthStatus(true);
-      else setHealthStatus(false);
-    } catch {
-      setHealthStatus(false);
-    }
-  };
 
   const fetchStats = async () => {
     try {
@@ -154,13 +143,11 @@ export const App: React.FC = () => {
 
   // Startup: load everything immediately
   useEffect(() => {
-    checkHealth();
     fetchDatasets();
     fetchProducts();
     fetchStats();
     fetchEvaluation();
     fetchSuggestions();
-    const healthInterval = setInterval(checkHealth, 30000);
     // Auto-refresh products every 3s on the working page so the table
     // stays live without needing to manually click
     const refreshInterval = setInterval(() => {
@@ -168,7 +155,6 @@ export const App: React.FC = () => {
       fetchStats();
     }, 3000);
     return () => {
-      clearInterval(healthInterval);
       clearInterval(refreshInterval);
     };
   }, []);
@@ -204,8 +190,9 @@ export const App: React.FC = () => {
   const handleRunBatchEnrichment = async () => {
     setIsEnriching(true);
     try {
+      const activeDsId = selectedDatasetId || (datasets.length > 0 ? datasets[datasets.length - 1].id : undefined);
       await apiFetch(
-        apiUrl('/pipeline/run', { dataset_id: selectedDatasetId }),
+        apiUrl('/pipeline/run', { dataset_id: activeDsId, concurrency: 8 }),
         { method: 'POST' }
       );
       pollEnrichmentStatus();
@@ -316,7 +303,6 @@ export const App: React.FC = () => {
         onRunBatchEnrichment={handleRunBatchEnrichment}
         isEnriching={isEnriching}
         enrichmentProgress={enrichmentProgress}
-        healthStatus={healthStatus}
       />
 
       {/* Main Content Area */}

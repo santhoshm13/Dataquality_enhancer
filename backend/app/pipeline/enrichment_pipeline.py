@@ -13,8 +13,6 @@ from app.config.settings import settings
 
 logger = logging.getLogger("app.pipeline")
 
-_gemini_rate_limited: bool = False
-
 class ProductEnrichmentPipeline:
     def __init__(self):
         self.llm_service = LLMService(provider_name=settings.LLM_PROVIDER, api_key=settings.get_api_key())
@@ -76,10 +74,9 @@ class ProductEnrichmentPipeline:
 
         stage_timings = {}
         stage_failed = None
-        global _gemini_rate_limited
 
-        # If not already attached, query manufacturer provenance if supported
-        if not source_url and hasattr(self.llm_service, "enrich_from_manufacturer") and not _gemini_rate_limited:
+        # Always query manufacturer provenance for every product (rotates keys or uses Firecrawl search)
+        if not source_url and hasattr(self.llm_service, "enrich_from_manufacturer"):
             try:
                 mfg_for_search = mfg_match["matched_value"] or raw_mfg
                 if part_num and mfg_for_search:
@@ -90,8 +87,6 @@ class ProductEnrichmentPipeline:
                         manufacturer=mfg_for_search,
                         category_hint=category_hint
                     )
-                    if mfg_enrich.get("error") and ("429" in str(mfg_enrich["error"]) or "RESOURCE_EXHAUSTED" in str(mfg_enrich["error"])):
-                        _gemini_rate_limited = True
                     found = mfg_enrich.get("found", False)
                     source_url = mfg_enrich.get("source_url") or mfg_enrich.get("url")
                     source_type = mfg_enrich.get("source_type", "manufacturer" if found else "none")
@@ -105,7 +100,7 @@ class ProductEnrichmentPipeline:
                     # Stage 3b: extract_full_record — populate all 252 delivery columns
                     # Only runs when we have a successfully scraped page (found=True)
                     full_record = {}
-                    if found and source_url and hasattr(self.llm_service, "extract_full_record") and not _gemini_rate_limited:
+                    if found and source_url and hasattr(self.llm_service, "extract_full_record"):
                         page_text_for_record = mfg_enrich.get("page_text", "") or ""
                         try:
                             full_record = await self.llm_service.extract_full_record(
@@ -114,25 +109,16 @@ class ProductEnrichmentPipeline:
                                 page_text=page_text_for_record,
                                 source_url=source_url
                             )
-                            if full_record.get("error") and (
-                                "429" in str(full_record["error"]) or
-                                "RESOURCE_EXHAUSTED" in str(full_record["error"])
-                            ):
-                                _gemini_rate_limited = True
-                                full_record = {}
                         except Exception as efr:
-                            if "429" in str(efr) or "RESOURCE_EXHAUSTED" in str(efr):
-                                _gemini_rate_limited = True
                             logger.warning(f"extract_full_record failed for MPN {part_num}: {efr}")
                             full_record = {}
                     product["full_record"] = full_record
             except Exception as e:
-                if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
-                    _gemini_rate_limited = True
                 logger.warning(f"Failed manufacturer grounding for MPN {part_num}: {e}")
                 found = False
                 review_status = "NEEDS_HUMAN_REVIEW"
                 review_reason = f"Enrichment exception: {str(e)[:100]}"
+
 
         # Normalize found state + build not_found_reason for UI transparency
         not_found_reason: str = ""

@@ -18,7 +18,6 @@ interface NavbarProps {
     processed: number;
     percent: number;
   } | null;
-  healthStatus: boolean;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -31,8 +30,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onExport,
   onRunBatchEnrichment,
   isEnriching,
-  enrichmentProgress,
-  healthStatus
+  enrichmentProgress
 }) => {
   const [exportDropdownOpen, setExportDropdownOpen] = useState(false);
   const [datasetDropdownOpen, setDatasetDropdownOpen] = useState(false);
@@ -113,14 +111,6 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Right Nav Options */}
         <div className="flex items-center gap-3 flex-wrap justify-center">
           
-          {/* API Health Status */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0D0D0D] border border-emerald-500/30 text-xs font-mono shadow-[0_0_8px_rgba(16,185,129,0.15)]">
-            <div className="relative flex h-2 w-2">
-              <span className={`relative inline-flex rounded-full h-2 w-2 ${healthStatus ? 'bg-emerald-400' : 'bg-rose-500'}`}></span>
-            </div>
-            <span className="text-slate-200 font-medium">{healthStatus ? 'API Online' : 'Connecting...'}</span>
-          </div>
-
           {/* Operational Controls (Working Page) */}
           {activePage === 'working' && (
             <div className="flex items-center gap-2.5 flex-wrap">
