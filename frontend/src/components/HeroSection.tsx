@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cpu, Layers, ShieldCheck, ArrowRight, Sparkles } from 'lucide-react';
+import { Cpu, Layers, ShieldCheck, ArrowRight } from 'lucide-react';
 
 interface HeroSectionProps {
   totalProducts: number;
@@ -25,16 +25,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           Eliminate catalog discrepancies and manual curation. Ingest multi-format legacy datasets, ground technical specifications against <span className="text-emerald-400 font-medium">official manufacturer provenance</span>, and export <span className="text-emerald-400 font-medium">252-column industrial delivery schemas</span> with complete auditability.
         </p>
 
-        {/* Prominent Primary CTA: Get Started Button (Visible Above The Fold) */}
-        <div className="mb-10 flex items-center justify-center gap-4">
+        {/* Primary CTA: Get Started Button (Clean & Minimal) */}
+        <div className="mb-10 flex items-center justify-center">
           <button
             onClick={onGetStarted}
-            className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-2xl text-base font-bold text-white bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-500 hover:from-emerald-500 hover:to-teal-400 shadow-[0_0_28px_rgba(16,185,129,0.45)] hover:shadow-[0_0_40px_rgba(16,185,129,0.7)] transition-all duration-300 cursor-pointer active:scale-[0.98] border border-emerald-300/40"
+            className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-500 border border-emerald-400/50 transition-all duration-200 cursor-pointer active:scale-[0.98] group"
           >
-            <Sparkles className="w-5 h-5 text-emerald-200 animate-pulse" />
             <span>Get Started</span>
-            <ArrowRight className="w-5 h-5 text-white group-hover:translate-x-1.5 transition-transform duration-300" />
-            <div className="absolute inset-0 rounded-2xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+            <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform duration-200" />
           </button>
         </div>
 
