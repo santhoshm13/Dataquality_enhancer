@@ -18,8 +18,68 @@ from .prompt_builder import build_extraction_prompt, build_description_prompt
 from app.services.lov.lov_retrieval_service import get_lov_for_classpath
 from app.services.scraper.spider import scrape_page, scrape_page_async, validate_url, scrape_page_with_fallback
 from app.services.enrichment_cache import enrichment_cache
+from app.config.settings import settings as _app_settings
 
 logger = logging.getLogger("app.services.llm")
+
+# ---------------------------------------------------------------------------
+# Firecrawl search fallback — finds manufacturer/distributor URLs without LLM
+# ---------------------------------------------------------------------------
+try:
+    from firecrawl import AsyncV1FirecrawlApp as _FirecrawlApp
+    _FIRECRAWL_AVAILABLE = True
+except ImportError:
+    _FirecrawlApp = None  # type: ignore
+    _FIRECRAWL_AVAILABLE = False
+
+
+async def _firecrawl_search_url(mpn: str, manufacturer: str) -> Dict[str, Any]:
+    """
+    Fallback URL discovery using Firecrawl /search endpoint.
+    Runs when Gemini is unavailable or rate-limited.
+    Returns same shape as find_manufacturer_url so the pipeline continues.
+    """
+    api_key = getattr(_app_settings, "FIRECRAWL_API_KEY", None) or ""
+    if not _FIRECRAWL_AVAILABLE or not _FirecrawlApp or not api_key:
+        return {"found": False, "error": "Firecrawl not configured", "grounding_sources": []}
+
+    query = f"{manufacturer} {mpn} product page"
+    try:
+        app = _FirecrawlApp(api_key=api_key)
+        result = await app.search(query, limit=5)
+        # result is a plain dict: {'success': True, 'data': [{url, title, description}, ...]}
+        if isinstance(result, dict):
+            docs = result.get("data", []) or []
+        else:
+            docs = getattr(result, "data", []) or []
+        grounding_sources = []
+        best_url = ""
+        for doc in docs:
+            # doc is a dict with 'url' key
+            if isinstance(doc, dict):
+                url = doc.get("url", "")
+            else:
+                url = getattr(doc, "url", "")
+            if url:
+                grounding_sources.append(url)
+                # Prefer URLs containing the MPN
+                if not best_url or mpn.lower() in url.lower():
+                    best_url = url
+        if not best_url and grounding_sources:
+            best_url = grounding_sources[0]
+        if best_url:
+            logger.info(f"[Firecrawl Search Fallback] {manufacturer} {mpn}: found URL {best_url!r}")
+            return {
+                "found": True,
+                "url": best_url,
+                "source_type": "distributor",
+                "grounding_sources": grounding_sources
+            }
+        logger.warning(f"[Firecrawl Search Fallback] {manufacturer} {mpn}: no results")
+        return {"found": False, "error": "No results from Firecrawl search", "grounding_sources": []}
+    except Exception as e:
+        logger.warning(f"[Firecrawl Search Fallback] {manufacturer} {mpn}: exception {e}")
+        return {"found": False, "error": str(e), "grounding_sources": []}
 
 # Standard UNILOG description length limits
 UNILOG_LIMITS = {
@@ -362,11 +422,17 @@ class MockLLMProvider(BaseLLMProvider):
                 url = url_template.format(mpn=mpn)
                 return {"found": True, "url": url, "source_type": "manufacturer", "grounding_sources": [url]}
 
+        # Fallback: try Firecrawl search (works without Gemini)
+        logger.info(f"[MockProvider] Trying Firecrawl search for {manufacturer} {mpn}")
+        fc_result = await _firecrawl_search_url(mpn, manufacturer)
+        if fc_result.get("found"):
+            return fc_result
+
         # Honest failure for unknown manufacturers — do NOT construct/guess URLs
         return {
             "found": False, "url": "", "source_type": "none", "grounding_sources": [],
             "review_status": "NEEDS_HUMAN_REVIEW",
-            "review_reason": f"No known manufacturer URL for {manufacturer} {mpn}"
+            "review_reason": f"No URL found for {manufacturer} {mpn} via Gemini or Firecrawl search"
         }
 
     async def extract_specs_from_text(self, mpn: str, manufacturer: str, page_text: str, source_url: str, source_type: str = "manufacturer") -> Dict[str, Any]:
@@ -709,8 +775,9 @@ class GeminiProvider(BaseLLMProvider):
                         break
                 except Exception as exc:
                     if "RESOURCE_EXHAUSTED" in str(exc) or "429" in str(exc):
-                        logger.warning(f"Gemini quota/rate limit reached during URL lookup for {manufacturer} {mpn}: {exc}")
-                        return {"found": False, "error": str(exc)}
+                        logger.warning(f"Gemini quota/rate limit reached during URL lookup for {manufacturer} {mpn}: {exc} — trying Firecrawl search fallback")
+                        # Firecrawl search fallback: find URL without Gemini
+                        return await _firecrawl_search_url(mpn, manufacturer)
                     if attempt == max_retries - 1:
                         raise exc
                     await asyncio.sleep(0.5 * (2 ** attempt))
