@@ -26,6 +26,16 @@ class Settings(BaseSettings):
     GEMINI_API_KEY_8: str = ""
     GEMINI_API_KEY_9: str = ""
     GEMINI_API_KEY_10: str = ""
+    GEMINI_API_KEY_11: str = ""
+    GEMINI_API_KEY_12: str = ""
+    GEMINI_API_KEY_13: str = ""
+    GEMINI_API_KEY_14: str = ""
+    GEMINI_API_KEY_15: str = ""
+    GEMINI_API_KEY_16: str = ""
+    GEMINI_API_KEY_17: str = ""
+    GEMINI_API_KEY_18: str = ""
+    GEMINI_API_KEY_19: str = ""
+    GEMINI_API_KEY_20: str = ""
     OPENAI_API_KEY: str = ""
     LLM_PROVIDER: str = "gemini"  # 'mock', 'openai', 'gemini'
 
@@ -66,6 +76,16 @@ class Settings(BaseSettings):
             self.GEMINI_API_KEY_8,
             self.GEMINI_API_KEY_9,
             self.GEMINI_API_KEY_10,
+            self.GEMINI_API_KEY_11,
+            self.GEMINI_API_KEY_12,
+            self.GEMINI_API_KEY_13,
+            self.GEMINI_API_KEY_14,
+            self.GEMINI_API_KEY_15,
+            self.GEMINI_API_KEY_16,
+            self.GEMINI_API_KEY_17,
+            self.GEMINI_API_KEY_18,
+            self.GEMINI_API_KEY_19,
+            self.GEMINI_API_KEY_20,
         ])
         
         # Deduplicate while preserving order, skip empty strings
@@ -76,6 +96,7 @@ class Settings(BaseSettings):
                 seen.add(k.strip())
                 keys.append(k.strip())
         return keys
+
 
     @property
     def origins_list(self) -> List[str]:
