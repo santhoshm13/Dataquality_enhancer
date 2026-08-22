@@ -225,7 +225,7 @@ export const App: React.FC = () => {
         const processed = data.processed_rows || 0;
         const percent = Math.round((processed / total) * 100);
         const statusUpper = (data.status || '').toUpperCase();
-        const isDone = statusUpper === 'COMPLETED' || statusUpper === 'IDLE' || percent >= 100;
+        const isDone = statusUpper === 'COMPLETED' || (statusUpper !== 'RUNNING' && statusUpper !== 'PENDING' && processed >= total && total > 0);
 
         setEnrichmentProgress({
           status: isDone ? 'Completed' : 'Processing',
@@ -242,6 +242,8 @@ export const App: React.FC = () => {
         if (isDone) {
           clearInterval(interval);
           setIsEnriching(false);
+          fetchProducts();
+          fetchStats();
           fetchEvaluation();
         }
       } catch (e) {
