@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { UploadCloud, Download, RefreshCw, FileSpreadsheet, ChevronDown, Activity, Layers, Terminal } from 'lucide-react';
+import { UploadCloud, Download, RefreshCw, FileSpreadsheet, Activity, Layers, Terminal, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface NavbarProps {
   activePage: 'intro' | 'working';
   onChangePage: (page: 'intro' | 'working') => void;
-  datasets: any[];
-  selectedDatasetId: number | null;
-  onSelectDataset: (id: number) => void;
+  datasets?: any[];
+  selectedDatasetId?: number | null;
+  onSelectDataset?: (id: number) => void;
   onOpenUpload: () => void;
   onExport: (format: 'csv' | 'excel') => void;
   onRunBatchEnrichment: () => void;
@@ -23,9 +23,7 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({
   activePage,
   onChangePage,
-  datasets,
-  selectedDatasetId,
-  onSelectDataset,
+  datasets = [],
   onOpenUpload,
   onExport,
   onRunBatchEnrichment,
@@ -33,7 +31,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   enrichmentProgress
 }) => {
   const [exportDropdownOpen, setExportDropdownOpen] = useState(false);
-  const [datasetDropdownOpen, setDatasetDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -43,8 +40,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-  
-  const selectedDataset = datasets.find(d => d.id === selectedDatasetId);
 
   return (
     <header 
@@ -114,51 +109,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Operational Controls (Working Page) */}
           {activePage === 'working' && (
             <div className="flex items-center gap-2.5 flex-wrap">
-              {/* Dataset Selector */}
-              <div className="relative">
-                <button
-                  onClick={() => setDatasetDropdownOpen(!datasetDropdownOpen)}
-                  className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#0D0D0D] hover:bg-[#1A1A1A] text-slate-200 font-mono text-xs border border-emerald-500/30 transition-all cursor-pointer min-w-[150px] justify-between shadow-sm"
-                >
-                  <div className="truncate text-left flex-1 max-w-[120px] font-semibold text-white">
-                    {selectedDataset ? selectedDataset.name : 'Select Dataset'}
-                  </div>
-                  <ChevronDown className={`w-3.5 h-3.5 text-slate-400 shrink-0 transition-transform ${datasetDropdownOpen ? 'rotate-180' : ''}`} />
-                </button>
-
-                <AnimatePresence>
-                  {datasetDropdownOpen && (
-                    <motion.div 
-                      initial={{ opacity: 0, y: 6, scale: 0.98 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 6, scale: 0.98 }}
-                      transition={{ duration: 0.15 }}
-                      className="absolute right-0 mt-2 w-64 rounded-xl bg-[#0A0A0A] border border-emerald-500/40 shadow-2xl z-50 py-1.5 max-h-64 overflow-y-auto font-mono backdrop-blur-xl"
-                    >
-                      {datasets.length === 0 ? (
-                        <div className="px-4 py-3 text-xs text-slate-400 flex items-center justify-center">No datasets uploaded</div>
-                      ) : (
-                        datasets.map(d => (
-                          <button
-                            key={d.id}
-                            onClick={() => {
-                              onSelectDataset(d.id);
-                              setDatasetDropdownOpen(false);
-                            }}
-                            className={`w-full text-left px-4 py-2.5 text-xs flex justify-between items-center transition-colors cursor-pointer ${
-                              selectedDatasetId === d.id ? 'bg-emerald-500/20 text-emerald-300 font-semibold' : 'text-slate-300 hover:bg-white/5'
-                            }`}
-                          >
-                            <span className="truncate max-w-[150px]">{d.name}</span>
-                            <span className="text-slate-400 shrink-0 text-[10px] bg-black/80 px-2 py-0.5 rounded border border-emerald-500/20 font-medium">{d.total_rows} rows</span>
-                          </button>
-                        ))
-                      )}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
               {/* Batch Enrich Button */}
               <button
                 onClick={onRunBatchEnrichment}

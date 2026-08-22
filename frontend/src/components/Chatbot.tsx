@@ -83,11 +83,11 @@ export const Chatbot: React.FC = () => {
 
   return (
     <>
-      {/* Floating Toggle Button (Circular Animated Jump with Message Icon) */}
+      {/* Floating Toggle Button (Circular Animated Smooth Float with Message Icon) */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white border border-emerald-300/40 shadow-[0_0_20px_rgba(16,185,129,0.45)] hover:shadow-[0_0_30px_rgba(16,185,129,0.65)] flex items-center justify-center z-50 transition-all cursor-pointer animate-bounce hover:animate-none active:scale-95 group"
+          className="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white border border-emerald-300/40 shadow-[0_0_20px_rgba(16,185,129,0.45)] hover:shadow-[0_0_30px_rgba(16,185,129,0.65)] flex items-center justify-center z-50 transition-transform duration-300 ease-out animate-smooth-float hover:scale-105 active:scale-95 cursor-pointer group"
           title="AI Quality Copilot - Click to chat"
         >
           <MessageSquare className="w-5 h-5 group-hover:scale-110 transition-transform fill-white/10" />
