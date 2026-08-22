@@ -11,12 +11,13 @@ import { EvaluationPanel } from './components/EvaluationPanel';
 import { ReviewPanel } from './components/ReviewPanel';
 import { Chatbot } from './components/Chatbot';
 import { AnimatedBackground } from './components/AnimatedBackground';
-import { Database, Play, Download, Brain, UploadCloud, RefreshCw, Layers } from 'lucide-react';
+import { Play, Download, Brain, UploadCloud, RefreshCw, Layers } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { apiFetch, apiUrl } from './lib/api';
 
 export const App: React.FC = () => {
-  const [activePage, setActivePage] = useState<'intro' | 'working'>('intro');
+  // Working page comes first as the default primary workspace
+  const [activePage, setActivePage] = useState<'working' | 'intro'>('working');
 
   const [stats, setStats] = useState<{
     total_products: number;
@@ -342,137 +343,201 @@ export const App: React.FC = () => {
             >
               {/* Header Title */}
               <div className="text-center max-w-3xl mx-auto pt-2 pb-1">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-emerald-500/20 text-xs font-semibold text-emerald-400 mb-3 font-mono">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-xs font-semibold text-emerald-400 mb-3 font-mono shadow-[0_0_12px_rgba(16,185,129,0.15)]">
                   <Layers className="w-3.5 h-3.5" />
                   <span>OPERATIONAL WORKSPACE & BATCH ENGINE</span>
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-bold text-white font-heading tracking-tight">
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white font-heading tracking-tight">
                   Catalog Quality & Intelligence Hub
                 </h2>
-                <p className="text-xs sm:text-sm text-slate-400 mt-1">
-                  Ingest supplier catalogs, trigger multi-stage batch normalizations, and review quality scorecards.
+                <p className="text-xs sm:text-sm text-slate-300 mt-1.5 max-w-2xl mx-auto">
+                  Upload catalog datasets, run AI manufacturer grounding, and export standardized 252-column delivery files.
                 </p>
               </div>
 
               {/* =========================================================================
-                  BIG CENTER ACTIONS: INGEST DATASET & RUN BATCH PIPELINE
+                  PROMINENT CENTERED 3-PILLAR COMMAND HUB: UPLOAD -> EXECUTE -> OUTPUT/EXPORT
                  ========================================================================= */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-5xl mx-auto w-full">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-6xl mx-auto w-full">
                 
-                {/* 1. INGEST DATASET CARD (Big, Centered) */}
-                <div className="enterprise-card p-6 sm:p-7 rounded-2xl flex flex-col justify-between relative overflow-hidden shadow-lg bg-[#0A0A0A]">
+                {/* 1. UPLOAD DATASET (Extra Large, Centered) */}
+                <div className="enterprise-card p-6 rounded-2xl flex flex-col justify-between relative overflow-hidden shadow-xl bg-[#0A0A0A] border border-emerald-500/30 hover:border-emerald-400/60 transition-all group">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none" />
+                  
                   <div>
                     <div className="flex items-center justify-between mb-4">
-                      <div className="w-12 h-12 rounded-xl bg-white/5 border border-emerald-500/20 flex items-center justify-center text-white">
-                        <UploadCloud className="w-6 h-6 text-emerald-400" />
+                      <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+                        <UploadCloud className="w-6 h-6" />
                       </div>
-                      <span className="text-[11px] font-mono font-semibold px-2.5 py-1 rounded-md bg-white/5 text-slate-300 border border-emerald-500/20">
-                        Step 1: Input Ingestion
+                      <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                        Step 1: Input
                       </span>
                     </div>
 
                     <h3 className="text-lg font-bold text-white font-heading mb-1.5">
-                      Ingest Product Catalog
+                      Upload Catalog File
                     </h3>
                     
                     <p className="text-xs text-slate-300 leading-relaxed mb-4">
-                      Upload legacy catalog files in <strong>CSV, XLSX, or XLS</strong> format containing MPN, Part Description, and Manufacturer columns.
+                      Ingest legacy product sheets in <strong>CSV, XLSX, or XLS</strong> with MPN & description.
                     </p>
 
-                    {/* Dataset Picker / Status */}
-                    <div className="p-3 rounded-xl bg-black/60 border border-white/5 font-mono text-xs mb-5 space-y-1.5">
+                    {/* Dataset Quick Info */}
+                    <div className="p-3 rounded-xl bg-black/80 border border-white/10 font-mono text-xs mb-5 space-y-1.5">
                       <div className="flex items-center justify-between text-slate-400">
-                        <span>Active Dataset:</span>
-                        <strong className="text-white truncate max-w-[170px]">{selectedDataset ? selectedDataset.name : 'No dataset selected'}</strong>
+                        <span>Active:</span>
+                        <strong className="text-white truncate max-w-[130px]">{selectedDataset ? selectedDataset.name : 'No file selected'}</strong>
                       </div>
                       <div className="flex items-center justify-between text-slate-400 text-[11px]">
-                        <span>Loaded Records:</span>
-                        <span className="text-emerald-400 font-semibold">{totalProducts} Rows Available</span>
+                        <span>Loaded:</span>
+                        <span className="text-emerald-400 font-semibold">{totalProducts} Rows</span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Big Action Button */}
+                  {/* Big Upload Button */}
                   <button
                     onClick={() => setIsUploadOpen(true)}
-                    className="btn-secondary w-full flex items-center justify-center gap-2.5 py-3.5 rounded-xl text-sm font-semibold cursor-pointer text-white hover:bg-white/10 transition-all shadow-md"
+                    className="w-full flex items-center justify-center gap-2.5 py-4 px-4 rounded-xl text-sm font-bold cursor-pointer text-white bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] transition-all shadow-[0_0_20px_rgba(16,185,129,0.35)] border border-emerald-400/50"
                   >
-                    <Database className="w-4 h-4 text-emerald-400" />
-                    <span>Upload & Ingest Catalog File</span>
+                    <UploadCloud className="w-5 h-5" />
+                    <span>Upload New Dataset</span>
                   </button>
                 </div>
 
-                {/* 2. RUN BATCH PIPELINE CARD (Big, Centered) */}
-                <div className="enterprise-card p-6 sm:p-7 rounded-2xl flex flex-col justify-between relative overflow-hidden shadow-lg bg-[#0A0A0A]">
+                {/* 2. RUN BATCH PIPELINE (Extra Large, Centered) */}
+                <div className="enterprise-card p-6 rounded-2xl flex flex-col justify-between relative overflow-hidden shadow-xl bg-[#0A0A0A] border border-emerald-500/30 hover:border-emerald-400/60 transition-all group">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none" />
+
                   <div>
                     <div className="flex items-center justify-between mb-4">
-                      <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                      <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
                         {isEnriching ? (
                           <RefreshCw className="w-6 h-6 animate-spin text-emerald-400" />
                         ) : (
                           <Play className="w-6 h-6 fill-current" />
                         )}
                       </div>
-                      <span className="text-[11px] font-mono font-semibold px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                        Step 2: Automated Pipeline
+                      <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                        Step 2: Enrich
                       </span>
                     </div>
 
                     <h3 className="text-lg font-bold text-white font-heading mb-1.5">
-                      Execute Batch Pipeline
+                      Execute Pipeline
                     </h3>
                     
                     <p className="text-xs text-slate-300 leading-relaxed mb-4">
-                      Trigger 5-stage concurrent normalization: manufacturer grounding, strict 30,000+ LOV checks, and 252-column schema formatting.
+                      Run grounding search, taxonomy classification & 30,000+ LOV checks.
                     </p>
 
-                    {/* Progress / Readiness Box */}
-                    <div className="p-3 rounded-xl bg-black/60 border border-white/5 font-mono text-xs mb-5">
+                    {/* Progress / Status Box */}
+                    <div className="p-3 rounded-xl bg-black/80 border border-white/10 font-mono text-xs mb-5 min-h-[58px] flex flex-col justify-center">
                       {isEnriching && enrichmentProgress ? (
                         <div className="space-y-2">
                           <div className="flex justify-between text-[11px]">
                             <span className="text-emerald-400 font-semibold flex items-center gap-1.5">
                               <RefreshCw className="w-3 h-3 animate-spin" />
-                              Enriching Pipeline...
+                              Enriching...
                             </span>
                             <span className="text-white font-bold">{enrichmentProgress.percent}% ({enrichmentProgress.processed}/{enrichmentProgress.total})</span>
                           </div>
-                          <div className="w-full h-2 bg-black/80 rounded-full overflow-hidden border border-white/5">
+                          <div className="w-full h-2 bg-black/90 rounded-full overflow-hidden border border-white/10">
                             <div 
-                              className="bg-emerald-500 h-full rounded-full transition-all duration-300"
+                              className="bg-emerald-500 h-full rounded-full transition-all duration-300 shadow-[0_0_8px_rgba(16,185,129,0.8)]"
                               style={{ width: `${enrichmentProgress.percent}%` }}
                             />
                           </div>
                         </div>
                       ) : (
                         <div className="flex items-center justify-between text-slate-400 text-xs">
-                          <span>Target: <strong className="text-white">{totalProducts} items</strong></span>
-                          <span className="text-emerald-400 font-semibold">
-                            Ready to Execute
+                          <span>Status:</span>
+                          <span className="text-emerald-400 font-semibold flex items-center gap-1">
+                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                            Ready ({totalProducts} Rows)
                           </span>
                         </div>
                       )}
                     </div>
                   </div>
 
-                  {/* Big Action Button */}
+                  {/* Big Execute Button */}
                   <button
                     onClick={handleRunBatchEnrichment}
                     disabled={isEnriching || datasets.length === 0}
-                    className="btn-primary w-full flex items-center justify-center gap-2.5 py-3.5 rounded-xl text-sm font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-md text-white"
+                    className="w-full flex items-center justify-center gap-2.5 py-4 px-4 rounded-xl text-sm font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:scale-[0.98] transition-all shadow-[0_0_20px_rgba(16,185,129,0.35)] border border-emerald-400/50"
                   >
                     {isEnriching ? (
                       <>
-                        <RefreshCw className="w-4 h-4 animate-spin" />
-                        <span>Processing Catalog Pipeline...</span>
+                        <RefreshCw className="w-5 h-5 animate-spin" />
+                        <span>Processing Catalog...</span>
                       </>
                     ) : (
                       <>
-                        <Play className="w-4 h-4 fill-white" />
-                        <span>Execute Batch Pipeline ({totalProducts} Rows)</span>
+                        <Play className="w-5 h-5 fill-white" />
+                        <span>Run Batch Enrichment</span>
                       </>
                     )}
                   </button>
+                </div>
+
+                {/* 3. OUTPUT & EXPORT DELIVERY FILE (Extra Large, Centered) */}
+                <div className="enterprise-card p-6 rounded-2xl flex flex-col justify-between relative overflow-hidden shadow-xl bg-[#0A0A0A] border border-emerald-500/30 hover:border-emerald-400/60 transition-all group">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none" />
+
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+                        <Download className="w-6 h-6" />
+                      </div>
+                      <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                        Step 3: Delivery
+                      </span>
+                    </div>
+
+                    <h3 className="text-lg font-bold text-white font-heading mb-1.5">
+                      Export Delivery Output
+                    </h3>
+                    
+                    <p className="text-xs text-slate-300 leading-relaxed mb-4">
+                      Download complete <strong>252-column</strong> standardized delivery schema in 1-click.
+                    </p>
+
+                    {/* Output Info */}
+                    <div className="p-3 rounded-xl bg-black/80 border border-white/10 font-mono text-xs mb-5 space-y-1.5">
+                      <div className="flex items-center justify-between text-slate-400">
+                        <span>Schema:</span>
+                        <span className="text-white font-semibold">252 Headers</span>
+                      </div>
+                      <div className="flex items-center justify-between text-slate-400 text-[11px]">
+                        <span>High Confidence:</span>
+                        <span className="text-emerald-400 font-semibold">{highConfRate}%</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Big Export Buttons (CSV & Excel) */}
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <button
+                      onClick={() => handleExport('csv')}
+                      disabled={datasets.length === 0}
+                      className="flex items-center justify-center gap-2 py-4 px-3 rounded-xl text-xs sm:text-sm font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed text-white bg-black/80 hover:bg-emerald-950/60 border border-emerald-500/40 hover:border-emerald-400 active:scale-[0.98] transition-all shadow-[0_0_15px_rgba(16,185,129,0.2)]"
+                      title="Export standard CSV with all 252 delivery columns"
+                    >
+                      <Download className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span>Export CSV</span>
+                    </button>
+
+                    <button
+                      onClick={() => handleExport('excel')}
+                      disabled={datasets.length === 0}
+                      className="flex items-center justify-center gap-2 py-4 px-3 rounded-xl text-xs sm:text-sm font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed text-white bg-emerald-600/90 hover:bg-emerald-500 border border-emerald-400/60 active:scale-[0.98] transition-all shadow-[0_0_20px_rgba(16,185,129,0.35)]"
+                      title="Export standard Excel .xlsx with all 252 delivery columns"
+                    >
+                      <Download className="w-4 h-4 text-white shrink-0" />
+                      <span>Export Excel</span>
+                    </button>
+                  </div>
                 </div>
 
               </div>

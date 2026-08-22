@@ -61,7 +61,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Brand Logo & Switcher */}
         <div className="flex items-center gap-6 flex-wrap justify-center sm:justify-start">
           <div 
-            onClick={() => onChangePage('intro')} 
+            onClick={() => onChangePage('working')} 
             className="flex items-center gap-3 cursor-pointer group"
           >
             {/* Cognivue Pure Emblem Icon */}
@@ -82,20 +82,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
           </div>
 
-          {/* Segmented Page Switcher (Overview vs Studio) */}
+          {/* Segmented Page Switcher: Working First, Details Second */}
           <div className="inline-flex p-1 rounded-xl bg-[#0D0D0D] border border-emerald-500/30 text-xs shadow-inner">
-            <button
-              onClick={() => onChangePage('intro')}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg font-medium transition-all cursor-pointer ${
-                activePage === 'intro'
-                  ? 'bg-emerald-500/20 text-emerald-300 shadow-sm font-semibold border border-emerald-500/40'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
-              }`}
-            >
-              <Layers className="w-3.5 h-3.5 text-slate-400" />
-              <span>System Overview</span>
-            </button>
-
             <button
               onClick={() => onChangePage('working')}
               className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg font-medium transition-all cursor-pointer ${
@@ -106,6 +94,18 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Terminal className="w-3.5 h-3.5 text-slate-400" />
               <span>Operations Studio</span>
+            </button>
+
+            <button
+              onClick={() => onChangePage('intro')}
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg font-medium transition-all cursor-pointer ${
+                activePage === 'intro'
+                  ? 'bg-emerald-500/20 text-emerald-300 shadow-sm font-semibold border border-emerald-500/40'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
+              }`}
+            >
+              <Layers className="w-3.5 h-3.5 text-slate-400" />
+              <span>System Overview & Details</span>
             </button>
           </div>
         </div>

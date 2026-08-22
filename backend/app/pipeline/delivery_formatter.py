@@ -104,10 +104,31 @@ class DeliveryFormatGenerator:
         # --- Full record from extract_full_record (populated after page scrape) ---
         rec = safe_dict(product.get("full_record"))
 
-        row["MFR URL"] = safe_str(rec.get("source_url")) or safe_str(product.get("source_url"))
-        grounding_sources = safe_list(product.get("grounding_sources"))
-        for i, url in enumerate(grounding_sources[:5]):
-            row[f"Ref URL {i+1}"] = safe_str(url)
+        # --- URL Population: check ALL locations where URL may be stored ---
+        # Priority: full_record.source_url → product.source_url → enrichment.source_url
+        mfr_url = (
+            safe_str(rec.get("source_url"))
+            or safe_str(product.get("source_url"))
+            or safe_str(enrich.get("source_url"))
+        )
+        row["MFR URL"] = mfr_url
+
+        # Ref URLs: merge grounding_sources from top-level and enrichment dict, deduplicated
+        gs_top = safe_list(product.get("grounding_sources"))
+        gs_enrich = safe_list(enrich.get("grounding_sources"))
+        # Combine, deduplicate while preserving order
+        seen = set()
+        all_grounding = []
+        for u in (gs_top + gs_enrich):
+            u_str = safe_str(u)
+            if u_str and u_str not in seen:
+                seen.add(u_str)
+                all_grounding.append(u_str)
+        # If we have an mfr_url not already in grounding, include it as Ref URL 1
+        if mfr_url and mfr_url not in seen:
+            all_grounding.insert(0, mfr_url)
+        for i, url in enumerate(all_grounding[:5]):
+            row[f"Ref URL {i+1}"] = url
 
         row["TRADE_NAME"] = safe_str(rec.get("trade_name"))
         alt_pn = safe_list(rec.get("alternate_part_numbers"))
