@@ -75,28 +75,57 @@ app.include_router(suggestions_router, prefix="/api", tags=["Suggestions"])
 app.include_router(coverage_router, prefix="/api", tags=["Coverage"])
 app.include_router(chat.router, prefix="/api/chat", tags=["Chat"])
 
-# Serve static frontend files
-frontend_dist = Path(__file__).parent.parent.parent / "frontend" / "dist"
-if frontend_dist.exists():
-    app.mount("/assets", StaticFiles(directory=frontend_dist / "assets"), name="assets")
+# Serve static frontend files (auto-detects local frontend/dist, embedded static_dist, etc.)
+def find_frontend_dist() -> Path | None:
+    candidates = [
+        Path(__file__).resolve().parent.parent / "static_dist",
+        Path(__file__).resolve().parent.parent.parent / "frontend" / "dist",
+        Path.cwd() / "static_dist",
+        Path.cwd() / "frontend" / "dist",
+        Path.cwd().parent / "frontend" / "dist",
+        Path(__file__).resolve().parent.parent / "dist",
+    ]
+    for c in candidates:
+        if c.exists() and (c / "index.html").exists():
+            return c
+    return None
 
-    @app.exception_handler(404)
-    async def spa_route_handler(request: Request, exc: StarletteHTTPException):
-        # API 404s should return JSON
-        if request.url.path.startswith("/api/"):
-            return JSONResponse({"detail": exc.detail}, status_code=exc.status_code)
+frontend_dist = find_frontend_dist()
+
+if frontend_dist:
+    logger.info(f"Serving frontend static files from: {frontend_dist}")
+    assets_dir = frontend_dist / "assets"
+    if assets_dir.exists():
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+
+    @app.get("/", include_in_schema=False)
+    async def serve_root():
+        index_path = frontend_dist / "index.html"
+        return FileResponse(index_path)
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    async def serve_spa(full_path: str):
+        if full_path.startswith("api/") or full_path == "api" or full_path == "docs" or full_path == "openapi.json":
+            return JSONResponse({"detail": "Not Found"}, status_code=404)
         
-        # Check if the requested file exists in the root of the dist directory
-        file_path = frontend_dist / request.url.path.lstrip("/")
+        file_path = frontend_dist / full_path
         if file_path.is_file():
             return FileResponse(file_path)
-
-        # Otherwise serve index.html for SPA routing
+            
         index_path = frontend_dist / "index.html"
         if index_path.exists():
             return FileResponse(index_path)
-        
+            
         return JSONResponse({"detail": "Not Found"}, status_code=404)
+else:
+    @app.get("/", include_in_schema=False)
+    async def serve_api_welcome():
+        return {
+            "status": "online",
+            "message": "AI Product Data Enrichment Backend API is running.",
+            "docs": "/docs",
+            "health": "/api/health"
+        }
 
 if __name__ == "__main__":
     import uvicorn
