@@ -407,9 +407,9 @@ export const App: React.FC = () => {
                   {/* Big Upload Button */}
                   <button
                     onClick={() => setIsUploadOpen(true)}
-                    className="w-full flex items-center justify-center gap-2.5 py-4 px-4 rounded-xl text-sm font-bold cursor-pointer text-white bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] transition-all shadow-[0_0_20px_rgba(16,185,129,0.35)] border border-emerald-400/50"
+                    className="w-full flex items-center justify-center gap-2.5 py-4 px-4 rounded-xl text-sm font-extrabold cursor-pointer text-black bg-white hover:bg-slate-200 active:scale-[0.98] transition-all shadow-md"
                   >
-                    <UploadCloud className="w-5 h-5" />
+                    <UploadCloud className="w-5 h-5 text-black" />
                     <span>Upload New Dataset</span>
                   </button>
                 </div>

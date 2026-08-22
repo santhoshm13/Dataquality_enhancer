@@ -109,7 +109,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={onOpenUpload}
                 className="btn-secondary flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold cursor-pointer"
               >
-                <UploadCloud className="w-4 h-4 text-emerald-400" />
+                <UploadCloud className="w-4 h-4 text-white" />
                 <span className="hidden sm:inline">Upload</span>
               </button>
 

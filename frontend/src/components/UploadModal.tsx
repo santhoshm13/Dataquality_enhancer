@@ -105,7 +105,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose, onUpl
         {/* Modal Header */}
         <div className="flex items-center gap-3 mb-5">
           <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white">
-            <UploadCloud className="w-5 h-5 text-emerald-400" />
+            <UploadCloud className="w-5 h-5 text-white" />
           </div>
           <div>
             <h2 className="text-base font-bold text-white">Import Product Catalog File</h2>
@@ -120,7 +120,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose, onUpl
               onDragOver={handleDragOver}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
-              className="border border-dashed border-white/20 hover:border-emerald-500/80 rounded-xl p-8 text-center bg-black/50 hover:bg-black/80 transition-all cursor-pointer mb-4"
+              className="border border-dashed border-white/20 hover:border-white/60 rounded-xl p-8 text-center bg-black/50 hover:bg-black/80 transition-all cursor-pointer mb-4"
             >
               <input
                 type="file"
@@ -137,7 +137,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose, onUpl
                 </div>
               ) : (
                 <div>
-                  <p className="text-sm font-medium text-slate-200">Drag & drop your catalog file here, or <span className="text-emerald-400 underline font-semibold">browse</span></p>
+                  <p className="text-sm font-medium text-slate-200">Drag & drop your catalog file here, or <span className="text-white underline font-semibold">browse</span></p>
                   <p className="text-xs text-slate-500 mt-1 font-mono">Accepts columns: Mfg_Part_Num, Part_Desc, Part_Manuf</p>
                 </div>
               )}
@@ -152,24 +152,24 @@ export const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose, onUpl
             <div className="flex justify-end gap-2.5">
               <button
                 onClick={handleClose}
-                className="btn-secondary px-4 py-2 text-xs font-semibold cursor-pointer"
+                className="px-4 py-2 text-xs font-semibold rounded-xl bg-[#0D0D0D] hover:bg-[#1A1A1A] text-white border border-white/20 transition-all cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={handleUpload}
                 disabled={!file || isUploading}
-                className="btn-primary flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-semibold cursor-pointer disabled:opacity-50"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-extrabold cursor-pointer disabled:opacity-50 text-black bg-white hover:bg-slate-200 shadow-sm transition-all"
               >
                 {isUploading ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Parsing & Importing...
+                    <Loader2 className="w-4 h-4 animate-spin text-black" />
+                    <span>Parsing & Importing...</span>
                   </>
                 ) : (
                   <>
-                    Import into Catalog
-                    <ArrowRight className="w-4 h-4" />
+                    <span>Import into Catalog</span>
+                    <ArrowRight className="w-4 h-4 text-black" />
                   </>
                 )}
               </button>
@@ -178,10 +178,10 @@ export const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose, onUpl
         ) : (
           /* Upload Success View */
           <div>
-            <div className="p-4 mb-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center gap-3">
+            <div className="p-4 mb-4 rounded-xl bg-white/5 border border-white/15 text-white flex items-center gap-3">
               <CheckCircle2 className="w-6 h-6 text-emerald-400 shrink-0" />
               <div>
-                <h4 className="font-bold text-sm text-emerald-400">{uploadResult.message}</h4>
+                <h4 className="font-bold text-sm text-white">{uploadResult.message}</h4>
                 <p className="text-xs text-slate-300 font-mono mt-0.5">Parsed successfully. Ingested {uploadResult.imported_count} catalog rows.</p>
               </div>
             </div>
@@ -219,13 +219,14 @@ export const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose, onUpl
               </button>
               <button
                 onClick={handleClose}
-                className="btn-primary px-5 py-2 rounded-xl text-xs font-semibold cursor-pointer"
+                className="px-5 py-2.5 rounded-xl text-xs font-extrabold cursor-pointer text-black bg-white hover:bg-slate-200 shadow-sm transition-all"
               >
                 Close & View Products
               </button>
             </div>
           </div>
         )}
+
 
       </div>
     </div>
