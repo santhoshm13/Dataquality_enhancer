@@ -83,14 +83,20 @@ export const Chatbot: React.FC = () => {
 
   return (
     <>
-      {/* Floating Toggle Button (Compact & Minimal) */}
+      {/* Floating Toggle Button (Balanced Medium Pill) */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-5 right-5 w-10 h-10 rounded-full bg-[#0D0D0D] hover:bg-[#1A1A1A] text-emerald-400 border border-emerald-500/40 shadow-[0_0_12px_rgba(16,185,129,0.25)] hover:shadow-[0_0_16px_rgba(16,185,129,0.4)] flex items-center justify-center z-50 transition-all cursor-pointer group"
-          title="AI Quality Copilot"
+          className="fixed bottom-5 right-5 flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-[#0D0D0D] hover:bg-[#1A1A1A] text-white border border-emerald-500/40 shadow-[0_0_15px_rgba(16,185,129,0.2)] hover:shadow-[0_0_22px_rgba(16,185,129,0.35)] z-50 transition-all cursor-pointer group active:scale-[0.98]"
+          title="AI Quality Copilot - Ask anything"
         >
-          <Bot className="w-4 h-4 group-hover:scale-110 transition-transform" />
+          <div className="w-6 h-6 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+            <Bot className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
+          </div>
+          <div className="text-left pr-1">
+            <div className="text-xs font-bold text-white leading-tight font-heading">AI Quality Copilot</div>
+            <div className="text-[10px] text-emerald-400 font-mono leading-tight">Ask anything</div>
+          </div>
         </button>
       )}
 
