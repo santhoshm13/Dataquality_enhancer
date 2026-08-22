@@ -474,21 +474,21 @@ export const App: React.FC = () => {
                   <button
                     onClick={handleRunBatchEnrichment}
                     disabled={isEnriching}
-                    className="w-full flex items-center justify-center gap-2.5 py-4 px-4 rounded-xl text-sm font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:scale-[0.98] transition-all shadow-[0_0_20px_rgba(16,185,129,0.35)] border border-emerald-400/50"
+                    className="w-full flex items-center justify-center gap-2.5 py-4 px-4 rounded-xl text-sm font-extrabold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed text-black bg-white hover:bg-slate-200 active:scale-[0.98] transition-all shadow-md"
                   >
                     {isEnriching ? (
                       <>
-                        <RefreshCw className="w-5 h-5 animate-spin" />
+                        <RefreshCw className="w-5 h-5 animate-spin text-black" />
                         <span>Processing Catalog...</span>
                       </>
                     ) : datasets.length === 0 || totalProducts === 0 ? (
                       <>
-                        <UploadCloud className="w-5 h-5" />
+                        <UploadCloud className="w-5 h-5 text-black" />
                         <span>Upload Dataset First</span>
                       </>
                     ) : (
                       <>
-                        <Play className="w-5 h-5 fill-white" />
+                        <Play className="w-5 h-5 fill-black text-black" />
                         <span>Run Batch Enrichment</span>
                       </>
                     )}
@@ -530,25 +530,25 @@ export const App: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Big Export Buttons (CSV & Excel) */}
+                  {/* Big Export Buttons (CSV & Excel in White & Black) */}
                   <div className="grid grid-cols-2 gap-2.5">
                     <button
                       onClick={() => handleExport('csv')}
                       disabled={datasets.length === 0}
-                      className="flex items-center justify-center gap-2 py-4 px-3 rounded-xl text-xs sm:text-sm font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed text-white bg-black/80 hover:bg-emerald-950/60 border border-emerald-500/40 hover:border-emerald-400 active:scale-[0.98] transition-all shadow-[0_0_15px_rgba(16,185,129,0.2)]"
+                      className="flex items-center justify-center gap-2 py-4 px-3 rounded-xl text-xs sm:text-sm font-extrabold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed text-black bg-white hover:bg-slate-200 active:scale-[0.98] transition-all shadow-md"
                       title="Export standard CSV with all 252 delivery columns"
                     >
-                      <Download className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <Download className="w-4 h-4 text-black shrink-0" />
                       <span>Export CSV</span>
                     </button>
 
                     <button
                       onClick={() => handleExport('excel')}
                       disabled={datasets.length === 0}
-                      className="flex items-center justify-center gap-2 py-4 px-3 rounded-xl text-xs sm:text-sm font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed text-white bg-emerald-600/90 hover:bg-emerald-500 border border-emerald-400/60 active:scale-[0.98] transition-all shadow-[0_0_20px_rgba(16,185,129,0.35)]"
+                      className="flex items-center justify-center gap-2 py-4 px-3 rounded-xl text-xs sm:text-sm font-extrabold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed text-black bg-white hover:bg-slate-200 active:scale-[0.98] transition-all shadow-md"
                       title="Export standard Excel .xlsx with all 252 delivery columns"
                     >
-                      <Download className="w-4 h-4 text-white shrink-0" />
+                      <Download className="w-4 h-4 text-black shrink-0" />
                       <span>Export Excel</span>
                     </button>
                   </div>
